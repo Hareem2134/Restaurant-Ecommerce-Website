@@ -25,13 +25,13 @@ export default function About() {
               <Image
                 className="object-cover object-center w-[309px] h-[230px] rounded-lg"
                 alt="Image 2"
-                src="/about2.png"
+                src="/about4.png"
                 width={309} height={230}
               />
               <Image
                 className="object-cover object-center w-[309px] h-[270px] rounded-lg"
                 alt="Image 3"
-                src="/about3.png"
+                src="/aboutt.png"
                 width={309} height={270}
               />
             </div>

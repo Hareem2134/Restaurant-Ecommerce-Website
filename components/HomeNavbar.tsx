@@ -67,12 +67,12 @@ const HomeNavbar = () => {
         <div className="flex items-center space-x-6">
           {/* Search Icon */}
           <button className="relative">
-            <Image src="/Search.png" alt="Search" className="h-6 w-6" />
+            <Image src="/Search.png" alt="Search" className="h-6 w-6" width={24} height={24}/>
           </button>
 
           {/* Basket Icon */}
           <button className="relative">
-            <Image src="/Handbag.png" alt="Basket" className="h-6 w-6 text-[#FF9F0D]" />
+            <Image src="/Handbag.png" alt="Basket" className="h-6 w-6 text-[#FF9F0D]" width={24} height={24}/>
           </button>
         </div>
       </div>

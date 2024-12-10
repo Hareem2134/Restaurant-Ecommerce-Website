@@ -47,7 +47,8 @@ interface MenuItem {
               <Image
                 src="/coffee.png"
                 alt="Coffee Icon"
-                className="w-10 h-10 mx-auto lg:mx-0 mb-3"
+                className=" mx-auto lg:mx-0 mb-3"
+                width={12} height={12}
               />
               <h2 className="text-4xl font-bold text-gray-800 tracking-wide">
                 Drinks Menu
@@ -90,6 +91,7 @@ interface MenuItem {
               src="/drinks.png"
               alt="Drinks"
               className="w-[400px] h-[550px] rounded-lg shadow-md object-cover"
+              width={400} height={550}
             />
           </div>
         </div>

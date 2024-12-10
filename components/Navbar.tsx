@@ -67,7 +67,7 @@ const Navbar = () => {
       {/* Right Section - Icons */}
       <div className="flex items-center space-x-4">
         {/* Search Icon */}
-        <Link href="/Search">
+        <Link href="/">
           <Image
             src="/Search.png"
             alt="Search Icon"

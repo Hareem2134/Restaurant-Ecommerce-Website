@@ -26,6 +26,7 @@ export default function PartnersAndClients() {
               src={partner.logo}
               alt={`${partner.name} logo`}
               className="max-h-24 sm:max-h-32 w-auto grayscale hover:grayscale-0 transition-all duration-300"
+              width={150} height={150}
             />
           </div>
         ))}

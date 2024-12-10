@@ -47,6 +47,7 @@ interface MenuItem {
               src="/menu.png"
               alt="Starter dish"
               className="w-[400px] h-[550px] rounded-lg shadow-md object-cover"
+              width={400} height={550}
             />
           </div>
   
@@ -58,6 +59,7 @@ interface MenuItem {
                 src="/coffee.png"
                 alt="Coffee Icon"
                 className="w-10 h-10 mx-auto lg:mx-0 mb-3"
+                width={10} height={10}
               />
               <h2 className="text-4xl font-bold text-gray-800 tracking-wide">
                 Starter Menu
