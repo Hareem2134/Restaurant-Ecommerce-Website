@@ -48,7 +48,7 @@ interface MenuItem {
                 src="/coffee.png"
                 alt="Coffee Icon"
                 className=" mx-auto lg:mx-0 mb-3"
-                width={12} height={12}
+                width={28} height={28}
               />
               <h2 className="text-4xl font-bold text-gray-800 tracking-wide">
                 Drinks Menu

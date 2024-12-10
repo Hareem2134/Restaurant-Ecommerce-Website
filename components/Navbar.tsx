@@ -71,8 +71,7 @@ const Navbar = () => {
           <Image
             src="/Search.png"
             alt="Search Icon"
-            width={24}
-            height={24}
+            width={28} height={28}
             className="cursor-pointer"
           />
         </Link>
@@ -86,8 +85,7 @@ const Navbar = () => {
           <Image
             src="/User.png"
             alt="User Icon"
-            width={24}
-            height={24}
+            width={28} height={28}
             className="cursor-pointer"
           />
           {isDropdownOpen && (
@@ -116,8 +114,7 @@ const Navbar = () => {
           <Image
             src="/Handbag.png"
             alt="Basket Icon"
-            width={24}
-            height={24}
+            width={28} height={28}
             className="cursor-pointer"
           />
           <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
