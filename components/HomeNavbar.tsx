@@ -1,8 +1,37 @@
-import React from "react";
+"use client";
+import React, { useState, useEffect, useRef, Dispatch, SetStateAction } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
-const HomeNavbar = () => {
+const HomeNavbar: React.FC = () => {
+  const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
+  const [isAboutDropdownOpen, setIsAboutDropdownOpen] = useState(false);
+
+  const userTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const aboutTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Handle dropdown open/close with timeouts
+  const handleMouseEnter = (setter: Dispatch<SetStateAction<boolean>>) => {
+    if (userTimeoutRef.current) clearTimeout(userTimeoutRef.current);
+    if (aboutTimeoutRef.current) clearTimeout(aboutTimeoutRef.current);
+    setter(true);
+  };
+
+  const handleMouseLeave = (
+    setter: Dispatch<SetStateAction<boolean>>,
+    timeoutRef: React.MutableRefObject<NodeJS.Timeout | null>
+  ) => {
+    timeoutRef.current = setTimeout(() => setter(false), 300);
+  };
+
+  // Cleanup on component unmount
+  useEffect(() => {
+    return () => {
+      if (userTimeoutRef.current) clearTimeout(userTimeoutRef.current);
+      if (aboutTimeoutRef.current) clearTimeout(aboutTimeoutRef.current);
+    };
+  }, []);
+
   return (
     <div className="bg-black text-white relative">
       {/* Foodtruck Heading */}
@@ -17,62 +46,137 @@ const HomeNavbar = () => {
         {/* Navigation Links */}
         <div className="flex items-center space-x-8">
           <nav className="flex space-x-6 text-sm font-medium">
-            <Link href="/" className="relative hover:text-[#FF9F0D] transition">
+            <Link href="/" className="hover:text-[#FF9F0D] transition">
               Home
-              <span className="absolute left-1/2 -translate-x-1/2 bottom-0 w-0 h-[3px] bg-[#FF9F0D] rounded-full transition-all duration-300 hover:w-full"></span>
             </Link>
-            <Link href="/MenuPage" className="relative hover:text-[#FF9F0D] transition">
+            <Link href="/MenuPage" className="hover:text-[#FF9F0D] transition">
               Menu
-              <span className="absolute left-1/2 -translate-x-1/2 bottom-0 w-0 h-[3px] bg-[#FF9F0D] rounded-full transition-all duration-300 hover:w-full"></span>
             </Link>
-            <Link href="/Blog" className="relative hover:text-[#FF9F0D] transition">
+            <Link href="/Blog" className="hover:text-[#FF9F0D] transition">
               Blog
-              <span className="absolute left-1/2 -translate-x-1/2 bottom-0 w-0 h-[3px] bg-[#FF9F0D] rounded-full transition-all duration-300 hover:w-full"></span>
             </Link>
-            <Link href="/Pages" className="relative hover:text-[#FF9F0D] transition">
+            <Link href="/Pages" className="hover:text-[#FF9F0D] transition">
               Pages
-              <span className="absolute left-1/2 -translate-x-1/2 bottom-0 w-0 h-[3px] bg-[#FF9F0D] rounded-full transition-all duration-300 hover:w-full"></span>
             </Link>
-            <div className="relative group">
-              <Link href="#" className="relative hover:text-[#FF9F0D] transition">
+
+            {/* About Dropdown */}
+            <div
+              className="relative"
+              onMouseEnter={() => handleMouseEnter(setIsAboutDropdownOpen)}
+              onMouseLeave={() =>
+                handleMouseLeave(setIsAboutDropdownOpen, aboutTimeoutRef)
+              }
+            >
+              <button className="block lg:inline-block text-white py-2 lg:py-0 px-4 lg:px-0">
                 About ▼
-                <span className="absolute left-1/2 -translate-x-1/2 bottom-0 w-0 h-[3px] bg-[#FF9F0D] rounded-full transition-all duration-300 group-hover:w-full"></span>
-              </Link>
-              {/* Dropdown Menu */}
-              <div className="absolute hidden group-hover:flex flex-col bg-black text-white py-2 mt-2 rounded-md shadow-lg">
-                <Link href="/About" className="flex w-10 px-8 py-2 hover:bg-[#FF9F0D] hover:text-black">
-                  About Us
-                </Link>
-                <Link href="/OurChef" className="flex w-10 px-8 py-2 hover:bg-[#FF9F0D] hover:text-black">
-                  Our Chef
-                </Link>
-                <Link href="/FAQ" className="flex w-10 px-8 py-2 hover:text-[#FF9F0D]">
-                FAQ
-                </Link>
-              </div>
+              </button>
+              {isAboutDropdownOpen && (
+                <div className="absolute top-full left-0 bg-black text-white py-4 px-6 rounded-md shadow-md space-y-2 w-40 z-50">
+                  <Link href="/About" className="block hover:text-[#FF9F0D]">
+                    About Us
+                  </Link>
+                  <Link href="/OurChef" className="block hover:text-[#FF9F0D]">
+                    Our Chef
+                  </Link>
+                  <Link href="/FAQ" className="block hover:text-[#FF9F0D]">
+                    FAQ
+                  </Link>
+                </div>
+              )}
             </div>
 
-            <Link href="/Shop" className="relative hover:text-[#FF9F0D] transition">
+            <Link href="/Shop" className="hover:text-[#FF9F0D] transition">
               Shop
-              <span className="absolute left-1/2 -translate-x-1/2 bottom-0 w-0 h-[3px] bg-[#FF9F0D] rounded-full transition-all duration-300 hover:w-full"></span>
             </Link>
-            <Link href="/Contact" className="relative hover:text-[#FF9F0D] transition">
-            Contact
-              <span className="absolute left-1/2 -translate-x-1/2 bottom-0 w-0 h-[3px] bg-[#FF9F0D] rounded-full transition-all duration-300 hover:w-full"></span>
+            <Link href="/Contact" className="hover:text-[#FF9F0D] transition">
+              Contact
             </Link>
           </nav>
         </div>
 
-        {/* Right Section: Search Bar and Basket */}
+        {/* Right Section: User and Basket Icons */}
         <div className="flex items-center space-x-6">
           {/* Search Icon */}
           <button className="relative">
-            <Image src="/Search.png" alt="Search" className="h-6 w-6" width={24} height={24}/>
+            <Image
+              src="/Search.png"
+              alt="Search"
+              className="h-6 w-6"
+              width={24}
+              height={24}
+            />
           </button>
+
+          {/* User Icon with Dropdown */}
+          <div
+            className="relative"
+            onMouseEnter={() => handleMouseEnter(setIsUserDropdownOpen)}
+            onMouseLeave={() =>
+              handleMouseLeave(setIsUserDropdownOpen, userTimeoutRef)
+            }
+          >
+            <button className="flex items-center">
+              <Image
+                src="/User.png"
+                alt="User"
+                className="h-6 w-6 cursor-pointer"
+                width={24}
+                height={24}
+              />
+              <span className="ml-1 text-sm">▼</span>
+            </button>
+
+            {isUserDropdownOpen && (
+              <div className="absolute bg-black text-white py-2 mt-2 rounded-md shadow-lg right-0">
+                <Link
+                  href="/Login"
+                  className="block px-6 py-2 hover:bg-[#FF9F0D] hover:text-black"
+                >
+                  Login
+                </Link>
+                <Link
+                  href="/Signup"
+                  className="block px-6 py-2 hover:bg-[#FF9F0D] hover:text-black"
+                >
+                  Signup
+                </Link>
+                <Link
+                  href="/Checkout"
+                  className="block px-6 py-2 hover:bg-[#FF9F0D] hover:text-black"
+                >
+                  Checkout
+                </Link>
+                <Link
+                  href="/ShopDetails"
+                  className="block px-6 py-2 hover:bg-[#FF9F0D] hover:text-black"
+                >
+                  Shop Details
+                </Link>
+                <Link
+                  href="/Shoplist"
+                  className="block px-6 py-2 hover:bg-[#FF9F0D] hover:text-black"
+                >
+                  Shop List
+                </Link>
+                <Link
+                  href="/Logout"
+                  className="block px-6 py-2 hover:bg-[#FF9F0D] hover:text-black"
+                >
+                  Logout
+                </Link>
+              </div>
+            )}
+          </div>
 
           {/* Basket Icon */}
           <button className="relative">
-            <Image src="/Handbag.png" alt="Basket" className="h-6 w-6 text-[#FF9F0D]" width={24} height={24}/>
+            <Image
+              src="/Handbag.png"
+              alt="Basket"
+              className="h-6 w-6"
+              width={24}
+              height={24}
+            />
           </button>
         </div>
       </div>

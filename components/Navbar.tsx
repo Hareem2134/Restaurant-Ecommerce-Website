@@ -5,27 +5,32 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 
-const Navbar = () => {
+const Navbar: React.FC = () => {
   const pathname = usePathname();
   const isHomePage = pathname === "/";
 
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
+  const [isUserDropdownOpen, setIsUserDropdownOpen] = useState<boolean>(false);
+  const [isAboutDropdownOpen, setIsAboutDropdownOpen] = useState<boolean>(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
 
-  // Ref to store dropdown timeout
-  const dropdownTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const dropdownTimeoutRef = useRef<number | null>(null);
+  const userDropdownTimeoutRef = useRef<number | null>(null);
+  const aboutDropdownTimeoutRef = useRef<number | null>(null);
 
-  // Handle mouse enter to open dropdown immediately
-  const handleMouseEnter = () => {
-    if (dropdownTimeoutRef.current) clearTimeout(dropdownTimeoutRef.current);
-    setIsDropdownOpen(true);
+  // Handle mouse events for menu dropdown
+  const handleMouseEnter = (setOpen: React.Dispatch<React.SetStateAction<boolean>>) => {
+    if (dropdownTimeoutRef.current !== null) window.clearTimeout(dropdownTimeoutRef.current);
+    setOpen(true);
   };
 
-  // Handle mouse leave to close dropdown with a delay
-  const handleMouseLeave = () => {
-    dropdownTimeoutRef.current = setTimeout(() => {
-      setIsDropdownOpen(false);
-    }, 200);
+  const handleMouseLeave = (
+    setOpen: React.Dispatch<React.SetStateAction<boolean>>,
+    timeoutRef: React.MutableRefObject<number | null>
+  ) => {
+    timeoutRef.current = window.setTimeout(() => {
+      setOpen(false);
+    }, 300);
   };
 
   // Toggle the mobile menu visibility
@@ -36,7 +41,9 @@ const Navbar = () => {
   // Cleanup timeout on component unmount
   useEffect(() => {
     return () => {
-      if (dropdownTimeoutRef.current) clearTimeout(dropdownTimeoutRef.current);
+      if (dropdownTimeoutRef.current !== null) window.clearTimeout(dropdownTimeoutRef.current);
+      if (userDropdownTimeoutRef.current !== null) window.clearTimeout(userDropdownTimeoutRef.current);
+      if (aboutDropdownTimeoutRef.current !== null) window.clearTimeout(aboutDropdownTimeoutRef.current);
     };
   }, []);
 
@@ -50,7 +57,7 @@ const Navbar = () => {
       {/* Left Section - Logo */}
       <div className="flex items-center">
         <h1 className="text-[28px] sm:text-[34px] font-bold text-[#FF9F0D]">
-          Food<span className="text-white">tuck</span>
+          Food<span className="text-white">truck</span>
         </h1>
       </div>
 
@@ -65,27 +72,64 @@ const Navbar = () => {
 
       {/* Navigation Links */}
       <nav
-        className={`${
-          isMobileMenuOpen ? "block" : "hidden"
-        } lg:flex lg:space-x-8 text-[16px] relative flex-col lg:flex-row lg:static top-full left-0 w-full lg:w-auto bg-black lg:bg-transparent lg:z-auto z-50`}
-      >
-        {[
-          { label: "Home", path: "/" },
-          { label: "Menu", path: "/MenuPage" },
-          { label: "Blog", path: "/Blog" },
-          { label: "Pages", path: "/Pages" },
-          { label: "Shop", path: "/Shop" },
-          { label: "Contact", path: "/Contact" },
-        ].map((link) => (
-          <Link
-            key={link.label}
-            href={link.path}
-            className="block lg:inline-block text-white py-2 lg:py-0 px-4 lg:px-0"
+          className={`${
+            isMobileMenuOpen ? "block" : "hidden"
+          } lg:flex lg:space-x-8 text-[16px] relative flex-col lg:flex-row lg:static top-full left-0 w-full lg:w-auto bg-black lg:bg-transparent lg:z-auto z-50`}
+        >
+          {[
+            { label: "Home", path: "/" },
+            { label: "Menu", path: "/MenuPage" },
+            { label: "Blog", path: "/Blog" },
+            { label: "Pages", path: "/Pages" },
+          ].map((link) => (
+            <Link
+              key={link.label}
+              href={link.path}
+              className="block lg:inline-block text-white py-2 lg:py-0 px-4 lg:px-0"
+            >
+              {link.label}
+            </Link>
+          ))}
+
+          {/* About Dropdown - Placed Between Pages and Shop */}
+          <div
+            className="relative"
+            onMouseEnter={() => handleMouseEnter(setIsAboutDropdownOpen)}
+            onMouseLeave={() => handleMouseLeave(setIsAboutDropdownOpen, aboutDropdownTimeoutRef)}
           >
-            {link.label}
-          </Link>
-        ))}
-      </nav>
+            <button className="block lg:inline-block text-white py-2 lg:py-0 px-4 lg:px-0">
+              About ▼
+            </button>
+            {isAboutDropdownOpen && (
+              <div className="absolute top-full left-0 bg-black text-white py-4 px-6 rounded-md shadow-md space-y-2 w-40 z-50">
+                <Link href="/About" className="block hover:text-[#FF9F0D]">
+                  About Us
+                </Link>
+                <Link href="/OurChef" className="block hover:text-[#FF9F0D]">
+                  Our Chef
+                </Link>
+                <Link href="/FAQ" className="block hover:text-[#FF9F0D]">
+                  FAQ
+                </Link>
+              </div>
+            )}
+          </div>
+
+          {/* Continue with remaining links */}
+          {[
+            { label: "Shop", path: "/Shop" },
+            { label: "Contact", path: "/Contact" },
+          ].map((link) => (
+            <Link
+              key={link.label}
+              href={link.path}
+              className="block lg:inline-block text-white py-2 lg:py-0 px-4 lg:px-0"
+            >
+              {link.label}
+            </Link>
+          ))}
+        </nav>
+
 
       {/* Right Section - Icons */}
       <div className="flex items-center space-x-4">
@@ -103,25 +147,21 @@ const Navbar = () => {
         {/* User Icon with Dropdown */}
         <div
           className="relative"
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
+          onMouseEnter={() => handleMouseEnter(setIsUserDropdownOpen)}
+          onMouseLeave={() => handleMouseLeave(setIsUserDropdownOpen, userDropdownTimeoutRef)}
         >
-          <Image
-            src="/User.png"
-            alt="User Icon"
-            width={28}
-            height={28}
-            className="cursor-pointer"
-          />▼
-          {isDropdownOpen && (
-            <div
-              className="absolute top-full right-0 mt-2 bg-white text-black py-4 px-6 rounded-md shadow-md space-y-2 w-40"
-              style={{
-                position: "absolute", // Keeps dropdown in place relative to parent
-                opacity: 0.95, // Semi-transparent background
-                zIndex: 50, // Ensures it overlaps other content
-              }}
-            >
+          <button className="flex items-center">
+            <Image
+              src="/User.png"
+              alt="User"
+              className="h-6 w-6 cursor-pointer"
+              width={24}
+              height={24}
+            />
+            <span className="ml-1 text-sm">▼</span>
+          </button>
+          {isUserDropdownOpen && (
+            <div className="absolute top-full right-0 mt-2 bg-white text-black py-4 px-6 rounded-md shadow-md space-y-2 w-40 z-50">
               <Link href="/Login" className="block hover:text-[#FF9F0D]">
                 Login
               </Link>
@@ -136,6 +176,9 @@ const Navbar = () => {
               </Link>
               <Link href="/Shoplist" className="block hover:text-[#FF9F0D]">
                 Shop List
+              </Link>
+              <Link href="/Logout" className="block hover:text-[#FF9F0D]">
+                Logout
               </Link>
             </div>
           )}
