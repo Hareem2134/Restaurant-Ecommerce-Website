@@ -114,7 +114,7 @@ const Footer = () => {
           ))}
         </div>
         <Image
-          src="/leaves.png"
+          src="/Leaves.png"
           alt="Leaves"
           width={150}
           height={150}
