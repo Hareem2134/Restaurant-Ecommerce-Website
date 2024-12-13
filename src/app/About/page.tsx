@@ -15,7 +15,7 @@ export default function About() {
               <Image
                 className="object-cover object-center w-[309px] h-[400px] rounded-lg"
                 alt="About Image"
-                src="/about1.png"
+                src="/About1.png"
                 width={309} height={400}
               />
             </div>
