@@ -152,8 +152,8 @@ const Navbar: React.FC = () => {
         >
           <button className="flex items-center">
             <Image
-              src="/User.png"
-              alt="User"
+              src="/user.png"
+              alt="user"
               className="h-6 w-6 cursor-pointer"
               width={24}
               height={24}

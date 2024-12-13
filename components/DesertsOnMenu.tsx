@@ -55,7 +55,7 @@ interface MenuItem {
             {/* Heading with Coffee Icon */}
             <div className="mb-10">
               <Image
-                src="/coffee.png"
+                src="/Coffee.png"
                 alt="Coffee Icon"
                 className="mx-auto lg:mx-0 mb-3"
                 width={28} height={28}
