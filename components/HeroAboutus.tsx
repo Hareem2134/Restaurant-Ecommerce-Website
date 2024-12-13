@@ -16,7 +16,6 @@ function AboutUs() {
               alt="About Us"
               width={91}
               height={40}
-              className="w-auto h-auto"
             />
           </div>
 
@@ -80,8 +79,8 @@ function AboutUs() {
             <Image
               src="/foodpic1.png"
               alt="Food Image 1"
-              className="object-cover w-full h-full rounded-t-md"
-              layout="fill"
+              className="rounded-t-md object-cover"
+              fill
             />
           </div>
 
@@ -91,16 +90,16 @@ function AboutUs() {
               <Image
                 src="/foodpic2.png"
                 alt="Food Image 2"
-                className="object-cover w-full h-full rounded-md"
-                layout="fill"
+                className="rounded-md object-cover"
+                fill
               />
             </div>
             <div className="relative w-full h-[140px] md:h-[180px]">
               <Image
                 src="/foodpic3.png"
                 alt="Food Image 3"
-                className="object-cover w-full h-full rounded-md"
-                layout="fill"
+                className="rounded-md object-cover"
+                fill
               />
             </div>
           </div>

@@ -11,7 +11,7 @@ const ForAllHeroSections = () => {
   const pageTitles: Record<string, string> = {
     "/": "Home",
     "/Shop": "Our Shop",
-    "/Pages": "Our Pages",
+    "/Pages": "404 Error",
     "/Blog": "Our Blog",
     "/Contact": "Contact Us",
     "/MenuPage": "Our Menu",
@@ -25,9 +25,6 @@ const ForAllHeroSections = () => {
     "/Shoplist": "Shop List",
     "/ShopDetails": "Shop Details",
     "/Cart": "Shopping Cart",
-
-
-
   };
 
   // Get current page title or default to "Page"

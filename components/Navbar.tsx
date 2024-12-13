@@ -3,38 +3,46 @@
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation"; // New hook for pathname
+import { usePathname } from "next/navigation";
 
 const Navbar = () => {
-  const pathname = usePathname(); // Current route
-
-  // Hide navbar if on the homepage
+  const pathname = usePathname();
   const isHomePage = pathname === "/";
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  
-  // Use a ref to store the timeout
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // Ref to store dropdown timeout
   const dropdownTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
+  // Handle mouse enter to open dropdown immediately
   const handleMouseEnter = () => {
-    if (dropdownTimeoutRef.current) clearTimeout(dropdownTimeoutRef.current); // Clear timeout if already set
+    if (dropdownTimeoutRef.current) clearTimeout(dropdownTimeoutRef.current);
     setIsDropdownOpen(true);
   };
 
+  // Handle mouse leave to close dropdown with a delay
   const handleMouseLeave = () => {
     dropdownTimeoutRef.current = setTimeout(() => {
       setIsDropdownOpen(false);
-    }, 200); // Adjust the delay as needed
+    }, 200);
   };
 
+  // Toggle the mobile menu visibility
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen((prev) => !prev);
+  };
+
+  // Cleanup timeout on component unmount
   useEffect(() => {
     return () => {
-      if (dropdownTimeoutRef.current) clearTimeout(dropdownTimeoutRef.current); // Cleanup timeout on unmount
+      if (dropdownTimeoutRef.current) clearTimeout(dropdownTimeoutRef.current);
     };
-  }, []); // Empty dependency array since we're using refs
+  }, []);
 
+  // Skip rendering the navbar on the homepage
   if (isHomePage) {
-    return null; // Skip rendering the navbar on the homepage
+    return null;
   }
 
   return (
@@ -46,8 +54,21 @@ const Navbar = () => {
         </h1>
       </div>
 
-      {/* Middle Section - Navigation */}
-      <nav className="hidden lg:flex space-x-8 text-[16px] relative">
+      {/* Hamburger Icon for Mobile */}
+      <button
+        className="lg:hidden text-white text-2xl focus:outline-none"
+        onClick={toggleMobileMenu}
+        aria-label="Toggle Mobile Menu"
+      >
+        ☰
+      </button>
+
+      {/* Navigation Links */}
+      <nav
+        className={`${
+          isMobileMenuOpen ? "block" : "hidden"
+        } lg:flex lg:space-x-8 text-[16px] relative flex-col lg:flex-row lg:static top-full left-0 w-full lg:w-auto bg-black lg:bg-transparent lg:z-auto z-50`}
+      >
         {[
           { label: "Home", path: "/" },
           { label: "Menu", path: "/MenuPage" },
@@ -56,10 +77,12 @@ const Navbar = () => {
           { label: "Shop", path: "/Shop" },
           { label: "Contact", path: "/Contact" },
         ].map((link) => (
-          <Link key={link.label} href={link.path} className="relative text-white transition">
+          <Link
+            key={link.label}
+            href={link.path}
+            className="block lg:inline-block text-white py-2 lg:py-0 px-4 lg:px-0"
+          >
             {link.label}
-            {/* Dot Effect */}
-            <span className="absolute left-1/2 -translate-x-1/2 bottom-[-4px] w-2 h-2 rounded-full bg-[#FF9F0D] scale-0 hover:scale-100 transition-transform"></span>
           </Link>
         ))}
       </nav>
@@ -71,7 +94,8 @@ const Navbar = () => {
           <Image
             src="/Search.png"
             alt="Search Icon"
-            width={28} height={28}
+            width={28}
+            height={28}
             className="cursor-pointer"
           />
         </Link>
@@ -85,11 +109,19 @@ const Navbar = () => {
           <Image
             src="/User.png"
             alt="User Icon"
-            width={28} height={28}
+            width={28}
+            height={28}
             className="cursor-pointer"
-          />
+          />▼
           {isDropdownOpen && (
-            <div className="absolute top-full right-0 mt-2 bg-white text-black py-4 px-6 rounded-md shadow-md space-y-2 w-40">
+            <div
+              className="absolute top-full right-0 mt-2 bg-white text-black py-4 px-6 rounded-md shadow-md space-y-2 w-40"
+              style={{
+                position: "absolute", // Keeps dropdown in place relative to parent
+                opacity: 0.95, // Semi-transparent background
+                zIndex: 50, // Ensures it overlaps other content
+              }}
+            >
               <Link href="/Login" className="block hover:text-[#FF9F0D]">
                 Login
               </Link>
@@ -114,7 +146,8 @@ const Navbar = () => {
           <Image
             src="/Handbag.png"
             alt="Basket Icon"
-            width={28} height={28}
+            width={28}
+            height={28}
             className="cursor-pointer"
           />
           <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
