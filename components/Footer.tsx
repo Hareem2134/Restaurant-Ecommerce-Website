@@ -8,11 +8,18 @@ const footer2 = "/footer2.png";
 const footer3 = "/footer3.png";
 
 const Footer = () => {
+  const socialMediaIcons = [
+    { name: "Facebook", path: "/Facebook.png" },
+    { name: "Instagram", path: "/Instagram.png" },
+    { name: "Youtube", path: "/Youtube.png" },
+    { name: "Twitter", path: "/Twitter.png" },
+    { name: "Pinterest", path: "/Pinterest.png" },
+  ];
+
   return (
     <footer className="bg-black text-white relative">
       {/* Upper Footer Section */}
       <div className="bg-black text-white py-10 px-6 md:px-[135px] flex flex-col md:flex-row items-center justify-between">
-        {/* Text Section */}
         <div className="text-center md:text-left md:w-1/2 mb-6 md:mb-0">
           <h2 className="text-[20px] md:text-[32px] font-semibold">
             <span className="text-[#FF9F0D]">St</span>ill You Need Our Support?
@@ -22,7 +29,6 @@ const Footer = () => {
           </p>
         </div>
 
-        {/* Input and Button Section */}
         <div className="flex flex-col md:flex-row items-center w-full md:w-auto gap-4 md:gap-2">
           <input
             type="text"
@@ -40,15 +46,13 @@ const Footer = () => {
 
       <div className="mx-auto w-full max-w-screen-xl px-6 md:px-[135px] py-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-          
-          {/* About Us */}
           <div className="text-center">
             <h2 className="mb-6 text-[24px] font-semibold uppercase">About Us</h2>
             <p className="text-[#FFFFFF] text-[16px] font-normal">
               Corporate clients and leisure travelers rely on Groundlink for dependable, safe, and professional chauffeured car service in major cities across the world.
             </p>
             <div className="flex items-center gap-4 mt-4">
-              <div className="bg-[#FF9F0D] w-[50px] h-[50px] flex justify-center items-center"> {/* Smaller box */}
+              <div className="bg-[#FF9F0D] w-[50px] h-[50px] flex justify-center items-center">
                 <Image src="/ClockClockwise.png" alt="Clock" width={40} height={40} />
               </div>
               <div>
@@ -59,7 +63,6 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Useful Links */}
           <div className="text-center">
             <h2 className="mb-6 text-[24px] font-semibold uppercase">Useful Links</h2>
             <ul className="text-gray-500 font-medium">
@@ -72,7 +75,6 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Help */}
           <div className="text-center">
             <h2 className="mb-6 text-[24px] font-semibold uppercase">Help?</h2>
             <ul className="text-gray-500 font-medium">
@@ -85,7 +87,6 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Recent Posts */}
           <div className="text-center">
             <h2 className="mb-6 text-[24px] font-semibold uppercase">Recent Posts</h2>
             <ul>
@@ -103,13 +104,23 @@ const Footer = () => {
         </div>
       </div>
 
-      {/* Footer Bottom */}
       <div className="bg-[#FF9F0D] py-4 px-6 md:px-[135px] flex justify-between items-center relative">
-        <p className="text-white text-sm">Copyright © 2023. All Rights Reserved.</p> {/* Smaller and white text */}
+        <p className="text-white text-sm">Copyright © 2023. All Rights Reserved.</p>
         <div className="flex gap-4 ml-[-50px] md:ml-0">
-          {["Facebook", "Twitter", "Instagram", "YouTube", "Pinterest"].map((icon, idx) => (
-            <div key={idx} className="bg-white w-8 h-8 flex items-center justify-center rounded-md"> {/* Square box, smaller size */}
-              <Image src={`/${icon}.png`} alt={icon} width={14} height={14} />
+          {socialMediaIcons.map((icon, idx) => (
+            <div
+              key={idx}
+              className="bg-white w-8 h-8 flex items-center justify-center rounded-md"
+            >
+              <Image
+                src={icon.path}
+                alt={icon.name}
+                width={14}
+                height={14}
+                onError={(e) => {
+                  e.currentTarget.src = "/fallback-icon.png"; // Use fallback if image is missing
+                }}
+              />
             </div>
           ))}
         </div>
