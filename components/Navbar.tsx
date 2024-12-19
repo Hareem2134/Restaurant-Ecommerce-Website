@@ -1,81 +1,65 @@
 "use client";
-
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname } from "next/navigation"; // only using usePathname
 
 const Navbar: React.FC = () => {
-  const pathname = usePathname();
+  const pathname = usePathname(); // Use pathname directly to detect route change
   const isHomePage = pathname === "/";
 
-  const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
-  const [isUserDropdownOpen, setIsUserDropdownOpen] = useState<boolean>(false);
-  const [isAboutDropdownOpen, setIsAboutDropdownOpen] = useState<boolean>(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
+  const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
+  const [isAboutDropdownOpen, setIsAboutDropdownOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const dropdownTimeoutRef = useRef<number | null>(null);
-  const userDropdownTimeoutRef = useRef<number | null>(null);
-  const aboutDropdownTimeoutRef = useRef<number | null>(null);
+  const userDropdownRef = useRef<HTMLDivElement | null>(null);
+  const aboutDropdownRef = useRef<HTMLDivElement | null>(null);
+  const navRef = useRef<HTMLDivElement | null>(null);
 
-  // Handle mouse events for menu dropdown
-  const handleMouseEnter = (setOpen: React.Dispatch<React.SetStateAction<boolean>>) => {
-    if (dropdownTimeoutRef.current !== null) window.clearTimeout(dropdownTimeoutRef.current);
-    setOpen(true);
-  };
-
-  const handleMouseLeave = (
-    setOpen: React.Dispatch<React.SetStateAction<boolean>>,
-    timeoutRef: React.MutableRefObject<number | null>
-  ) => {
-    timeoutRef.current = window.setTimeout(() => {
-      setOpen(false);
-    }, 300);
-  };
-
-  // Toggle the mobile menu visibility
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen((prev) => !prev);
-  };
-
-  // Cleanup timeout on component unmount
+  // Close mobile menu on route change using usePathname
   useEffect(() => {
-    return () => {
-      if (dropdownTimeoutRef.current !== null) window.clearTimeout(dropdownTimeoutRef.current);
-      if (userDropdownTimeoutRef.current !== null) window.clearTimeout(userDropdownTimeoutRef.current);
-      if (aboutDropdownTimeoutRef.current !== null) window.clearTimeout(aboutDropdownTimeoutRef.current);
-    };
-  }, []);
+    setIsMobileMenuOpen(false);
+  }, [pathname]); // When pathname changes, the mobile menu will close
 
-  // Skip rendering the navbar on the homepage
+  // Handle clicks outside dropdowns or mobile menu
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      // Ensure the target is a valid DOM element and is not within the dropdowns
+      if (aboutDropdownRef.current && !aboutDropdownRef.current.contains(event.target as Node)) {
+        setIsAboutDropdownOpen(false);
+      }
+      if (userDropdownRef.current && !userDropdownRef.current.contains(event.target as Node)) {
+        setIsUserDropdownOpen(false);
+      }
+      if (navRef.current && !navRef.current.contains(event.target as Node) && isMobileMenuOpen) {
+        setIsMobileMenuOpen(false); 
+      }
+    };
+  
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isMobileMenuOpen]);
+  
+
   if (isHomePage) {
     return null;
   }
 
   return (
-    <header className="bg-black text-white py-4 px-6 sm:px-10 lg:px-[60px] xl:px-[100px] flex items-center justify-between">
-      {/* Left Section - Logo */}
+    <header className="bg-black text-white py-4 px-6 sm:px-10 lg:px-[60px] xl:px-[100px] flex items-center justify-between relative">
       <div className="flex items-center">
         <h1 className="text-[28px] sm:text-[34px] font-bold text-[#FF9F0D]">
-          Food<span className="text-white">truck</span>
+          Food<span className="text-white">tuck</span>
         </h1>
       </div>
 
-      {/* Hamburger Icon for Mobile */}
-      <button
-        className="lg:hidden text-white text-2xl focus:outline-none"
-        onClick={toggleMobileMenu}
-        aria-label="Toggle Mobile Menu"
-      >
-        ☰
-      </button>
-
-      {/* Navigation Links */}
       <nav
-          className={`${
-            isMobileMenuOpen ? "block" : "hidden"
-          } lg:flex lg:space-x-8 text-[16px] relative flex-col lg:flex-row lg:static top-full left-0 w-full lg:w-auto bg-black lg:bg-transparent lg:z-auto z-50`}
-        >
+        ref={navRef}
+        className={`${isMobileMenuOpen ? "block" : "hidden"} absolute top-full left-0 w-full bg-black shadow-lg lg:flex lg:static lg:bg-transparent lg:w-auto lg:shadow-none lg:items-center z-50 opacity-90`}
+      >
+        <div className="flex flex-col lg:flex-row lg:items-center lg:space-x-8 w-full lg:w-auto">
           {[
             { label: "Home", path: "/" },
             { label: "Menu", path: "/MenuPage" },
@@ -85,23 +69,21 @@ const Navbar: React.FC = () => {
             <Link
               key={link.label}
               href={link.path}
-              className="block lg:inline-block text-white py-2 lg:py-0 px-4 lg:px-0"
+              className="block lg:inline-block text-white py-2 lg:py-0 px-4 lg:px-0 hover:text-[#FF9F0D]"
             >
               {link.label}
             </Link>
           ))}
 
-          {/* About Dropdown - Placed Between Pages and Shop */}
-          <div
-            className="relative"
-            onMouseEnter={() => handleMouseEnter(setIsAboutDropdownOpen)}
-            onMouseLeave={() => handleMouseLeave(setIsAboutDropdownOpen, aboutDropdownTimeoutRef)}
-          >
-            <button className="block lg:inline-block text-white py-2 lg:py-0 px-4 lg:px-0">
+          <div ref={aboutDropdownRef} className="relative">
+            <button
+              className="block lg:inline-block text-white py-2 lg:py-0 px-4 lg:px-0 hover:text-[#FF9F0D]"
+              onClick={() => setIsAboutDropdownOpen(!isAboutDropdownOpen)}
+            >
               About ▼
             </button>
             {isAboutDropdownOpen && (
-              <div className="absolute top-full left-0 bg-black text-white py-4 px-6 rounded-md shadow-md space-y-2 w-40 z-50">
+              <div className="absolute left-0 top-full bg-black text-white py-4 px-6 rounded-md shadow-md space-y-2 w-40">
                 <Link href="/About" className="block hover:text-[#FF9F0D]">
                   About Us
                 </Link>
@@ -115,7 +97,6 @@ const Navbar: React.FC = () => {
             )}
           </div>
 
-          {/* Continue with remaining links */}
           {[
             { label: "Shop", path: "/Shop" },
             { label: "Contact", path: "/Contact" },
@@ -123,79 +104,62 @@ const Navbar: React.FC = () => {
             <Link
               key={link.label}
               href={link.path}
-              className="block lg:inline-block text-white py-2 lg:py-0 px-4 lg:px-0"
+              className="block lg:inline-block text-white py-2 lg:py-0 px-4 lg:px-0 hover:text-[#FF9F0D]"
             >
               {link.label}
             </Link>
           ))}
-        </nav>
+        </div>
+      </nav>
 
-
-      {/* Right Section - Icons */}
       <div className="flex items-center space-x-4">
-        {/* Search Icon */}
+        <button
+          className="lg:hidden text-white text-2xl ml-4 focus:outline-none"
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          aria-label="Toggle Mobile Menu"
+        >
+          ☰
+        </button>
+
         <Link href="/">
-          <Image
-            src="/Search.png"
-            alt="Search Icon"
-            width={28}
-            height={28}
-            className="cursor-pointer"
-          />
+          <Image src="/Search.png" alt="Search Icon" width={28} height={28} className="cursor-pointer" />
         </Link>
 
-        {/* User Icon with Dropdown */}
-        <div
-          className="relative"
-          onMouseEnter={() => handleMouseEnter(setIsUserDropdownOpen)}
-          onMouseLeave={() => handleMouseLeave(setIsUserDropdownOpen, userDropdownTimeoutRef)}
-        >
-          <button className="flex items-center">
-            <Image
-              src="/user.png"
-              alt="user"
-              className="h-6 w-6 cursor-pointer"
-              width={24}
-              height={24}
-            />
+        <div ref={userDropdownRef} className="relative">
+          <button
+            className="flex items-center hover:text-[#FF9F0D]"
+            onClick={() => setIsUserDropdownOpen(!isUserDropdownOpen)}
+          >
+            <Image src="/user.png" alt="user" width={24} height={24} className="h-6 w-6 cursor-pointer" />
             <span className="ml-1 text-sm">▼</span>
           </button>
+
           {isUserDropdownOpen && (
-            <div className="absolute top-full right-0 mt-2 bg-white text-black py-4 px-6 rounded-md shadow-md space-y-2 w-40 z-50">
-              <Link href="/Login" className="block hover:text-[#FF9F0D]">
+            <div className="absolute bg-black text-white py-2 mt-2 rounded-md shadow-lg right-0">
+              <Link href="/Login" className="block px-6 py-2 hover:bg-[#FF9F0D] hover:text-black">
                 Login
               </Link>
-              <Link href="/Signup" className="block hover:text-[#FF9F0D]">
+              <Link href="/Signup" className="block px-6 py-2 hover:bg-[#FF9F0D] hover:text-black">
                 Signup
               </Link>
-              <Link href="/Checkout" className="block hover:text-[#FF9F0D]">
+              <Link href="/Checkout" className="block px-6 py-2 hover:bg-[#FF9F0D] hover:text-black">
                 Checkout
               </Link>
-              <Link href="/ShopDetails" className="block hover:text-[#FF9F0D]">
+              <Link href="/ShopDetails" className="block px-6 py-2 hover:bg-[#FF9F0D] hover:text-black">
                 Shop Details
               </Link>
-              <Link href="/Shoplist" className="block hover:text-[#FF9F0D]">
+              <Link href="/Shoplist" className="block px-6 py-2 hover:bg-[#FF9F0D] hover:text-black">
                 Shop List
               </Link>
-              <Link href="/Logout" className="block hover:text-[#FF9F0D]">
+              <Link href="/Logout" className="block px-6 py-2 hover:bg-[#FF9F0D] hover:text-black">
                 Logout
               </Link>
             </div>
           )}
         </div>
 
-        {/* Basket Icon */}
         <Link href="/Cart" className="relative">
-          <Image
-            src="/Handbag.png"
-            alt="Basket Icon"
-            width={28}
-            height={28}
-            className="cursor-pointer"
-          />
-          <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
-            3
-          </span>
+          <Image src="/Handbag.png" alt="Basket Icon" width={28} height={28} className="cursor-pointer" />
         </Link>
       </div>
     </header>
