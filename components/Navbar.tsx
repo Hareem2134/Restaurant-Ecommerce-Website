@@ -57,7 +57,7 @@ const Navbar: React.FC = () => {
 
       <nav
         ref={navRef}
-        className={`${isMobileMenuOpen ? "block" : "hidden"} absolute top-full left-0 w-full bg-black shadow-lg lg:flex lg:static lg:bg-transparent lg:w-auto lg:shadow-none lg:items-center z-50 opacity-90`}
+        className={`${isMobileMenuOpen ? "block" : "hidden"} absolute top-full left-0 w-full bg-black shadow-lg lg:flex lg:static lg:bg-transparent lg:w-auto lg:shadow-none lg:items-center z-50 opacity-95`}
       >
         <div className="flex flex-col lg:flex-row lg:items-center lg:space-x-8 w-full lg:w-auto">
           {[
