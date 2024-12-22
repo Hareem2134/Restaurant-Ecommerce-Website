@@ -101,7 +101,7 @@ const SidebarOnBlog = () => {
         <div className="flex justify-center space-x-4">
           <img src="/Facebook.png" alt="Facebook" className="w-2 h-3"/>
           <img src="/Twitter.png" alt="Twitter" className="w-3 h-3"/>
-          <img src="/Instagram.png" alt="Insta" className="w-3 h-3"/>
+          <img src="/Insta.png" alt="Insta" className="w-3 h-3"/>
           <img src="/Pinterest.png" alt="Pinterest" className="w-3 h-3"/>
         </div>
       </div>
