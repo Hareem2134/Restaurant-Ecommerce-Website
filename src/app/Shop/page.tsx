@@ -38,7 +38,7 @@ export default function ShopPage() {
           <div className="flex flex-wrap items-center mb-6 gap-4">
             <div>
               <label className="mr-2">Sort By:</label>
-              <select className="border rounded p-2 pr-4">
+              <select className="border rounded p-2 pr-2">
                 <option className='text-gray-400'>Newest</option>
                 <option>Price: Low to High</option>
                 <option>Price: High to Low</option>
@@ -46,7 +46,7 @@ export default function ShopPage() {
             </div>
             <div>
               <label className="mr-2">Show:</label>
-              <select className="border rounded p-2 pr-20">
+              <select className="border rounded p-2 pr-24">
                 <option className='text-gray-400'>Default</option>
                 <option>10</option>
                 <option>20</option>
