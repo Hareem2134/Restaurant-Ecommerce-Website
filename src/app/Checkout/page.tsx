@@ -61,7 +61,8 @@ export default function CheckoutPage() {
               <Image
                 src="/ImageOnCheckoutPage.png"
                 alt="Chicken Tikka Kabab"
-                className="w-16 h-16 rounded" />
+                className="w-16 h-16 rounded"
+                width={64} height={64} />
               <div>
                 <h3 className="font-semibold">Chicken Tikka Kabab</h3>
                 <p className="text-sm text-gray-500">150 gm net</p>
