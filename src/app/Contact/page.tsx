@@ -154,23 +154,3 @@ export default function Contact() {
 
 
 
-
-
-
-      // <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 p-8 flex justify-center items-center">
-      //   <div className="max-w-4xl mx-auto bg-white shadow-2xl rounded-xl p-10">
-
-      //     <div className="text-center">
-      //       <img
-      //         src="/path/to/decorative-icon.svg"
-      //         alt="Contact Icon"
-      //         className="w-16 h-16 mx-auto mb-4"
-      //       />
-      //       <h1 className="text-4xl font-bold text-gray-800 mb-2">Get in Touch</h1>
-      //       <p className="text-gray-600 mb-8">
-      //         We'd love to hear from you! Fill out the form below, and we’ll get back to you soon.
-      //       </p>
-      //     </div>
-      //   </div>
-      // </div>
-
