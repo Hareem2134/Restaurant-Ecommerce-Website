@@ -1,5 +1,5 @@
-import React from 'react'
-import ForAllHeroSections from '../../../components/ForAllHeroSections'
+import React from 'react';
+import ForAllHeroSections from '../../../components/ForAllHeroSections';
 import Image from "next/image";
 
 const chefs = [
@@ -7,7 +7,7 @@ const chefs = [
   { name: "Jorina Begum", role: "Chef", image: "/pic2.png" },
   { name: "M. Mohammad", role: "Chef", image: "/pic3.png" },
   { name: "Munna Kathy", role: "Chef", image: "/pic4.png" },
-  { name: "Tahmina Rumi", role: "Cook", image: "/pic5.png" },
+  { name: "Tahmina Rumi", role: "Chef", image: "/pic5.png" },
   { name: "Bisnu Devgon", role: "Chef", image: "/pic6.png" },
   { name: "Motin Molladst", role: "Chef", image: "/pic7.png" },
   { name: "William Rumi", role: "Chef", image: "/pic8.png" },
@@ -17,42 +17,30 @@ const chefs = [
   { name: "Monalisa Holly", role: "Chef", image: "/pic12.png" },
 ];
 
-
 export default function OurChef() {
   return (
     <div>
-        <ForAllHeroSections/>
-    <div>
-
-
-
-
-      {/* Chef Grid Section */}
-      <div className="p-6 mt-20">
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-6">
+      <ForAllHeroSections />
+      <div className="px-40 py-20">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-8">
           {chefs.map((chef, index) => (
             <div
               key={index}
-              className={`relative overflow-hidden rounded-lg shadow-lg bg-white flex flex-col transition-transform transform hover:scale-105 hover:shadow-xl ${
-                index === 6
-                  ? "border-4 border-purple-600"
-                  : "border-4 border-transparent hover:border-purple-600"
-              }`}
+              className="group relative bg-white rounded-lg overflow-hidden shadow-lg transition-transform transform hover:scale-105 hover:shadow-2xl"
             >
               {/* Chef Image */}
-              <div className="flex-1">
+              <div className="relative h-56">
                 <Image
                   src={chef.image}
                   alt={chef.name}
-                  width={40}
-                  height={60}
-                  className="w-full h-full object-cover rounded-t-lg"
+                  fill
+                  className="object-cover w-full h-full"
                 />
               </div>
 
               {/* Chef Info */}
-              <div className="p-4 text-center">
-                <h3 className="text-gray-800 font-bold text-lg">{chef.name}</h3>
+              <div className="text-center py-4">
+                <h3 className="text-gray-800 font-semibold text-lg">{chef.name}</h3>
                 <p className="text-gray-600">{chef.role}</p>
               </div>
             </div>
@@ -60,6 +48,5 @@ export default function OurChef() {
         </div>
       </div>
     </div>
-    </div>
-  )
+  );
 }

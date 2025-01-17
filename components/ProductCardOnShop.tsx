@@ -2,12 +2,21 @@
 import React from "react";
 import Image from "next/image";
 
+// Inside ProductCardOnShop.tsx
 interface ProductCardProps {
-  product: Product;
+  product: {
+    id: string;
+    name: string;
+    price: number;
+    oldPrice?: number;
+    isOnSale: boolean;
+    image: string;
+  };
 }
 
+
 export interface Product {
-  id: number;
+  id: string; 
   name: string;
   price: number;
   oldPrice?: number | null;
