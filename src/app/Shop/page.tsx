@@ -1,58 +1,66 @@
 "use client";
-
 import React, { useEffect, useState } from "react";
 import ForAllHeroSections from "../../../components/ForAllHeroSections";
 import ProductCardOnShop from "../../../components/ProductCardOnShop";
 import FiltersSidebarOnShop from "../../../components/FiltersSidebarOnShop";
 import PaginationOnShop from "../../../components/PaginationOnShop";
-import { client } from "../../sanity/lib/client"; // Import the client
+import { client } from "../../sanity/lib/client"; // Import the Sanity client
 
-// Define the Product interface
-interface Product {
+// Define the Food interface
+interface Food {
   id: string; // Map Sanity's _id
   name: string;
   price: number;
-  oldPrice?: number;
-  isOnSale: boolean;
+  originalPrice?: number; // Optional field
   image: string; // Extracted URL for image
+  description?: string; // Optional field
+  tags?: string[]; // Array of tags
+  available: boolean; // Availability status
+  category?: string; // Optional category
+  isOnSale: boolean; // Add this field to match ProductCardOnShop expectations
 }
-
-// Component-specific props
-interface ProductCardProps {
-  product: Product;
-}
-
 
 export default function ShopPage() {
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<Food[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   // Fetch products from Sanity
   useEffect(() => {
     async function fetchProducts() {
       try {
-        const query = `*[_type == "product"]{
+        // Define GROQ query to fetch food items
+        const query = `*[_type == "food"]{
           _id,
           name,
           price,
-          "oldPrice": oldPrice, // Replace field names based on your schema
-          "image": mainImage.asset->url,
-          isOnSale
+          originalPrice,
+          "image": image.asset->url,
+          description,
+          tags,
+          available,
+          category
         }`;
-        const sanityProducts = await client.fetch(query); // Use the imported client
 
-        // Map _id to id
+        const sanityProducts = await client.fetch(query); // Fetch from Sanity
+
+        // Map _id to id and ensure the structure matches the Food interface
         const mappedProducts = sanityProducts.map((product: any) => ({
-          id: parseInt(product._id, 10),
+          id: product._id,
           name: product.name,
           price: product.price,
-          oldPrice: product.oldPrice,
-          image: product.image,
-          isOnSale: product.isOnSale,
+          originalPrice: product.originalPrice || null,
+          image: product.image || "",
+          description: product.description || "",
+          tags: product.tags || [],
+          available: product.available || false,
+          category: product.category || "",
+          isOnSale: product.originalPrice
+            ? product.price < product.originalPrice // Calculate if on sale
+            : false,
         }));
 
-        setProducts(mappedProducts);
-        setIsLoading(false);
+        setProducts(mappedProducts); // Set fetched products
+        setIsLoading(false); // Update loading state
       } catch (error) {
         console.error("Error fetching products:", error);
       }
