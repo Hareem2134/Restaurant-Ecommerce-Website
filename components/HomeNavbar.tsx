@@ -143,9 +143,7 @@ const HomeNavbar: React.FC = () => {
                 <Link href="/ShopDetails" className="block px-6 py-2 hover:bg-[#FF9F0D] hover:text-black">
                   Shop Details
                 </Link>
-                <Link href="/Shoplist" className="block px-6 py-2 hover:bg-[#FF9F0D] hover:text-black">
-                  Shop List
-                </Link>
+
                 <Link href="/Logout" className="block px-6 py-2 hover:bg-[#FF9F0D] hover:text-black">
                   Logout
                 </Link>
