@@ -1,39 +1,57 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import ForAllHeroSections from '../../../components/ForAllHeroSections';
+import { useRouter } from 'next/navigation';
 
-const initialCartItems = [
-  { name: "Burger", price: 10.99, quantity: 2, image: "/burgercart1.png" },
-  { name: "Fresh Lime", price: 3.49, quantity: 1, image: "/cart2.png" },
-  { name: "Pizza", price: 9.99, quantity: 4, image: "/cart3.png" },
-  { name: "Chocolate Muffin", price: 4.49, quantity: 1, image: "/cart4.png" },
-  { name: "Cheese Butter", price: 11.99, quantity: 3, image: "/cart5.png" },
-];
+interface CartItem {
+  id: number;
+  name: string;
+  price: number;
+  quantity: number;
+  image: string;
+}
 
-const ShoppingCart: React.FC = () => {
-  const [cartItems, setCartItems] = useState(initialCartItems);
-  const [couponCode, setCouponCode] = useState("");
+export default function ShoppingCart() {
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [couponCode, setCouponCode] = useState('');
   const [discount, setDiscount] = useState(0);
+  const router = useRouter();
 
-  const handleQuantityChange = (index: number, newQuantity: number) => {
-    const updatedItems = cartItems.map((item, i) =>
-      i === index ? { ...item, quantity: newQuantity } : item
+  useEffect(() => {
+    const fetchCart = () => {
+      const storedCart = JSON.parse(localStorage.getItem('cart') || '[]') as CartItem[];
+      setCartItems(storedCart);
+    };
+    fetchCart();
+  }, []); // Run once on mount
+
+  const handleQuantityChange = (id: number, newQuantity: number) => {
+    if (newQuantity < 0) return;
+    const updatedItems = cartItems.map((item) =>
+      item.id === id ? { ...item, quantity: newQuantity } : item
     );
     setCartItems(updatedItems);
+    localStorage.setItem('cart', JSON.stringify(updatedItems));
   };
 
-  const handleRemoveItem = (index: number) => {
-    setCartItems(cartItems.filter((_, i) => i !== index));
+  const handleRemoveItem = (id: number) => {
+    const updatedItems = cartItems.filter((item) => item.id !== id);
+    setCartItems(updatedItems);
+    localStorage.setItem('cart', JSON.stringify(updatedItems));
   };
 
   const handleApplyCoupon = () => {
-    if (couponCode === "DISCOUNT10") {
+    if (couponCode === 'DISCOUNT10') {
       setDiscount(0.1); // 10% discount
     } else {
       setDiscount(0);
     }
+  };
+
+  const handleCheckout = () => {
+    localStorage.setItem('cart', JSON.stringify(cartItems));
+    router.push('/Checkout');
   };
 
   const cartSubtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
@@ -41,105 +59,97 @@ const ShoppingCart: React.FC = () => {
   const totalAmount = cartSubtotal - cartSubtotal * discount + shippingCharges;
 
   return (
-    <>
-      <ForAllHeroSections />
+    <div className="min-h-screen bg-white px-8 py-12">
+      <div className="mx-auto max-w-screen-lg">
+        <h1 className="text-3xl font-bold mb-6">Shopping Cart</h1>
 
-      <div className="bg-white font-sans">
-        {/* Further reduced height and margins */}
-        <header
-          className="bg-cover bg-center h-24 flex items-center justify-center mt-0 pt-0"
-          style={{ backgroundImage: 'url(/path/to/header-bg.jpg)' }}
-        >
-          <h1 className="text-3xl font-bold text-white tracking-wide">Shopping Cart</h1>
-        </header>
-
-        {/* Removed additional top margin */}
-        <main className="px-6 mt-0 mb-10 md:px-16 lg:px-28">
-          <table className="w-full border-collapse">
-            <thead>
-              <tr className="bg-gray-100 text-left">
-                <th className="p-4 font-semibold">Product</th>
-                <th className="p-4 font-semibold">Price</th>
-                <th className="p-4 font-semibold">Quantity</th>
-                <th className="p-4 font-semibold">Total</th>
-                <th className="p-4 font-semibold">Remove</th>
-              </tr>
-            </thead>
-            <tbody>
-              {cartItems.map((item, index) => (
-                <tr key={index} className="border-b">
-                  <td className="p-4 flex items-center">
-                    <Image src={item.image} alt={item.name} className="w-16 h-16 object-cover rounded mr-4"
-                    width={64} height={64} />
-                    <span>{item.name}</span>
-                  </td>
-                  <td className="p-4">${item.price.toFixed(2)}</td>
-                  <td className="p-4">
-                    <input
-                      type="number"
-                      value={item.quantity}
-                      onChange={(e) => handleQuantityChange(index, parseInt(e.target.value) || 0)}
-                      className="w-16 border rounded px-2 py-1 text-center"
-                      min="0"
-                    />
-                  </td>
-                  <td className="p-4">${(item.price * item.quantity).toFixed(2)}</td>
-                  <td className="p-4 text-red-500 cursor-pointer" onClick={() => handleRemoveItem(index)}>
-                    &times;
-                  </td>
+        {cartItems.length === 0 ? (
+          <p className="text-gray-500 text-lg">
+            Your cart is empty.{' '}
+            <a href="/Shop" className="text-orange-500">
+              Continue Shopping
+            </a>
+          </p>
+        ) : (
+          <>
+            <table className="w-full border-collapse">
+              <thead>
+                <tr className="bg-gray-100 text-left">
+                  <th className="p-4 font-semibold">Product</th>
+                  <th className="p-4 font-semibold">Price</th>
+                  <th className="p-4 font-semibold">Quantity</th>
+                  <th className="p-4 font-semibold">Total</th>
+                  <th className="p-4 font-semibold">Remove</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {cartItems.map((item, index) => (
+                  <tr key={item.id ?? `cart-item-${index}`} className="border-b">
+                    <td className="p-4 flex items-center">
+                      <Image
+                        src={item.image}
+                        alt={item.name}
+                        width={64}
+                        height={64}
+                        className="w-16 h-16 object-cover rounded mr-4"
+                      />
+                      <span>{item.name}</span>
+                    </td>
+                    <td className="p-4">${item.price.toFixed(2)}</td>
+                    <td className="p-4">
+                      <input
+                        type="number"
+                        value={item.quantity}
+                        onChange={(e) =>
+                          handleQuantityChange(item.id, parseInt(e.target.value) || 0)
+                        }
+                        className="w-16 border rounded px-2 py-1 text-center"
+                        min="0"
+                      />
+                    </td>
+                    <td className="p-4">${(item.price * item.quantity).toFixed(2)}</td>
+                    <td
+                      className="p-4 text-red-500 cursor-pointer"
+                      onClick={() => handleRemoveItem(item.id)}
+                    >
+                      &times;
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
 
-          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mt-6">
-            <div className="w-full lg:w-1/2 mb-6 lg:mb-0">
-              <h2 className="text-lg font-semibold mb-2">Coupon Code</h2>
-              <div className="flex items-center">
-                <input
-                  type="text"
-                  value={couponCode}
-                  onChange={(e) => setCouponCode(e.target.value)}
-                  placeholder="Enter your code"
-                  className="flex-grow border rounded-l px-4 py-2"
-                />
-                <button
-                  onClick={handleApplyCoupon}
-                  className="bg-orange-500 text-white px-6 py-2 rounded-r font-semibold"
-                >
-                  Apply
-                </button>
+            <div className="flex justify-end mt-6">
+              <div className="w-full lg:w-1/3">
+                <div className="bg-gray-100 p-6 rounded-lg">
+                  <div className="flex justify-between mb-4">
+                    <span>Cart Subtotal</span>
+                    <span>${cartSubtotal.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between mb-4">
+                    <span>Discount</span>
+                    <span>${(cartSubtotal * discount).toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between mb-4">
+                    <span>Shipping Charges</span>
+                    <span>${shippingCharges.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between font-semibold text-lg">
+                    <span>Total Amount</span>
+                    <span>${totalAmount.toFixed(2)}</span>
+                  </div>
+                  <button
+                    onClick={handleCheckout}
+                    className="block text-center bg-orange-500 text-white mt-6 py-3 rounded font-semibold hover:bg-orange-600 w-full"
+                  >
+                    Proceed to Checkout
+                  </button>
+                </div>
               </div>
             </div>
-
-            <div className="w-full lg:w-1/3">
-              <div className="bg-gray-100 p-6 rounded-lg">
-                <div className="flex justify-between mb-4">
-                  <span>Cart Subtotal</span>
-                  <span>${cartSubtotal.toFixed(2)}</span>
-                </div>
-                <div className="flex justify-between mb-4">
-                  <span>Discount</span>
-                  <span>${(cartSubtotal * discount).toFixed(2)}</span>
-                </div>
-                <div className="flex justify-between mb-4">
-                  <span>Shipping Charges</span>
-                  <span>${shippingCharges.toFixed(2)}</span>
-                </div>
-                <div className="flex justify-between font-semibold text-lg">
-                  <span>Total Amount</span>
-                  <span>${totalAmount.toFixed(2)}</span>
-                </div>
-                <button className="w-full bg-orange-500 text-white mt-4 mb-4 py-3 rounded font-semibold">
-                  Proceed to Checkout
-                </button>
-              </div>
-            </div>
-          </div>
-        </main>
+          </>
+        )}
       </div>
-    </>
+    </div>
   );
-};
-
-export default ShoppingCart;
+}

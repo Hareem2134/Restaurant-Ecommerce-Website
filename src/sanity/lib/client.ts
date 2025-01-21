@@ -9,3 +9,17 @@ export const client = createClient({
   token: process.env.SANITY_API_TOKEN,
   useCdn: false, // Set to false if statically generating pages, using ISR or tag-based revalidation
 })
+
+async function addSlugsToFoods() {
+  const foods = await client.fetch(`*[_type == "food" && !defined(slug)]`);
+  for (const food of foods) {
+    const slug = food.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+    await client
+      .patch(food._id)
+      .set({ slug: { current: slug } })
+      .commit();
+    console.log(`Added slug "${slug}" to food: ${food.name}`);
+  }
+}
+
+addSlugsToFoods();

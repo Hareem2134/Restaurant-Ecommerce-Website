@@ -2,17 +2,22 @@
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useCart } from "../src/app/Context/CartContext"; // Adjust the path as per your project structure
 
 const HomeNavbar: React.FC = () => {
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   const [isAboutDropdownOpen, setIsAboutDropdownOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
+  const { cart } = useCart(); // Access cart from context
+
   const userDropdownRef = useRef<HTMLDivElement | null>(null);
   const aboutDropdownRef = useRef<HTMLDivElement | null>(null);
   const navRef = useRef<HTMLDivElement | null>(null);
 
-  // Handle clicks outside dropdowns or mobile menu
+  // Calculate total items in the cart
+  const totalCartItems = cart.reduce((acc, item) => acc + item.quantity, 0);
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -70,16 +75,28 @@ const HomeNavbar: React.FC = () => {
           } absolute top-full left-0 w-full bg-black shadow-lg lg:flex lg:static lg:bg-transparent lg:w-auto lg:shadow-none lg:items-center z-50 opacity-95`}
         >
           <div className="flex flex-col lg:flex-row lg:items-center lg:space-x-8 w-full lg:w-auto">
-            <Link href="/" className="block lg:inline-block text-white py-2 lg:py-0 px-4 lg:px-0 hover:text-[#FF9F0D]">
+            <Link
+              href="/"
+              className="block lg:inline-block text-white py-2 lg:py-0 px-4 lg:px-0 hover:text-[#FF9F0D]"
+            >
               Home
             </Link>
-            <Link href="/MenuPage" className="block lg:inline-block text-white py-2 lg:py-0 px-4 lg:px-0 hover:text-[#FF9F0D]">
+            <Link
+              href="/MenuPage"
+              className="block lg:inline-block text-white py-2 lg:py-0 px-4 lg:px-0 hover:text-[#FF9F0D]"
+            >
               Menu
             </Link>
-            <Link href="/Blog" className="block lg:inline-block text-white py-2 lg:py-0 px-4 lg:px-0 hover:text-[#FF9F0D]">
+            <Link
+              href="/Blog"
+              className="block lg:inline-block text-white py-2 lg:py-0 px-4 lg:px-0 hover:text-[#FF9F0D]"
+            >
               Blog
             </Link>
-            <Link href="/Pages" className="block lg:inline-block text-white py-2 lg:py-0 px-4 lg:px-0 hover:text-[#FF9F0D]">
+            <Link
+              href="/Pages"
+              className="block lg:inline-block text-white py-2 lg:py-0 px-4 lg:px-0 hover:text-[#FF9F0D]"
+            >
               Pages
             </Link>
 
@@ -106,10 +123,16 @@ const HomeNavbar: React.FC = () => {
               )}
             </div>
 
-            <Link href="/Shop" className="block lg:inline-block text-white py-2 lg:py-0 px-4 lg:px-0 hover:text-[#FF9F0D]">
+            <Link
+              href="/Shop"
+              className="block lg:inline-block text-white py-2 lg:py-0 px-4 lg:px-0 hover:text-[#FF9F0D]"
+            >
               Shop
             </Link>
-            <Link href="/Contact" className="block lg:inline-block text-white py-2 lg:py-0 px-4 lg:px-0 hover:text-[#FF9F0D]">
+            <Link
+              href="/Contact"
+              className="block lg:inline-block text-white py-2 lg:py-0 px-4 lg:px-0 hover:text-[#FF9F0D]"
+            >
               Contact
             </Link>
           </div>
@@ -119,42 +142,82 @@ const HomeNavbar: React.FC = () => {
         <div className="flex items-center space-x-6">
           {/* Search Icon */}
           <button className="relative">
-            <Image src="/Search.png" alt="Search" className="h-6 w-6" width={24} height={24} />
+            <Image
+              src="/Search.png"
+              alt="Search"
+              className="h-6 w-6"
+              width={24}
+              height={24}
+            />
           </button>
 
           {/* User Icon with Dropdown */}
           <div ref={userDropdownRef} className="relative inline-block">
-            <button className="flex items-center" onClick={() => setIsUserDropdownOpen(!isUserDropdownOpen)}>
-              <Image src="/user.png" alt="user" className="h-6 w-6 cursor-pointer" width={24} height={24} />
+            <button
+              className="flex items-center"
+              onClick={() => setIsUserDropdownOpen(!isUserDropdownOpen)}
+            >
+              <Image
+                src="/user.png"
+                alt="user"
+                className="h-6 w-6 cursor-pointer"
+                width={24}
+                height={24}
+              />
               <span className="ml-1 text-sm">▼</span>
             </button>
 
             {isUserDropdownOpen && (
               <div className="absolute bg-black text-white py-2 mt-2 rounded-md shadow-lg right-0 z-50">
-                <Link href="/Login" className="block px-6 py-2 hover:bg-[#FF9F0D] hover:text-black">
+                <Link
+                  href="/Login"
+                  className="block px-6 py-2 hover:bg-[#FF9F0D] hover:text-black"
+                >
                   Login
                 </Link>
-                <Link href="/Signup" className="block px-6 py-2 hover:bg-[#FF9F0D] hover:text-black">
+                <Link
+                  href="/Signup"
+                  className="block px-6 py-2 hover:bg-[#FF9F0D] hover:text-black"
+                >
                   Signup
                 </Link>
-                <Link href="/Checkout" className="block px-6 py-2 hover:bg-[#FF9F0D] hover:text-black">
+                <Link
+                  href="/Checkout"
+                  className="block px-6 py-2 hover:bg-[#FF9F0D] hover:text-black"
+                >
                   Checkout
                 </Link>
-                <Link href="/ShopDetails" className="block px-6 py-2 hover:bg-[#FF9F0D] hover:text-black">
+                <Link
+                  href="/ShopDetails"
+                  className="block px-6 py-2 hover:bg-[#FF9F0D] hover:text-black"
+                >
                   Shop Details
                 </Link>
-
-                <Link href="/Logout" className="block px-6 py-2 hover:bg-[#FF9F0D] hover:text-black">
+                <Link
+                  href="/Logout"
+                  className="block px-6 py-2 hover:bg-[#FF9F0D] hover:text-black"
+                >
                   Logout
                 </Link>
               </div>
             )}
           </div>
 
-          {/* Basket Icon */}
-          <button className="relative">
-            <Image src="/Handbag.png" alt="Basket" className="h-6 w-6" width={24} height={24} />
-          </button>
+          {/* Basket Icon with Cart Item Count */}
+          <Link href="/Cart" className="relative">
+            <Image
+              src="/Handbag.png"
+              alt="Basket Icon"
+              width={28}
+              height={28}
+              className="cursor-pointer"
+            />
+            {totalCartItems > 0 && (
+              <span className="absolute -top-2 -right-2 bg-[#FF9F0D] text-black text-xs font-bold rounded-full px-2 py-1">
+                {totalCartItems}
+              </span>
+            )}
+          </Link>
         </div>
       </div>
     </div>

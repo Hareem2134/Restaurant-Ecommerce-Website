@@ -4,34 +4,34 @@ import ForAllHeroSections from "../../../components/ForAllHeroSections";
 import ProductCardOnShop from "../../../components/ProductCardOnShop";
 import FiltersSidebarOnShop from "../../../components/FiltersSidebarOnShop";
 import PaginationOnShop from "../../../components/PaginationOnShop";
-import { client } from "../../sanity/lib/client"; // Import the Sanity client
+import { client } from "../../sanity/lib/client";
+import Link from "next/link";
 
-// Define the Food interface
 interface Food {
-  id: string; // Map Sanity's _id
+  id: string;
+  slug: string;
   name: string;
   price: number;
-  originalPrice?: number; // Optional field
-  image: string; // Extracted URL for image
-  description?: string; // Optional field
-  tags?: string[]; // Array of tags
-  available: boolean; // Availability status
-  category?: string; // Optional category
-  isOnSale: boolean; // Add this field to match ProductCardOnShop expectations
+  originalPrice?: number;
+  image: string;
+  description?: string;
+  tags?: string[];
+  available: boolean;
+  category?: string;
+  isOnSale: boolean;
 }
 
 export default function ShopPage() {
   const [products, setProducts] = useState<Food[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Fetch products from Sanity
   useEffect(() => {
     async function fetchProducts() {
       try {
-        // Define GROQ query to fetch food items
         const query = `*[_type == "food"]{
           _id,
           name,
+          slug,
           price,
           originalPrice,
           "image": image.asset->url,
@@ -41,26 +41,29 @@ export default function ShopPage() {
           category
         }`;
 
-        const sanityProducts = await client.fetch(query); // Fetch from Sanity
+        const sanityProducts = await client.fetch(query);
 
-        // Map _id to id and ensure the structure matches the Food interface
-        const mappedProducts = sanityProducts.map((product: any) => ({
+        const mappedProducts = sanityProducts
+        .filter((product: any) => product.slug?.current) // Exclude products without slugs
+        .map((product: any) => ({
           id: product._id,
+          slug: product.slug.current,
           name: product.name,
           price: product.price,
           originalPrice: product.originalPrice || null,
-          image: product.image || "",
+          image: product.image || "/placeholder.jpg", // Fallback to a placeholder image
           description: product.description || "",
           tags: product.tags || [],
           available: product.available || false,
           category: product.category || "",
           isOnSale: product.originalPrice
-            ? product.price < product.originalPrice // Calculate if on sale
+            ? product.price < product.originalPrice
             : false,
         }));
+      
 
-        setProducts(mappedProducts); // Set fetched products
-        setIsLoading(false); // Update loading state
+        setProducts(mappedProducts);
+        setIsLoading(false);
       } catch (error) {
         console.error("Error fetching products:", error);
       }
@@ -70,19 +73,14 @@ export default function ShopPage() {
 
   return (
     <>
-      {/* Hero Section */}
       <div>
         <ForAllHeroSections />
       </div>
-
-      {/* Main Shop Layout */}
       <div
         id="main-content"
         className="transition-all duration-700 max-w-[1320px] mx-auto flex flex-col lg:flex-row space-y-12 lg:space-y-0 lg:space-x-12 mt-12 mb-12 px-4 sm:px-8 lg:px-36"
       >
-        {/* Main Content */}
         <div className="flex-1">
-          {/* Sorting and Show Controls */}
           <div className="flex flex-wrap items-center mb-6 gap-4">
             <div className="transition-all duration-300 hover:scale-105">
               <label className="mr-2">Sort By:</label>
@@ -103,27 +101,23 @@ export default function ShopPage() {
             </div>
           </div>
 
-          {/* Product Grid */}
           {isLoading ? (
             <div>Loading products...</div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
               {products.map((product) => (
-                <div
-                  key={product.id} // Use id here
-                  className="transition-all duration-500 transform hover:scale-105 hover:shadow-2xl"
-                >
-                  <ProductCardOnShop product={product} />
-                </div>
+                <Link key={product.slug} href={`/product/${product.slug}`}>
+                  <div className="transition-all duration-500 transform hover:scale-105 hover:shadow-2xl">
+                    <ProductCardOnShop product={product} />
+                  </div>
+                </Link>
               ))}
             </div>
           )}
 
-          {/* Pagination */}
           <PaginationOnShop />
         </div>
 
-        {/* Sidebar */}
         <FiltersSidebarOnShop />
       </div>
     </>
