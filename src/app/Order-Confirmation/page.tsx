@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import React, { useEffect, useState } from "react";
 
 interface OrderDetails {
@@ -104,22 +105,22 @@ export default function OrderConfirmationPage() {
 
         {/* Back to Home Button */}
         <div className="text-center mt-8">
-          <a
+          <Link
             href="/"
             className="px-6 py-3 bg-[#FF9F0D] text-white shadow-black font-bold rounded shadow hover:bg-[#e58b0a] inline-block"
           >
             Back to Home
-          </a>
+          </Link>
 
             <h3 className="font-bold">OR</h3>
 
         {/* Back to Home Button */}
-          <a
+          <Link
             href="/Shop"
             className="px-6 py-3 bg-[#FF9F0D] text-white font-bold shadow-black rounded shadow hover:bg-[#e58b0a] inline-block"
           >
             Continue Shopping
-          </a>
+          </Link>
         </div>
 
       </div>

@@ -2,22 +2,36 @@
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useCart } from "../src/app/Context/CartContext"; // Adjust the path as per your project structure
+import { useRouter } from "next/navigation";
+import { useCart } from "../src/app/Context/CartContext";
+import { FaChevronDown } from "react-icons/fa";
+import LanguageSelector from "./LanguageSelector";
 
 const HomeNavbar: React.FC = () => {
+  const router = useRouter();
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   const [isAboutDropdownOpen, setIsAboutDropdownOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isSearchDropdownOpen, setIsSearchDropdownOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState(""); // State for search input
 
-  const { cart } = useCart(); // Access cart from context
-
+  const { cart } = useCart(); // Access the cart context
   const userDropdownRef = useRef<HTMLDivElement | null>(null);
   const aboutDropdownRef = useRef<HTMLDivElement | null>(null);
+  const searchDropdownRef = useRef<HTMLDivElement | null>(null);
   const navRef = useRef<HTMLDivElement | null>(null);
 
-  // Calculate total items in the cart
   const totalCartItems = cart.reduce((acc, item) => acc + item.quantity, 0);
 
+  // Handle Search Submit
+  const handleSearch = () => {
+    if (searchTerm.trim()) {
+      router.push(`/Shop?search=${encodeURIComponent(searchTerm.trim())}`);
+      setIsSearchDropdownOpen(false); // Close dropdown after search
+    }
+  };
+
+  // Close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -31,6 +45,12 @@ const HomeNavbar: React.FC = () => {
         !userDropdownRef.current.contains(event.target as Node)
       ) {
         setIsUserDropdownOpen(false);
+      }
+      if (
+        searchDropdownRef.current &&
+        !searchDropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsSearchDropdownOpen(false);
       }
       if (
         navRef.current &&
@@ -93,20 +113,14 @@ const HomeNavbar: React.FC = () => {
             >
               Blog
             </Link>
-            <Link
-              href="/Pages"
-              className="block lg:inline-block text-white py-2 lg:py-0 px-4 lg:px-0 hover:text-[#FF9F0D]"
-            >
-              Pages
-            </Link>
 
             {/* About Dropdown */}
             <div ref={aboutDropdownRef} className="relative">
               <button
-                className="block lg:inline-block text-white py-2 lg:py-0 px-4 lg:px-0 hover:text-[#FF9F0D]"
+                className=" lg:inline-block text-white py-2 lg:py-0 px-4 lg:px-0 hover:text-[#FF9F0D]"
                 onClick={() => setIsAboutDropdownOpen(!isAboutDropdownOpen)}
               >
-                About ▼
+                About <FaChevronDown className="ml-1 inline text-sm transition-transform hover:rotate-180" />
               </button>
               {isAboutDropdownOpen && (
                 <div className="absolute left-0 top-full bg-black text-white py-4 px-6 rounded-md shadow-md space-y-2 w-40">
@@ -138,89 +152,111 @@ const HomeNavbar: React.FC = () => {
           </div>
         </nav>
 
-        {/* Right Section: User and Basket Icons */}
-        <div className="flex items-center space-x-6">
-          {/* Search Icon */}
-          <button className="relative">
+      {/* Right Section: User, Basket, and Search Icons */}
+      <div className="flex items-center space-x-6">
+        {/* Search Dropdown */}
+        <div ref={searchDropdownRef} className="relative inline-block">
+          <button
+            className="relative transition-transform duration-200 hover:scale-125 focus:outline-none focus:ring-[#FF9F0D]"
+            onClick={() => setIsSearchDropdownOpen(!isSearchDropdownOpen)}
+          >
             <Image
               src="/Search.png"
               alt="Search"
-              className="h-6 w-6"
+              className="mt-2"
+              width={22}
+              height={22}
+            />
+          </button>
+          {isSearchDropdownOpen && (
+            <div className="absolute right-0 mt-2 bg-black text-black rounded-md shadow-lg p-4 w-64 transition-opacity duration-300 ease-in-out opacity-100">
+              <input
+                type="text"
+                placeholder="Search for items..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-[#FF9F0D]"
+              />
+              <button
+                onClick={handleSearch}
+                className="mt-2 bg-[#FF9F0D] text-white py-2 px-4 w-full rounded-md hover:bg-[#ff9f0db8]"
+              >
+                Search
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* User Dropdown */}
+        <div ref={userDropdownRef} className="relative inline-block">
+          <button
+            className="flex items-center transition-transform duration-200 hover:scale-125"
+            onClick={() => setIsUserDropdownOpen(!isUserDropdownOpen)}
+          >
+            <Image
+              src="/user.png"
+              alt="user"
+              className="h-6 w-6 cursor-pointer"
               width={24}
               height={24}
             />
+            <FaChevronDown className="ml-1 text-sm transition-transform hover:rotate-180" />
           </button>
 
-          {/* User Icon with Dropdown */}
-          <div ref={userDropdownRef} className="relative inline-block">
-            <button
-              className="flex items-center"
-              onClick={() => setIsUserDropdownOpen(!isUserDropdownOpen)}
-            >
-              <Image
-                src="/user.png"
-                alt="user"
-                className="h-6 w-6 cursor-pointer"
-                width={24}
-                height={24}
-              />
-              <span className="ml-1 text-sm">▼</span>
-            </button>
-
-            {isUserDropdownOpen && (
-              <div className="absolute bg-black text-white py-2 mt-2 rounded-md shadow-lg right-0 z-50">
-                <Link
-                  href="/Login"
-                  className="block px-6 py-2 hover:bg-[#FF9F0D] hover:text-black"
-                >
-                  Login
-                </Link>
-                <Link
-                  href="/Signup"
-                  className="block px-6 py-2 hover:bg-[#FF9F0D] hover:text-black"
-                >
-                  Signup
-                </Link>
-                <Link
-                  href="/Checkout"
-                  className="block px-6 py-2 hover:bg-[#FF9F0D] hover:text-black"
-                >
-                  Checkout
-                </Link>
-                <Link
-                  href="/ShopDetails"
-                  className="block px-6 py-2 hover:bg-[#FF9F0D] hover:text-black"
-                >
-                  Shop Details
-                </Link>
-                <Link
-                  href="/Logout"
-                  className="block px-6 py-2 hover:bg-[#FF9F0D] hover:text-black"
-                >
-                  Logout
-                </Link>
-              </div>
-            )}
-          </div>
-
-          {/* Basket Icon with Cart Item Count */}
-          <Link href="/Cart" className="relative">
-            <Image
-              src="/Handbag.png"
-              alt="Basket Icon"
-              width={28}
-              height={28}
-              className="cursor-pointer"
-            />
-            {totalCartItems > 0 && (
-              <span className="absolute -top-2 -right-2 bg-[#FF9F0D] text-black text-xs font-bold rounded-full px-2 py-1">
-                {totalCartItems}
-              </span>
-            )}
-          </Link>
+          {isUserDropdownOpen && (
+            <div className="absolute bg-black text-white py-2 mt-2 rounded-md shadow-lg right-0 z-50 transition-transform duration-200 ease-in-out">
+              <Link
+                href="/Login"
+                className="block px-6 py-2 hover:bg-[#FF9F0D] hover:text-black transition-all duration-200 ease-in-out"
+              >
+                Login
+              </Link>
+              <Link
+                href="/Signup"
+                className="block px-6 py-2 hover:bg-[#FF9F0D] hover:text-black transition-all duration-200 ease-in-out"
+              >
+                Signup
+              </Link>
+              <Link
+                href="/Checkout"
+                className="block px-6 py-2 hover:bg-[#FF9F0D] hover:text-black transition-all duration-200 ease-in-out"
+              >
+                Checkout
+              </Link>
+              <Link
+                href="/Logout"
+                className="block px-6 py-2 hover:bg-[#FF9F0D] hover:text-black transition-all duration-200 ease-in-out"
+              >
+                Logout
+              </Link>
+            </div>
+          )}
         </div>
+
+        {/* Basket Icon with Cart Count */}
+        <Link
+          href="/Cart"
+          className="relative transition-transform duration-200 hover:scale-125"
+        >
+          <Image
+            src="/Handbag.png"
+            alt="Basket Icon"
+            width={28}
+            height={28}
+            className="cursor-pointer"
+          />
+          {totalCartItems > 0 && (
+            <span className="absolute -top-2 -right-2 bg-[#FF9F0D] text-black text-xs font-bold rounded-full px-2 py-1 animate-pulse">
+              {totalCartItems}
+            </span>
+          )}
+        </Link>
       </div>
-    </div>
+
+      <LanguageSelector/>
+
+      </div>
+      </div>
   );
 };
 

@@ -19,3 +19,65 @@ body {
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+
+
+
+
+
+
+/* Hide the default Google Translate branding toolbar */
+.goog-te-banner-frame.skiptranslate {
+  display: none !important;
+}
+body {
+  top: 0px !important;
+}
+
+/* Style the dropdown wrapper */
+.language-switcher {
+  text-align: right;
+  margin: 10px;
+  position: relative;
+  display: inline-block;
+}
+
+/* Force styles on dropdown container */
+#google_translate_element select {
+  padding: 5px 10px !important;
+  border: 1px solid #ccc !important;
+  border-radius: 4px !important;
+  background: #f8f8f8 !important;
+  font-size: 14px !important;
+  color: #333 !important;
+  cursor: pointer !important;
+}
+
+/* Add hover effect */
+#google_translate_element select:hover {
+  background: #eaeaea !important;
+}
+
+/* Optional: Style the dropdown options */
+#google_translate_element select option {
+  font-size: 14px !important;
+  color: #333 !important;
+  background: #fff !important;
+}
+
+/* Add a custom dropdown arrow */
+#google_translate_element select {
+  appearance: none !important; /* Remove default arrow */
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") no-repeat right 10px center !important;
+  background-size: 12px !important;
+}
+
+/* Make the dropdown mobile-friendly */
+@media (max-width: 768px) {
+  #google_translate_element select {
+    font-size: 12px !important;
+    padding: 4px 8px !important;
+  }
+}
