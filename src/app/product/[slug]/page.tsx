@@ -1,3 +1,4 @@
+// src/app/product/[slug]/page.tsx
 import ProductDetails from "@/app/product/ProductDetails";
 import { client } from "@/sanity/lib/client";
 
@@ -5,8 +6,8 @@ interface IParams {
   slug: string;
 }
 
-export default async function ProductDetailsPage({ params }: { params: IParams }) {
-  const slug = params.slug;
+export default async function ProductDetailsPage({ params }: { params: { slug: string } }) {
+  const { slug } = params;
 
   const product = await client.fetch(
     `*[_type == "food" && slug.current == $slug][0]{
