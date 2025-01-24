@@ -2,10 +2,12 @@ import { SetStateAction, useState } from 'react';
 
 const languages = [
   { code: 'en', label: 'English' },
+  { code: 'ur', label: 'Urdu' },
+  { code: 'ar', label: 'Arabic' },
   { code: 'fr', label: 'French' },
   { code: 'es', label: 'Spanish' },
-  { code: 'de', name: 'German' },
-  { code: 'zh', name: 'Chinese' },
+  { code: 'de', label: 'German' },
+  { code: 'zh', label: 'Chinese' },
 ];
 
 const LanguageSwitcher = () => {
@@ -13,10 +15,6 @@ const LanguageSwitcher = () => {
 
   const handleLanguageChange = (code: SetStateAction<string>) => {
     setCurrentLang(code);
-
-    const handleLanguageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        setCurrentLang(event.target.value);
-      };    
 
     // Redirect to Google Translate URL
     const translateUrl = `https://translate.google.com/translate?sl=auto&tl=${code}&u=${window.location.href}`;
@@ -44,7 +42,11 @@ const LanguageSwitcher = () => {
         }}
       >
         {languages.map((lang) => (
-          <option key={lang.code} value={lang.code}>
+          <option
+            key={lang.code}
+            value={lang.code}
+            style={{ color: lang.code === 'ar' || lang.code === 'ur' ? 'black' : 'inherit' }}
+          >
             {lang.label}
           </option>
         ))}
