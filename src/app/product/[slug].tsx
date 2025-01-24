@@ -3,10 +3,6 @@
 import ProductDetails from "@/app/product/ProductDetails";
 import { client } from "@/sanity/lib/client";
 
-interface PageProps {
-    params: { slug: string };
-  }
-  
 // Explicitly define the type for `params` inline
 export default async function ProductDetailsPage({
   params,
