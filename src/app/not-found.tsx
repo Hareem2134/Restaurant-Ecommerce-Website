@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-export default function ErrorPage() {
+export default function NotFound() {
   return (
     <>
     <div className="min-h-screen bg-white">
