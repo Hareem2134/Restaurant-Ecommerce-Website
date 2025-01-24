@@ -1,5 +1,6 @@
 "use client";
-import React, { useEffect, useState } from "react";
+
+import React, { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import ForAllHeroSections from "../../../components/ForAllHeroSections";
 import ProductCardOnShop from "../../../components/ProductCardOnShop";
@@ -22,7 +23,7 @@ interface Food {
   isOnSale: boolean;
 }
 
-export default function ShopPage() {
+function ShopPageContent() {
   const [products, setProducts] = useState<Food[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const searchParams = useSearchParams();
@@ -102,13 +103,25 @@ export default function ShopPage() {
             </div>
           )}
 
-          <PaginationOnShop currentPage={0} totalPages={0} onPageChange={function (page: number): void {
-            throw new Error("Function not implemented.");
-          } }/>
+          <PaginationOnShop
+            currentPage={0}
+            totalPages={0}
+            onPageChange={function (page: number): void {
+              throw new Error("Function not implemented.");
+            }}
+          />
         </div>
 
         <FiltersSidebarOnShop />
       </div>
     </>
+  );
+}
+
+export default function ShopPage() {
+  return (
+    <Suspense fallback={<div>Loading Shop...</div>}>
+      <ShopPageContent />
+    </Suspense>
   );
 }
