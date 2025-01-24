@@ -1,42 +1,56 @@
-"use client";
+import { SetStateAction, useState } from 'react';
 
-import React, { useState } from "react";
+const languages = [
+  { code: 'en', label: 'English' },
+  { code: 'fr', label: 'French' },
+  { code: 'es', label: 'Spanish' },
+  { code: 'de', name: 'German' },
+  { code: 'zh', name: 'Chinese' },
+];
 
-export default function LanguageSelector() {
-  const [selectedLanguage, setSelectedLanguage] = useState("en");
+const LanguageSwitcher = () => {
+  const [currentLang, setCurrentLang] = useState('en');
 
-  const languages = [
-    { code: "en", name: "English" },
-    { code: "fr", name: "French" },
-    { code: "es", name: "Spanish" },
-    { code: "de", name: "German" },
-    { code: "zh", name: "Chinese" },
-  ];
+  const handleLanguageChange = (code: SetStateAction<string>) => {
+    setCurrentLang(code);
 
-  const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedLanguage(event.target.value);
+    const handleLanguageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        setCurrentLang(event.target.value);
+      };    
+
+    // Redirect to Google Translate URL
+    const translateUrl = `https://translate.google.com/translate?sl=auto&tl=${code}&u=${window.location.href}`;
+    window.location.href = translateUrl;
   };
 
   return (
-    <div className="relative max-w-sm mx-auto mt-4">
+    <div style={{ display: 'inline-block' }}>
       <label
         htmlFor="language-selector"
-        className="block text-white text-sm font-medium mb-2"
+        className="block text-white text-sm font-medium"
       >
-        Select Language:
+        Language:
       </label>
       <select
-        id="language-selector"
-        value={selectedLanguage}
-        onChange={handleChange}
-        className="w-full p-3 border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        value={currentLang}
+        onChange={(e) => handleLanguageChange(e.target.value)}
+        className="p-3 border border-gray-300 rounded-lg bg-white text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+        style={{
+          padding: '5px 10px',
+          border: '1px solid #ccc',
+          borderRadius: '4px',
+          fontSize: '14px',
+          cursor: 'pointer',
+        }}
       >
-        {languages.map((language) => (
-          <option key={language.code} value={language.code}>
-            {language.name}
+        {languages.map((lang) => (
+          <option key={lang.code} value={lang.code}>
+            {lang.label}
           </option>
         ))}
       </select>
     </div>
   );
-}
+};
+
+export default LanguageSwitcher;
