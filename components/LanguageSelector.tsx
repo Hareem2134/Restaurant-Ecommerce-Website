@@ -1,43 +1,42 @@
-import { SetStateAction, useState } from 'react';
+"use client";
 
-const languages = [
-  { code: 'en', label: 'English' },
-  { code: 'fr', label: 'French' },
-  { code: 'es', label: 'Spanish' },
-];
+import React, { useState } from "react";
 
-const LanguageSwitcher = () => {
-  const [currentLang, setCurrentLang] = useState('en');
+export default function LanguageSelector() {
+  const [selectedLanguage, setSelectedLanguage] = useState("en");
 
-  const handleLanguageChange = (code: SetStateAction<string>) => {
-    setCurrentLang(code);
+  const languages = [
+    { code: "en", name: "English" },
+    { code: "fr", name: "French" },
+    { code: "es", name: "Spanish" },
+    { code: "de", name: "German" },
+    { code: "zh", name: "Chinese" },
+  ];
 
-    // Redirect to Google Translate URL
-    const translateUrl = `https://translate.google.com/translate?sl=auto&tl=${code}&u=${window.location.href}`;
-    window.location.href = translateUrl;
+  const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedLanguage(event.target.value);
   };
 
   return (
-    <div style={{ display: 'inline-block', margin: '10px' }}>
-      <select
-        value={currentLang}
-        onChange={(e) => handleLanguageChange(e.target.value)}
-        style={{
-          padding: '5px 10px',
-          border: '1px solid #ccc',
-          borderRadius: '4px',
-          fontSize: '14px',
-          cursor: 'pointer',
-        }}
+    <div className="relative max-w-sm mx-auto mt-4">
+      <label
+        htmlFor="language-selector"
+        className="block text-white text-sm font-medium mb-2"
       >
-        {languages.map((lang) => (
-          <option key={lang.code} value={lang.code}>
-            {lang.label}
+        Select Language:
+      </label>
+      <select
+        id="language-selector"
+        value={selectedLanguage}
+        onChange={handleChange}
+        className="w-full p-3 border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      >
+        {languages.map((language) => (
+          <option key={language.code} value={language.code}>
+            {language.name}
           </option>
         ))}
       </select>
     </div>
   );
-};
-
-export default LanguageSwitcher;
+}
