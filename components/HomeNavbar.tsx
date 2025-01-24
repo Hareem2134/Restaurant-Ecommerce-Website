@@ -7,7 +7,11 @@ import { useCart } from "../src/app/Context/CartContext";
 import { FaChevronDown } from "react-icons/fa";
 import LanguageSelector from "./LanguageSelector";
 
-const HomeNavbar: React.FC = () => {
+interface NavbarProps {
+  children?: React.ReactNode; // Accept children as a prop
+}
+
+const HomeNavbar: React.FC<NavbarProps> = ({ children }) => {
   const router = useRouter();
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   const [isAboutDropdownOpen, setIsAboutDropdownOpen] = useState(false);
@@ -251,9 +255,11 @@ const HomeNavbar: React.FC = () => {
             </span>
           )}
         </Link>
-      </div>
 
-      <LanguageSelector/>
+        {/* Render children (e.g., LanguageSwitcher) */}
+        {children}
+        
+      </div>
 
       </div>
       </div>
