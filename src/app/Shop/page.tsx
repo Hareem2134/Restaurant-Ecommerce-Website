@@ -7,7 +7,6 @@ import ProductCardOnShop from "../../../components/ProductCardOnShop";
 import FiltersSidebarOnShop from "../../../components/FiltersSidebarOnShop";
 import PaginationOnShop from "../../../components/PaginationOnShop";
 import { client } from "../../sanity/lib/client";
-import Link from "next/link";
 
 interface Food {
   id: string;
@@ -118,7 +117,7 @@ function ShopPageContent() {
       </div>
       <div
         id="main-content"
-        className="transition-all duration-700 max-w-[1320px] mx-auto flex flex-col lg:flex-row space-y-12 lg:space-y-0 lg:space-x-12 mt-12 mb-12 px-4 sm:px-8 lg:px-36"
+        className="transition-all duration-700 max-w-[1320px] mx-auto flex flex-col lg:flex-row space-y-12 lg:space-y-0 lg:space-x-12 mt-12 mb-36 px-4 sm:px-8 lg:px-36"
       >
         <div className="flex-1">
           {isLoading ? (
@@ -127,21 +126,16 @@ function ShopPageContent() {
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
               {products.map((product) => (
                 <ProductCardOnShop
-                  key={product.id}
-                  product={product}
-                  onAddToWishlist={handleAddToWishlist}
-                  onAddToCart={handleAddToCart}
-                  onCompare={handleCompare}
-                >
-                  {/* Link for the clickable title */}
-                  <h3 className="font-semibold text-lg mt-2">
-                    <Link href={`/product/${product.slug}`}>
-                      <a className="hover:underline text-blue-600">
-                        {product.name}
-                      </a>
-                    </Link>
-                  </h3>
-                </ProductCardOnShop>
+                key={product.id}
+                product={{
+                  id: product.id,
+                  slug: product.slug,
+                  name: product.name,
+                  price: product.price,
+                  oldPrice: product.originalPrice || 0, // Fallback if no old price
+                  isOnSale: product.isOnSale,
+                  image: product.image || "/placeholder.jpg" // Fallback image
+                }}/>
               ))}
             </div>
           )}

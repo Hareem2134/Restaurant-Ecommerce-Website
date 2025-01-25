@@ -64,7 +64,7 @@ const ProductComparison: React.FC = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto my-12 px-4 sm:px-8">
+    <div className="max-w-4xl mx-auto my-12 px-4 sm:px-8 mb-36">
       <h1 className="text-3xl font-bold mb-8 text-center text-gray-800">Product Comparison</h1>
 
       {/* Filter and Sort Options */}

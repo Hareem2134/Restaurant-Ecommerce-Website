@@ -1,7 +1,9 @@
 "use client";
+
 import React, { createContext, useState, useContext, ReactNode } from "react";
 
 interface CartItem {
+  id: string;
   name: string;
   price: number;
   image: string;
@@ -24,7 +26,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   });
 
   const addToCart = (item: CartItem) => {
-    const existingItemIndex = cart.findIndex((cartItem) => cartItem.name === item.name);
+    const existingItemIndex = cart.findIndex((cartItem) => cartItem.id === item.id);
     const updatedCart = [...cart];
 
     if (existingItemIndex > -1) {

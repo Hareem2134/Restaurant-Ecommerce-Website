@@ -30,10 +30,11 @@ const ProductDetails = ({ product }: { product: any }) => {
 
   const handleAddToCart = () => {
     const cartItem = {
-      name: product.name,
-      price: product.price,
-      image: selectedImage,
-      quantity: 1,
+        id: product._id,
+        name: product.name,
+        price: product.price,
+        image: selectedImage,
+        quantity: 1,
     };
 
     addToCart(cartItem); // Add item to the global cart context
