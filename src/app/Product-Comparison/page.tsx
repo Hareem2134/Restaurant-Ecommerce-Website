@@ -4,6 +4,8 @@ import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useCart } from "../Context/CartContext"; // Import Cart Context
+import { FiTrash2 } from "react-icons/fi";
+import { FaCartPlus } from "react-icons/fa";
 
 interface ComparedProduct {
   id: string;
@@ -159,15 +161,17 @@ const ProductComparison: React.FC = () => {
                 <div className="p-4 flex gap-4">
                   <button
                     onClick={() => handleAddToCart(product)}
-                    className="flex-1 bg-orange-500 text-white py-2 rounded-lg hover:bg-orange-600 transition-colors"
-                  >
-                    Add to Cart
+                    className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 flex items-center space-x-1"
+                    >
+                    <FaCartPlus />
+                    <span>Add to Cart</span>
                   </button>
                   <button
                     onClick={() => handleRemoveProduct(product.id)}
-                    className="flex-1 bg-red-500 text-white py-2 rounded-lg hover:bg-red-600 transition-colors"
-                  >
-                    Remove
+                    className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 flex items-center space-x-1"
+                    >
+                    <FiTrash2 />
+                    <span>Remove</span>
                   </button>
                 </div>
               </motion.div>
