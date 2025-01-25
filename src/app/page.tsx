@@ -6,25 +6,6 @@ import HeroAboutus from '../../components/HeroAboutus';
 import HomePageExperience from '../../components/HomePageExperience';
 import ChefOnHome from '../../components/ChefOnHome';
 
-import AIRecommendations from '../../components/AIRecommendations';
-import AnalyticsDashboard from '../../components/AnalyticsDashboard';
-import BulkUpload from '../../components/BulkUpload';
-import DiscountPromotion from '../../components/DiscountPromotion';
-import FilterPanel from '../../components/FilterPanel';
-import GiftCardVoucher from '../../components/GiftCardVoucher';
-import OrderTracking from '../../components/OrderTracking';
-import ReviewsAndRatings from '../../components/ReviewsAndRatings';
-import SocialMediaSharing from '../../components/SocialMediaSharing';
-import Wishlist from '../../components/Wishlist';
-import UserProfile from '../../components/UserProfile';
-import AdminDashboard from '../../components/AdminDashboard';
-import AdvancedSearch from '../../components/AdvancedSearch';
-import Notifications from '../../components/Notifications';
-import ProductComparison from '../../components/ProductComparison';
-import RelatedProducts from '../../components/RelatedProducts';
-import SubscriptionManagement from '../../components/SubscriptionManagement';
-
-
 function HomePage() {
   return (
     <>
@@ -68,32 +49,6 @@ function HomePage() {
     <FoodCategory/>
     <HomePageExperience/>
     <ChefOnHome/>
-
-    <hr/>
-    <hr/>
-    <hr/>
-    <hr/>
-
-            <AdminDashboard/>
-            <AdvancedSearch/>
-            <AIRecommendations/>
-            <AnalyticsDashboard/>
-            <BulkUpload/>
-            <DiscountPromotion/>
-            <FilterPanel/>
-            <GiftCardVoucher/>
-            <Notifications/>
-            <OrderTracking/>
-            <ProductComparison/>
-
-            <RelatedProducts/>
-            <ReviewsAndRatings/>
-            <SocialMediaSharing/>
-
-            <SubscriptionManagement/>
-            <UserProfile/>
-            <Wishlist/>
-
     </>
   )
 }

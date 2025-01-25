@@ -196,7 +196,7 @@ const Navbar: React.FC<NavbarProps> = ({ children }) => {
           </button>
           {isDropdownOpen.user && (
             <div className="absolute bg-black text-white py-2 mt-2 rounded-md shadow-lg right-0 z-50">
-              {["Login", "Signup", "Checkout", "Logout"].map((item) => (
+              {["Login", "Signup", "WishList", "Checkout", "Logout"].map((item) => (
                 <Link
                   key={item}
                   href={`/${item}`}
@@ -221,7 +221,7 @@ const Navbar: React.FC<NavbarProps> = ({ children }) => {
 
         {/* Render children (e.g., LanguageSwitcher) */}
         {children}
-        
+
       </div>
     </header>
   );

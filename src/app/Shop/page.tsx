@@ -25,7 +25,11 @@ interface Food {
 
 function ShopPageContent() {
   const [products, setProducts] = useState<Food[]>([]);
+  const [wishlist, setWishlist] = useState<Food[]>([]);
+  const [cart, setCart] = useState<Food[]>([]);
+  const [compare, setCompare] = useState<Food[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+
   const searchParams = useSearchParams();
   const searchQuery = searchParams.get("search") || "";
 
@@ -65,7 +69,6 @@ function ShopPageContent() {
               : false,
           }));
 
-        // Filter products based on the search query
         const filteredProducts = mappedProducts.filter((product: Food) =>
           product.name.toLowerCase().includes(searchQuery.toLowerCase())
         );
@@ -76,8 +79,37 @@ function ShopPageContent() {
         console.error("Error fetching products:", error);
       }
     }
+
     fetchProducts();
   }, [searchQuery]);
+
+  // Handlers for Wishlist, Cart, and Compare
+  const handleAddToWishlist = (product: Food) => {
+    if (!wishlist.find((item) => item.id === product.id)) {
+      setWishlist([...wishlist, product]);
+      alert(`${product.name} added to Wishlist!`);
+    } else {
+      alert(`${product.name} is already in Wishlist!`);
+    }
+  };
+
+  const handleAddToCart = (product: Food) => {
+    if (!cart.find((item) => item.id === product.id)) {
+      setCart([...cart, product]);
+      alert(`${product.name} added to Cart!`);
+    } else {
+      alert(`${product.name} is already in Cart!`);
+    }
+  };
+
+  const handleCompare = (product: Food) => {
+    if (!compare.find((item) => item.id === product.id)) {
+      setCompare([...compare, product]);
+      alert(`${product.name} added to Compare List!`);
+    } else {
+      alert(`${product.name} is already in Compare List!`);
+    }
+  };
 
   return (
     <>
@@ -94,22 +126,26 @@ function ShopPageContent() {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
               {products.map((product) => (
-                <Link key={product.slug} href={`/product/${product.slug}`}>
-                  <div className="transition-all duration-500 transform hover:scale-105 hover:shadow-2xl">
-                    <ProductCardOnShop product={product} />
-                  </div>
-                </Link>
+                <ProductCardOnShop
+                  key={product.id}
+                  product={product}
+                  onAddToWishlist={handleAddToWishlist}
+                  onAddToCart={handleAddToCart}
+                  onCompare={handleCompare}
+                >
+                  {/* Link for the clickable title */}
+                  <h3 className="font-semibold text-lg mt-2">
+                    <Link href={`/product/${product.slug}`}>
+                      <a className="hover:underline text-blue-600">
+                        {product.name}
+                      </a>
+                    </Link>
+                  </h3>
+                </ProductCardOnShop>
               ))}
             </div>
           )}
-
-          <PaginationOnShop
-            currentPage={0}
-            totalPages={0}
-            onPageChange={function (page: number): void {
-              throw new Error("Function not implemented.");
-            }}
-          />
+          <PaginationOnShop />
         </div>
 
         <FiltersSidebarOnShop />
