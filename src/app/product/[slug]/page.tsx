@@ -1,16 +1,16 @@
 import ProductDetails from "@/app/product/ProductDetails";
 import { client } from "@/sanity/lib/client";
 
-// interface PageProps {
-//   params: { slug: string };
-// }
-
 export async function generateStaticParams(): Promise<{ slug: string }[]> {
   const slugs = await client.fetch<string[]>(`*[_type == "food"].slug.current`);
   return slugs.map((slug) => ({ slug }));
 }
 
-export default async function ProductDetailsPage({ params }: { params: { slug: string } }) {
+export default async function ProductDetailsPage({
+  params,
+}: {
+  params: { slug: string };
+}) {
   const { slug } = params;
 
   const productQuery = `
@@ -66,6 +66,7 @@ export default async function ProductDetailsPage({ params }: { params: { slug: s
     <ProductDetails
       product={product}
       previousSlug={adjacentSlugs.previous || null}
-      nextSlug={adjacentSlugs.next || null} />
+      nextSlug={adjacentSlugs.next || null}
+    />
   );
 }
