@@ -4,21 +4,21 @@ import { Metadata } from "next";
 
 export const dynamicParams = true; // Ensures dynamic route params are handled correctly
 
-interface Params {
-  slug: string;
-}
+// Define explicit types
+type PageProps = {
+  params: {
+    slug: string;
+  };
+};
 
-export async function generateStaticParams(): Promise<Params[]> {
-  const slugs = await client.fetch<string[]>(`*[_type == "food"].slug.current`);
+// Fix generateStaticParams typing
+export async function generateStaticParams(): Promise<Array<{ slug: string }>> {
+  const slugs: string[] = await client.fetch(`*[_type == "food"].slug.current`);
   return slugs.map((slug) => ({ slug }));
 }
 
-// Explicitly define the props type
-export default async function ProductDetailsPage({
-  params,
-}: {
-  params: Params;
-}) {
+// Explicitly type params inside function
+export default async function ProductDetailsPage({ params }: PageProps) {
   const { slug } = params;
 
   const productQuery = `
@@ -79,12 +79,8 @@ export default async function ProductDetailsPage({
   );
 }
 
-// (Optional) If using metadata for SEO
-export async function generateMetadata({
-  params,
-}: {
-  params: Params;
-}): Promise<Metadata> {
+// (Optional) Metadata for better SEO
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = params;
   const product = await client.fetch(
     `*[_type == "food" && slug.current == $slug][0]{ name, description }`,
