@@ -1,22 +1,17 @@
 import ProductDetails from "@/app/product/ProductDetails";
 import { client } from "@/sanity/lib/client";
 import { Metadata } from "next";
-import { GetStaticPaths, GetStaticProps } from "next";
 
+// Use inferred types from Next.js
 export const dynamicParams = true;
 
-// Use Next.js-provided type for `PageProps`
-export type PageProps = {
-  params: Record<string, any>; // Matches dynamic route params
-};
-
-// Fix generateStaticParams typing
-export async function generateStaticParams(): Promise<{ slug: string }[]> {
+// Fix generateStaticParams
+export async function generateStaticParams() {
   const slugs: string[] = await client.fetch(`*[_type == "food"].slug.current`);
   return slugs.map((slug) => ({ slug }));
 }
 
-export default async function ProductDetailsPage({ params }: PageProps) {
+export default async function ProductDetailsPage({ params }: { params: { slug: string } }) {
   const { slug } = params;
 
   const productQuery = `
@@ -77,8 +72,8 @@ export default async function ProductDetailsPage({ params }: PageProps) {
   );
 }
 
-// Generate Metadata with explicit params type
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+// Metadata generation
+export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   const { slug } = params;
 
   const product = await client.fetch(
