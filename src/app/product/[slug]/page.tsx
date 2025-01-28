@@ -2,15 +2,19 @@ import ProductDetails from "@/app/product/ProductDetails";
 import { client } from "@/sanity/lib/client";
 import { Metadata } from "next";
 
+// Ensure `dynamicParams` is explicitly set
 export const dynamicParams = true;
+
+// Define the correct type for params as a Promise
+type Params = Promise<{ slug: string }>;
 
 export async function generateStaticParams() {
   const slugs = await client.fetch<string[]>(`*[_type == "food"].slug.current`);
   return slugs.map((slug) => ({ slug }));
 }
 
-export default async function ProductDetailsPage({ params }: { params: { slug: string } }) {
-  const slug = params?.slug;
+export default async function ProductDetailsPage({ params }: { params: Params }) {
+  const { slug } = await params; // Await resolution of params
 
   const productQuery = `
     *[_type == "food" && slug.current == $slug][0]{
@@ -70,8 +74,8 @@ export default async function ProductDetailsPage({ params }: { params: { slug: s
   );
 }
 
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const slug = params?.slug;
+export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
+  const { slug } = await params; // Await resolution of params
 
   const product = await client.fetch(
     `*[_type == "food" && slug.current == $slug][0]{ name, description }`,

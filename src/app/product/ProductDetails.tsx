@@ -35,6 +35,33 @@ const ProductDetails = ({
   // Handle Tab Click
   const handleTabClick = (tab: string) => setSelectedTab(tab);
 
+
+  const [reviews, setReviews] = useState(
+    product.reviews?.length > 0
+      ? product.reviews
+      : [
+          { id: 1, user: "John Doe", rating: 5, comment: "Excellent product!" },
+          { id: 2, user: "Jane Smith", rating: 4, comment: "Very satisfied, works as expected." },
+        ]
+  );
+  const [newReview, setNewReview] = useState({
+    user: "",
+    rating: 0,
+    comment: "",
+  });
+
+  const handleReviewSubmit = (e) => {
+    e.preventDefault();
+    if (!newReview.user || !newReview.rating || !newReview.comment) {
+      alert("All fields are required.");
+      return;
+    }
+    setReviews([...reviews, { ...newReview, id: reviews.length + 1 }]);
+    setNewReview({ user: "", rating: 0, comment: "" });
+  };
+
+
+
   // Get product images (with a fallback placeholder)
   const images = product?.images?.map((img: any) =>
     img.asset?._ref ? urlFor(img.asset).url() : "/placeholder.jpg"
@@ -391,15 +418,66 @@ const ProductDetails = ({
           </p>
         ) : (
           <div>
-            <h2 className="text-xl font-semibold">Customer Reviews</h2>
-            <p className="text-gray-600">
-              No reviews yet. Be the first to review this product!
-            </p>
-          </div>
-              )}
-              </div>
-          </div>
+        <div className="mt-16">
 
+        <h2 className="text-2xl font-semibold">Customer Reviews</h2>
+        {reviews.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+            {reviews.map((review, index) => (
+              <div key={index} className="p-6 bg-white shadow-lg rounded-lg">
+                <p className="text-lg font-medium">{review.user}</p>
+                <div className="flex space-x-1">
+                  {[...Array(review.rating)].map((_, i) => (
+                    <FaStar key={i} className="text-yellow-500" />
+                  ))}
+                </div>
+                <p className="mt-3">{review.comment}</p>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p>No reviews yet. Be the first to leave one!</p>
+        )}
+        
+        {/* Add Review Form */}
+        <form onSubmit={handleReviewSubmit} className="mt-8 p-6 bg-white shadow-lg rounded-lg">
+          <h3 className="text-xl font-medium">Add a Review</h3>
+          <label>Your Name</label>
+          <input
+            type="text"
+            value={newReview.user}
+            onChange={(e) => setNewReview({ ...newReview, user: e.target.value })}
+            className="w-full px-4 py-2 border rounded-lg"
+          />
+          <label>Rating</label>
+          <select
+            value={newReview.rating}
+            onChange={(e) => setNewReview({ ...newReview, rating: Number(e.target.value) })}
+            className="w-full px-4 py-2 border rounded-lg"
+          >
+            <option value="0">Select a rating</option>
+            {[1, 2, 3, 4, 5].map((r) => (
+              <option key={r} value={r}>{r} Star{r > 1 ? "s" : ""}</option>
+            ))}
+          </select>
+          <label>Comment</label>
+          <textarea
+            value={newReview.comment}
+            onChange={(e) => setNewReview({ ...newReview, comment: e.target.value })}
+            className="w-full px-4 py-2 border rounded-lg"
+          />
+          <button type="submit" className="mt-4 px-6 py-3 bg-green-600 text-white rounded-lg">
+            Submit Review
+          </button>
+        </form>
+        </div>
+
+        </div>
+        )}
+        </div>
+      </div>
+
+          {/* Similar Products Section */}  
           <SimilarProductsSection currentProductId={product._id} />;
 
       </motion.div>
