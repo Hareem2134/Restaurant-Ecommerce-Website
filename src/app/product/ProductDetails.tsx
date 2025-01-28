@@ -373,7 +373,7 @@ const ProductDetails = ({
               </p>
             )}
           </div>
-
+        <hr/>
           {/* Social Media Sharing */}
           <SocialMediaSharing
               productUrl={productUrl}
@@ -381,12 +381,11 @@ const ProductDetails = ({
               productImage={productImage} 
               productDescription={product.description}
           />
-          <hr/>
         </div>
       </div>
 
       {/* Tabs Section */}
-      <div className="mt-32 px-16">
+      <div className="mt-16 px-16">
       <div className="flex border-b border-gray-300">
         <button
           className={`px-16 py-3 text-lg font-semibold ${

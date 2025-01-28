@@ -1,11 +1,9 @@
-import ProductDetails from "@/app/product/ProductDetails";
 import { client } from "@/sanity/lib/client";
 import { Metadata } from "next";
+import dynamic from "next/dynamic";
 
-// Ensure `dynamicParams` is explicitly set
 export const dynamicParams = true;
 
-// Define the correct type for params as a Promise
 type Params = Promise<{ slug: string }>;
 
 export async function generateStaticParams() {
@@ -14,7 +12,7 @@ export async function generateStaticParams() {
 }
 
 export default async function ProductDetailsPage({ params }: { params: Params }) {
-  const { slug } = await params; // Await resolution of params
+  const { slug } = await params;
 
   const productQuery = `
     *[_type == "food" && slug.current == $slug][0]{
@@ -65,8 +63,11 @@ export default async function ProductDetailsPage({ params }: { params: Params })
     );
   }
 
+  // Dynamically import ProductDetails for client-side rendering only
+  const DynamicProductDetails = dynamic(() => import("@/app/product/ProductDetails"), { ssr: false });
+
   return (
-    <ProductDetails
+    <DynamicProductDetails
       product={product}
       previousSlug={adjacentSlugs.previous || null}
       nextSlug={adjacentSlugs.next || null}
@@ -75,7 +76,7 @@ export default async function ProductDetailsPage({ params }: { params: Params })
 }
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
-  const { slug } = await params; // Await resolution of params
+  const { slug } = await params;
 
   const product = await client.fetch(
     `*[_type == "food" && slug.current == $slug][0]{ name, description }`,
