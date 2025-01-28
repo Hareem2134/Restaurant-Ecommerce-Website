@@ -1,15 +1,23 @@
 import ProductDetails from "@/app/product/ProductDetails";
 import { client } from "@/sanity/lib/client";
+import { Metadata } from "next";
 
-export async function generateStaticParams(): Promise<{ slug: string }[]> {
+export const dynamicParams = true; // Ensures dynamic route params are handled correctly
+
+interface Params {
+  slug: string;
+}
+
+export async function generateStaticParams(): Promise<Params[]> {
   const slugs = await client.fetch<string[]>(`*[_type == "food"].slug.current`);
   return slugs.map((slug) => ({ slug }));
 }
 
+// Explicitly define the props type
 export default async function ProductDetailsPage({
   params,
 }: {
-  params: { slug: string };
+  params: Params;
 }) {
   const { slug } = params;
 
@@ -69,4 +77,22 @@ export default async function ProductDetailsPage({
       nextSlug={adjacentSlugs.next || null}
     />
   );
+}
+
+// (Optional) If using metadata for SEO
+export async function generateMetadata({
+  params,
+}: {
+  params: Params;
+}): Promise<Metadata> {
+  const { slug } = params;
+  const product = await client.fetch(
+    `*[_type == "food" && slug.current == $slug][0]{ name, description }`,
+    { slug }
+  );
+
+  return {
+    title: product?.name || "Product Not Found",
+    description: product?.description || "This product does not exist.",
+  };
 }
