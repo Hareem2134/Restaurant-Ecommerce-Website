@@ -1,6 +1,5 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   reactStrictMode: true,
   images: {
     domains: ['cdn.sanity.io'],
@@ -9,18 +8,13 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "placehold.co" },
     ],
   },
-
-  // Add i18n configuration for multiple languages
   i18n: {
-    locales: ['en', 'ur', 'ar', 'fr', 'de'], // List of supported languages
-    defaultLocale: 'en', // Default language
+    locales: ['en', 'ur', 'ar', 'fr', 'de'],
+    defaultLocale: 'en',
   },
-
   eslint: {
     ignoreDuringBuilds: true,
   },
-
-  
 };
 
-export default nextConfig;
+module.exports = nextConfig;
