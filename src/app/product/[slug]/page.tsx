@@ -1,6 +1,6 @@
 import { client } from "@/sanity/lib/client";
 import { Metadata } from "next";
-import dynamic from "next/dynamic";
+import ProductDetailsWrapper from "./ProductDetailsWrapper";
 
 export const dynamicParams = true;
 
@@ -63,11 +63,8 @@ export default async function ProductDetailsPage({ params }: { params: Params })
     );
   }
 
-  // Dynamically import ProductDetails for client-side rendering only
-  const DynamicProductDetails = dynamic(() => import("@/app/product/ProductDetails"), { ssr: false });
-
   return (
-    <DynamicProductDetails
+    <ProductDetailsWrapper
       product={product}
       previousSlug={adjacentSlugs.previous || null}
       nextSlug={adjacentSlugs.next || null}
