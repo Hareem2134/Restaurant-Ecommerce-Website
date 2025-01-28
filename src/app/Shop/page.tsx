@@ -24,9 +24,6 @@ interface Food {
 
 function ShopPageContent() {
   const [products, setProducts] = useState<Food[]>([]);
-  const [wishlist, setWishlist] = useState<Food[]>([]);
-  const [cart, setCart] = useState<Food[]>([]);
-  const [compare, setCompare] = useState<Food[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const searchParams = useSearchParams();
@@ -82,33 +79,6 @@ function ShopPageContent() {
     fetchProducts();
   }, [searchQuery]);
 
-  // Handlers for Wishlist, Cart, and Compare
-  const handleAddToWishlist = (product: Food) => {
-    if (!wishlist.find((item) => item.id === product.id)) {
-      setWishlist([...wishlist, product]);
-      alert(`${product.name} added to Wishlist!`);
-    } else {
-      alert(`${product.name} is already in Wishlist!`);
-    }
-  };
-
-  const handleAddToCart = (product: Food) => {
-    if (!cart.find((item) => item.id === product.id)) {
-      setCart([...cart, product]);
-      alert(`${product.name} added to Cart!`);
-    } else {
-      alert(`${product.name} is already in Cart!`);
-    }
-  };
-
-  const handleCompare = (product: Food) => {
-    if (!compare.find((item) => item.id === product.id)) {
-      setCompare([...compare, product]);
-      alert(`${product.name} added to Compare List!`);
-    } else {
-      alert(`${product.name} is already in Compare List!`);
-    }
-  };
 
   return (
     <>

@@ -13,8 +13,8 @@ export default {
       type: "slug",
       title: "Slug",
       options: {
-        source: "name", // Generate slug from name
-        maxLength: 96, // Limit the length of the slug
+        source: "name",
+        maxLength: 96,
       },
     },
     {
@@ -45,18 +45,35 @@ export default {
       description: "Tags for categorization (e.g., Best Seller, Popular, New)",
     },
     {
-      name: "image",
+      name: "images",
+      type: "array",
+      title: "Food Images",
+      of: [
+        {
+          type: "image",
+          options: {
+            hotspot: true,
+          },
+        },
+      ],
+      description: "Upload multiple images of the food item",
+    },
+    {
+      name: "image", // Add the old field back temporarily
       type: "image",
-      title: "Food Image",
-      options: {
-        hotspot: true,
-      },
+      title: "Food Image (Legacy)",
     },
     {
       name: "description",
       type: "text",
       title: "Description",
       description: "Short description of the food item",
+    },
+    {
+      name: "longDescription",
+      type: "text",
+      title: "Long Description",
+      description: "Detailed information about the food item (visible on productDetails page)",
     },
     {
       name: "available",

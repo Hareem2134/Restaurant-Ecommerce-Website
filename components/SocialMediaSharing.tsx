@@ -1,36 +1,89 @@
-"use client"
-import React from "react";
+"use client";
+import { FaFacebook, FaTwitter, FaWhatsapp, FaPinterest, FaLinkedin } from "react-icons/fa";
 
-const SocialMediaSharing: React.FC = () => {
-  const handleShare = (platform: string) => {
-    alert(`Sharing on ${platform}!`);
+interface SocialMediaShareProps {
+  productUrl: string;
+  productName: string;
+  productDescription: string;
+  productImage: string;
+}
+
+const SocialMediaShare: React.FC<SocialMediaShareProps> = ({
+  productUrl,
+  productName,
+  productDescription,
+  productImage,
+}) => {
+  const shareProduct = (platform: string) => {
+    let shareUrl = "";
+
+    switch (platform) {
+      case "facebook":
+        // Facebook requires metadata on the shared page to display the image and description
+        shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(productUrl)}`;
+        break;
+      case "twitter":
+        // Twitter supports direct text and URL sharing
+        shareUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(
+          productUrl
+        )}&text=${encodeURIComponent(productName)}`;
+        break;
+      case "whatsapp":
+        // WhatsApp supports text sharing
+        shareUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(
+          `${productName}: ${productUrl}`
+        )}`;
+        break;
+      case "pinterest":
+        // Pinterest requires a media URL and description
+        shareUrl = `https://pinterest.com/pin/create/button/?url=${encodeURIComponent(
+          productUrl
+        )}&media=${encodeURIComponent(productImage)}&description=${encodeURIComponent(
+          productName
+        )}`;
+        break;
+      case "linkedin":
+        // LinkedIn supports title, URL, and description
+        shareUrl = `https://www.linkedin.com/shareArticle?url=${encodeURIComponent(
+          productUrl
+        )}&title=${encodeURIComponent(productName)}&summary=${encodeURIComponent(
+          productDescription
+        )}`;
+        break;
+      default:
+        console.error("Unsupported platform");
+        return;
+    }
+
+    // Open the sharing URL in a new popup window
+    window.open(shareUrl, "_blank", "width=800,height=600");
   };
 
   return (
-    <div className="p-6">
-      <h2 className="text-2xl font-bold mb-4">Social Media Sharing</h2>
-      <div className="flex gap-4">
-        <button
-          onClick={() => handleShare("Facebook")}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-        >
-          Share on Facebook
-        </button>
-        <button
-          onClick={() => handleShare("Twitter")}
-          className="bg-blue-400 text-white px-4 py-2 rounded hover:bg-blue-500"
-        >
-          Share on Twitter
-        </button>
-        <button
-          onClick={() => handleShare("WhatsApp")}
-          className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-        >
-          Share on WhatsApp
-        </button>
-      </div>
+    <div className="flex items-center space-x-4">
+      <span className="font-semibold text-xl">Share:</span>
+      <FaFacebook
+        className="text-blue-600 w-6 h-6 cursor-pointer hover:opacity-75"
+        onClick={() => shareProduct("facebook")}
+      />
+      <FaTwitter
+        className="text-blue-400 w-6 h-6 cursor-pointer hover:opacity-75"
+        onClick={() => shareProduct("twitter")}
+      />
+      <FaWhatsapp
+        className="text-green-500 w-6 h-6 cursor-pointer hover:opacity-75"
+        onClick={() => shareProduct("whatsapp")}
+      />
+      <FaPinterest
+        className="text-red-600 w-6 h-6 cursor-pointer hover:opacity-75"
+        onClick={() => shareProduct("pinterest")}
+      />
+      <FaLinkedin
+        className="text-blue-700 w-6 h-6 cursor-pointer hover:opacity-75"
+        onClick={() => shareProduct("linkedin")}
+      />
     </div>
   );
 };
 
-export default SocialMediaSharing;
+export default SocialMediaShare;
