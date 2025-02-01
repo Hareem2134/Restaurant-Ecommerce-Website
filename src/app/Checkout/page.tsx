@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import ForAllHeroSections from "../../../components/ForAllHeroSections";
@@ -49,7 +48,7 @@ export default function CheckoutPage() {
   const discount = subtotal * discountRate;
   const total = subtotal - discount + shippingCost;
 
-  const handlePlaceOrder = () => {
+  const handlePlaceOrder = async () => {
     if (cartItems.length === 0) {
       alert("Your cart is empty. Please add some products.");
       return;
@@ -57,20 +56,53 @@ export default function CheckoutPage() {
 
     setLoading(true); // Show the loading animation
 
-    setTimeout(() => {
-      // Save order details
-      const orderDetails = {
-        items: cartItems,
-        subtotal,
-        discount,
-        shippingCost,
-        total,
-      };
+    // Prepare order data
+    const orderData = {
+      _type: "order",
+      items: cartItems.map((item) => ({
+        product: { _ref: item.id.toString() }, // Reference to the product in Sanity
+        quantity: item.quantity,
+        priceAtPurchase: item.price, // Store the price at the time of purchase
+      })),
+      total: total,
+      subtotal: subtotal,
+      discount: discount,
+      shippingCost: shippingCost,
+      status: "pending", // Initial status
+      shippingAddress: {
+        street: "123 Main St", // Replace with actual address data
+        city: "New York",
+        state: "NY",
+        zip: "10001",
+        country: "USA",
+      },
+      paymentMethod: "credit_card", // Replace with actual payment method
+      transactionId: "TXN-123456", // Replace with actual transaction ID
+    };
 
-      localStorage.setItem("orderDetails", JSON.stringify(orderDetails)); // Save order details
-      localStorage.removeItem("cart"); // Clear cart
-      window.location.href = "/Order-Confirmation"; // Navigate to confirmation page
-    }, 2000); // Add a delay for the animation
+    try {
+      // Save order to Sanity
+      const response = await fetch("/api/order/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(orderData),
+      });
+
+      if (response.ok) {
+        const { orderId } = await response.json();
+        localStorage.removeItem("cart"); // Clear cart
+        window.location.href = `/Order-Confirmation?orderId=${orderId}`; // Navigate to confirmation page
+      } else {
+        alert("Failed to place order. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error placing order:", error);
+      alert("An error occurred while placing your order.");
+    } finally {
+      setLoading(false); // Hide the loading animation
+    }
   };
 
   return (
@@ -135,13 +167,11 @@ export default function CheckoutPage() {
             </button>
             <button
               className="px-6 py-3 bg-[#FF9F0D] text-white rounded shadow hover:bg-[#e58b0a] flex items-center gap-2"
-              onClick={() => alert("Proceed to shipping clicked. Implement next steps.")}
+              onClick={handlePlaceOrder}
             >
-              Proceed to shipping &rarr;
+              Place Order &rarr;
             </button>
           </div>
-        
-          {/* (Omitted for brevity) */}
         </div>
 
         {/* Right Section: Order Summary */}
@@ -187,14 +217,6 @@ export default function CheckoutPage() {
               <span>${total.toFixed(2)}</span>
             </div>
           </div>
-
-          {/* Place Order Button */}
-          <button
-            className="mt-6 w-full px-6 py-3 bg-[#FF9F0D] text-white rounded shadow hover:bg-[#e58b0a] flex items-center justify-center"
-            onClick={handlePlaceOrder}
-          >
-            Place an order &rarr;
-          </button>
         </div>
       </div>
 
