@@ -10,78 +10,51 @@ interface NavbarProps {
   children?: React.ReactNode; // Accept children as a prop
 }
 
-interface BasketIconProps {
-  totalCartItems: number;
-}
-
-const BasketIcon: React.FC<BasketIconProps> = ({ totalCartItems }) => {
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  return (
-    <Link href="/Cart" className="relative">
-      <Image
-        src="/Handbag.png"
-        alt="Basket Icon"
-        width={28}
-        height={28}
-        className="transition-transform duration-200 hover:scale-125 cursor-pointer"
-      />
-      {isClient && totalCartItems > 0 && (
-        <span className="absolute -top-2 -right-2 bg-[#FF9F0D] text-black text-xs font-bold rounded-full px-2 py-1">
-          {totalCartItems}
-        </span>
-      )}
-    </Link>
-  );
-};
-
 const Navbar: React.FC<NavbarProps> = ({ children }) => {
-
   const router = useRouter();
-  const { cart } = useCart();
-  const [searchQuery, setSearchQuery] = useState("");
-  const [isDropdownOpen, setIsDropdownOpen] = useState({
-    user: false,
-    about: false,
-  });
+  const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
+  const [isAboutDropdownOpen, setIsAboutDropdownOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isSearchDropdownOpen, setIsSearchDropdownOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState(""); // State for search input
 
-  const dropdownRefs = {
-    user: useRef<HTMLDivElement | null>(null),
-    about: useRef<HTMLDivElement | null>(null),
-  };
-
+  const { cart } = useCart(); // Access the cart context
+  const userDropdownRef = useRef<HTMLDivElement | null>(null);
+  const aboutDropdownRef = useRef<HTMLDivElement | null>(null);
+  const searchDropdownRef = useRef<HTMLDivElement | null>(null);
   const navRef = useRef<HTMLDivElement | null>(null);
 
   const totalCartItems = cart.reduce((acc, item) => acc + item.quantity, 0);
 
-  const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (searchQuery.trim() !== "") {
-      router.push(`/Shop?search=${encodeURIComponent(searchQuery)}`);
+  // Handle Search Submit
+  const handleSearch = () => {
+    if (searchTerm.trim()) {
+      router.push(`/Shop?search=${encodeURIComponent(searchTerm.trim())}`);
+      setIsSearchDropdownOpen(false); // Close dropdown after search
     }
   };
 
-  const toggleDropdown = (dropdown: "user" | "about") => {
-    setIsDropdownOpen((prev) => ({
-      ...prev,
-      [dropdown]: !prev[dropdown],
-    }));
-  };
-
+  // Close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      Object.keys(dropdownRefs).forEach((key) => {
-        const ref = dropdownRefs[key as keyof typeof dropdownRefs];
-        if (ref.current && !ref.current.contains(event.target as Node)) {
-          setIsDropdownOpen((prev) => ({ ...prev, [key]: false }));
-        }
-      });
-
+      if (
+        aboutDropdownRef.current &&
+        !aboutDropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsAboutDropdownOpen(false);
+      }
+      if (
+        userDropdownRef.current &&
+        !userDropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsUserDropdownOpen(false);
+      }
+      if (
+        searchDropdownRef.current &&
+        !searchDropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsSearchDropdownOpen(false);
+      }
       if (
         navRef.current &&
         !navRef.current.contains(event.target as Node) &&
@@ -97,133 +70,214 @@ const Navbar: React.FC<NavbarProps> = ({ children }) => {
     };
   }, [isMobileMenuOpen]);
 
+  // Close all dropdowns when mobile menu is toggled
+  useEffect(() => {
+    if (!isMobileMenuOpen) {
+      setIsUserDropdownOpen(false);
+      setIsAboutDropdownOpen(false);
+      setIsSearchDropdownOpen(false);
+    }
+  }, [isMobileMenuOpen]);
+
   return (
-    <header className="bg-black text-white py-4 px-6 sm:px-10 lg:px-[60px] xl:px-[100px] flex items-center justify-between relative">
-      <div className="flex items-center">
-        <h1 className="text-[28px] sm:text-[34px] font-bold text-[#FF9F0D]">
+    <div className="bg-black text-white relative">
+      {/* Foodtruck Heading */}
+      <div className="absolute top-4 left-1/2 transform -translate-x-1/2 ">
+        <span className="text-3xl font-bold text-[#FF9F0D]">
           Food<span className="text-white">tuck</span>
-        </h1>
+        </span>
       </div>
 
-      <nav
-        ref={navRef}
-        className={`${
-          isMobileMenuOpen ? "block" : "hidden"
-        } absolute top-full left-0 w-full bg-black shadow-lg lg:flex lg:static lg:bg-transparent lg:w-auto lg:shadow-none lg:items-center z-50 opacity-95`}
-      >
-        <div className="flex flex-col lg:flex-row lg:items-center lg:space-x-8 w-full lg:w-auto">
-          {[
-            { label: "Home", path: "/" },
-            { label: "Menu", path: "/MenuPage" },
-            { label: "Blog", path: "/Blog" },
-          ].map((link) => (
+      {/* Navigation Bar */}
+      <div className="container mx-auto flex justify-between items-center py-2 px-6 pt-14">
+        {/* Mobile Menu Button */}
+        <button
+          className="lg:hidden text-white text-2xl"
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          aria-label="Toggle Mobile Menu"
+        >
+          ☰
+        </button>
+
+        {/* Navigation Links */}
+        <nav
+          ref={navRef}
+          className={`${
+            isMobileMenuOpen ? "block" : "hidden"
+          } absolute top-full left-0 w-full bg-black shadow-lg lg:flex lg:static lg:bg-transparent lg:w-auto lg:shadow-none lg:items-center z-50 opacity-90`}
+        >
+          <div className="flex flex-col lg:flex-row lg:items-center lg:space-x-8 w-full lg:w-auto">
             <Link
-              key={link.label}
-              href={link.path}
+              href="/"
               className="block lg:inline-block text-white py-2 lg:py-0 px-4 lg:px-0 hover:text-[#FF9F0D]"
+              onClick={() => setIsMobileMenuOpen(false)}
             >
-              {link.label}
+              Home
             </Link>
-          ))}
-          <div ref={dropdownRefs.about} className="relative">
-            <button
-              className="flex items-center py-4 lg:py-0 px-4 lg:px-0 hover:text-[#FF9F0D]"
-              onClick={() => toggleDropdown("about")}
-              aria-expanded={isDropdownOpen.about}
+            <Link
+              href="/MenuPage"
+              className="block lg:inline-block text-white py-2 lg:py-0 px-4 lg:px-0 hover:text-[#FF9F0D]"
+              onClick={() => setIsMobileMenuOpen(false)}
             >
-              About <FaChevronDown className="ml-1 text-sm" />
-            </button>
-            {isDropdownOpen.about && (
-              <div className="absolute bg-black text-white py-4 px-6 rounded-md shadow-md space-y-2 w-60">
-                <Link href="/About" className="block hover:text-[#FF9F0D]">
-                  About Us
-                </Link>
-                <Link href="/OurChef" className="block hover:text-[#FF9F0D]">
-                  Our Chef
-                </Link>
-                <Link href="/FAQ" className="block hover:text-[#FF9F0D]">
-                  FAQ
-                </Link>
-              </div>
-            )}
-          </div>
-          <Link
+              Menu
+            </Link>
+            <Link
+              href="/Blog"
+              className="block lg:inline-block text-white py-2 lg:py-0 px-4 lg:px-0 hover:text-[#FF9F0D]"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              Blog
+            </Link>
+
+            {/* About Dropdown */}
+            <div ref={aboutDropdownRef} className="relative">
+              <button
+                className=" lg:inline-block text-white py-2 lg:py-0 px-4 lg:px-0 hover:text-[#FF9F0D]"
+                onClick={() => setIsAboutDropdownOpen(!isAboutDropdownOpen)}
+              >
+                About <FaChevronDown className="ml-1 inline text-sm transition-transform hover:rotate-180" />
+              </button>
+              {isAboutDropdownOpen && (
+                <div className="absolute left-0 top-full bg-black text-white py-4 px-6 rounded-md shadow-md space-y-2 w-40">
+                  <Link href="/About" className="block hover:text-[#FF9F0D]" onClick={() => setIsAboutDropdownOpen(false)}>
+                    About Us
+                  </Link>
+                  <Link href="/OurChef" className="block hover:text-[#FF9F0D]" onClick={() => setIsAboutDropdownOpen(false)}>
+                    Our Chef
+                  </Link>
+                  <Link href="/FAQ" className="block hover:text-[#FF9F0D]" onClick={() => setIsAboutDropdownOpen(false)}>
+                    FAQ
+                  </Link>
+                </div>
+              )}
+            </div>
+
+            <Link
               href="/Shop"
               className="block lg:inline-block text-white py-2 lg:py-0 px-4 lg:px-0 hover:text-[#FF9F0D]"
+              onClick={() => setIsMobileMenuOpen(false)}
             >
               Shop
             </Link>
             <Link
               href="/Contact"
               className="block lg:inline-block text-white py-2 lg:py-0 px-4 lg:px-0 hover:text-[#FF9F0D]"
+              onClick={() => setIsMobileMenuOpen(false)}
             >
               Contact
             </Link>
           </div>
         </nav>
 
+        {/* Right Section: User, Basket, and Search Icons */}
+        <div className="flex items-center space-x-6">
+          {/* Search Dropdown */}
+          <div ref={searchDropdownRef} className="relative inline-block">
+            <button
+              className="relative transition-transform duration-200 hover:scale-125 focus:outline-none focus:ring-[#FF9F0D]"
+              onClick={() => setIsSearchDropdownOpen(!isSearchDropdownOpen)}
+            >
+              <Image
+                src="/Search.png"
+                alt="Search"
+                className="mt-2"
+                width={22}
+                height={22}
+              />
+            </button>
+            {isSearchDropdownOpen && (
+              <div className="absolute right-0 mt-2 bg-black text-black rounded-md shadow-lg p-4 w-64 transition-opacity duration-300 ease-in-out opacity-100">
+                <input
+                  type="text"
+                  placeholder="Search for items..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-[#FF9F0D]"
+                />
+                <button
+                  onClick={handleSearch}
+                  className="mt-2 bg-[#FF9F0D] text-white py-2 px-4 w-full rounded-md hover:bg-[#ff9f0db8]"
+                >
+                  Search
+                </button>
+              </div>
+            )}
+          </div>
 
-      <div className="flex items-center space-x-4">
-        <form onSubmit={handleSearchSubmit} className="relative w-24 lg:w-48">
-          <input
-            type="text"
-            placeholder="Search"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full py-1.5 px-3 pr-10 bg-white text-black text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-[#FF9F0D] border border-gray-300"
-          />
-          <button
-            type="submit"
-            className="absolute right-1.5 top-1/2 transform -translate-y-1/2 bg-[#FF9F0D] text-white px-2 py-1 text-sm rounded-full"
-          >
-            Search
-          </button>
-        </form>
+          {/* User Dropdown */}
+          <div ref={userDropdownRef} className="relative inline-block">
+            <button
+              className="flex items-center transition-transform duration-200 hover:scale-125"
+              onClick={() => setIsUserDropdownOpen(!isUserDropdownOpen)}
+            >
+              <Image
+                src="/user.png"
+                alt="user"
+                className="h-6 w-6 cursor-pointer"
+                width={24}
+                height={24}
+              />
+              <FaChevronDown className="ml-1 text-sm transition-transform hover:rotate-180" />
+            </button>
 
-        <div ref={dropdownRefs.user} className="relative">
-          <button
-            className="flex items-center transition-transform duration-200 hover:scale-125"
-            onClick={() => toggleDropdown("user")}
+            {isUserDropdownOpen && (
+              <div className="absolute bg-black text-white py-2 mt-2 rounded-md shadow-lg right-0 z-50 transition-transform duration-200 ease-in-out">
+                <Link
+                  href="/Login"
+                  className="block px-6 py-2 hover:bg-[#FF9F0D] hover:text-black transition-all duration-200 ease-in-out"
+                  onClick={() => setIsUserDropdownOpen(false)}
+                >
+                  Login
+                </Link>
+                <Link
+                  href="/Signup"
+                  className="block px-6 py-2 hover:bg-[#FF9F0D] hover:text-black transition-all duration-200 ease-in-out"
+                  onClick={() => setIsUserDropdownOpen(false)}
+                >
+                  Signup
+                </Link>
+                <Link
+                  href="/Checkout"
+                  className="block px-6 py-2 hover:bg-[#FF9F0D] hover:text-black transition-all duration-200 ease-in-out"
+                  onClick={() => setIsUserDropdownOpen(false)}
+                >
+                  Checkout
+                </Link>
+                <Link
+                  href="/Logout"
+                  className="block px-6 py-2 hover:bg-[#FF9F0D] hover:text-black transition-all duration-200 ease-in-out"
+                  onClick={() => setIsUserDropdownOpen(false)}
+                >
+                  Logout
+                </Link>
+              </div>
+            )}
+          </div>
+
+          {/* Basket Icon with Cart Count */}
+          <Link
+            href="/Cart"
+            className="relative transition-transform duration-200 hover:scale-125"
           >
             <Image
-              src="/user.png"
-              alt="User"
+              src="/Handbag.png"
+              alt="Basket Icon"
+              width={28}
+              height={28}
               className="cursor-pointer"
-              width={24}
-              height={24}
             />
-            <FaChevronDown className="ml-1 text-sm" />
-          </button>
-          {isDropdownOpen.user && (
-            <div className="absolute bg-black text-white py-2 mt-2 rounded-md shadow-lg right-0 z-50">
-              {["Login", "Signup", "WishList", "Checkout", "Logout"].map((item) => (
-                <Link
-                  key={item}
-                  href={`/${item}`}
-                  className="block px-6 py-2 hover:bg-[#FF9F0D]"
-                >
-                  {item}
-                </Link>
-              ))}
-            </div>
-          )}
+            {totalCartItems > 0 && (
+              <span className="absolute -top-2 -right-2 bg-[#FF9F0D] text-black text-xs font-bold rounded-full px-2 py-1 animate-pulse">
+                {totalCartItems}
+              </span>
+            )}
+          </Link>
+
+          {/* Render children (e.g., LanguageSwitcher) */}
+          {children}
         </div>
-
-        <BasketIcon totalCartItems={totalCartItems} />
-
-        <button
-          className="lg:hidden text-white text-2xl ml-4 focus:outline-none"
-          onClick={() => setIsMobileMenuOpen((prev) => !prev)}
-          aria-label="Toggle Mobile Menu"
-        >
-          ☰
-        </button>
-
-        {/* Render children (e.g., LanguageSwitcher) */}
-        {children}
-
       </div>
-    </header>
+    </div>
   );
 };
 

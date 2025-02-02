@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
-import Script from "next/script";
 import localFont from "next/font/local";
 import "./globals.css";
 import Footer from "../../components/Footer";
-import { CartProvider } from "./Context/CartContext";
 import DynamicNavbar from "../../components/DynamicNavbar";
 
 const geistSans = localFont({
@@ -28,16 +26,13 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const defaultLanguage = "en";
-
   return (
-    <html lang={defaultLanguage}>
+    <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <CartProvider>
-          <DynamicNavbar />
+        <DynamicNavbar>
           {children}
           <Footer />
-        </CartProvider>
+        </DynamicNavbar>
       </body>
     </html>
   );
