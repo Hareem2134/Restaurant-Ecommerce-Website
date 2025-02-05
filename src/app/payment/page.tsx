@@ -1,18 +1,10 @@
 // File: src/app/payment/page.tsx
-"use client";
+"use client"; // ✅ Ensures it's a Client Component
 
 import { useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
-import { NextResponse } from "next/server";
-import Stripe from "stripe";
 
-// Load Stripe on the client side
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY as string);
-
-// Stripe instance for the API route (server-side)
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
-  apiVersion: "2025-01-27.acacia", // Latest stable API version
-});
 
 export default function PaymentPage() {
   const [loading, setLoading] = useState(false);
@@ -20,7 +12,6 @@ export default function PaymentPage() {
   const handlePayment = async () => {
     setLoading(true);
     try {
-      // Call the same file's API route for payment processing
       const response = await fetch("/payment", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -68,41 +59,4 @@ export default function PaymentPage() {
       </button>
     </div>
   );
-}
-
-// ✅ API Route (Server Action) inside the same file
-export async function POST(req: Request) {
-  try {
-    const { amount, currency } = await req.json();
-
-    if (!amount || !currency) {
-      return NextResponse.json(
-        { error: "Missing required payment details" },
-        { status: 400 }
-      );
-    }
-
-    // Create a Stripe Checkout Session
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ["card"],
-      line_items: [
-        {
-          price_data: {
-            currency,
-            product_data: { name: "Your Product" },
-            unit_amount: amount * 100, // Convert to cents
-          },
-          quantity: 1,
-        },
-      ],
-      mode: "payment",
-      success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/success`,
-      cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/cancel`,
-    });
-
-    return NextResponse.json({ sessionId: session.id });
-  } catch (error: any) {
-    console.error("Stripe Checkout Error:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
 }
