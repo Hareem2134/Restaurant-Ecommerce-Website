@@ -5,6 +5,7 @@ import FoodCategory from "../../components/FoodCategory";
 import HeroAboutus from '../../components/HeroAboutus';
 import HomePageExperience from '../../components/HomePageExperience';
 import ChefOnHome from '../../components/ChefOnHome';
+import SimilarProductsSection from 'components/SimilarProducts';
 
 function HomePage() {
   return (
@@ -46,6 +47,7 @@ function HomePage() {
     </section>
 
     <HeroAboutus/>
+    <SimilarProductsSection currentProductId={'product._id'}/>
     <FoodCategory/>
     <HomePageExperience/>
     <ChefOnHome/>

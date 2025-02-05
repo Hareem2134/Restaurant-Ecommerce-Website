@@ -10,11 +10,16 @@
   },
   "dependencies": {
     "@portabletext/react": "^3.2.0",
+    "@prisma/client": "^6.3.0",
     "@sanity/client": "^6.24.4",
     "@sanity/image-url": "^1.1.0",
     "@sanity/vision": "^3.70.0",
+    "@stripe/react-stripe-js": "^3.1.1",
+    "@stripe/stripe-js": "^5.6.0",
+    "bcrypt": "^5.1.1",
     "chart.js": "^4.4.7",
     "next": "^15.1.6",
+    "next-auth": "^4.24.11",
     "next-sanity": "^9.8.37",
     "react": "^18.3.1",
     "react-chartjs-2": "^5.3.0",
@@ -24,8 +29,11 @@
     "react-swipeable": "^7.0.2",
     "sanity": "^3.70.0",
     "slick-carousel": "^1.8.1",
+    "stripe": "^17.6.0",
     "styled-components": "^6.1.14",
-    "swiper": "^11.2.1"
+    "swiper": "^11.2.1",
+    "uuid": "^11.0.5",
+    "zod": "^3.24.1"
   },
   "devDependencies": {
     "@types/node": "^20",
