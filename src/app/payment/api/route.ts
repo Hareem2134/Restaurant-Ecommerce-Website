@@ -1,4 +1,3 @@
-// File: src/app/payment/route.ts
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 
@@ -25,7 +24,7 @@ export async function POST(req: Request) {
           price_data: {
             currency,
             product_data: { name: "Your Product" },
-            unit_amount: amount * 100, // Convert to cents
+            unit_amount: amount * 100, // Convert dollars to cents
           },
           quantity: 1,
         },

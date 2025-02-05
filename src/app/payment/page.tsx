@@ -1,5 +1,4 @@
-// File: src/app/payment/page.tsx
-"use client"; // ✅ Ensures it's a Client Component
+"use client";
 
 import { useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
@@ -12,7 +11,8 @@ export default function PaymentPage() {
   const handlePayment = async () => {
     setLoading(true);
     try {
-      const response = await fetch("/payment", {
+      // ✅ Use `/payment/api` instead of `/payment` to avoid conflicts
+      const response = await fetch("/payment/api", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ amount: 50, currency: "usd" }),
