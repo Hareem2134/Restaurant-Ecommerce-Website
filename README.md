@@ -1,7 +1,3 @@
-Certainly! Below is the updated `README.md` file that combines the existing Next.js template with the detailed information about your **Foodtuck Marketplace** project, including the admin panel and other features.
-
----
-
 # Foodtuck Marketplace - Customized & International Cuisine Delivery Q-Commerce Website
 
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app). The Foodtuck Marketplace is a dynamic, feature-rich eCommerce platform designed to provide a seamless online shopping experience. It includes a fully functional frontend built with React, Next.js, and TypeScript, and a separate admin panel for managing products, orders, and discount codes.
@@ -87,8 +83,6 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ---
 
-## Usage
-
 ### Frontend
 - Visit `http://localhost:3000` to view the frontend.
 - Use the search bar to find products, apply filters, and browse through categories.
@@ -97,13 +91,6 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 ### Admin Panel
 - Visit `http://localhost:5000` to access the admin panel.
 - Log in with admin credentials to manage products, orders, and discount codes.
-
----
-
-## Admin Panel
-Got it! Let’s refine the **Backend (Admin Panel)** section to reflect the technologies you’re using, such as **Sanity CMS**, **Clerk**, and **Next.js**. I’ll also ensure the description aligns with the features and functionalities of your admin panel.
-
-Here’s the updated section:
 
 ---
 
