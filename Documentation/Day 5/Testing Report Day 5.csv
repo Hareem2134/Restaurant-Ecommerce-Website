@@ -1,0 +1,16 @@
+Test Case ID,Description,Steps,Expected Result ,Actual Result,Status,Severity Level	,Remarks
+,,,,,,,
+Test Case # 1,Validate product listing,Open product page > Verify products,Products displayed,Products displayed ,Passed,,Works as expected
+Test Case # 2,Validate API integration,Trigger API requests > Monitor response times,API responses are correct & timely,API responses are correct & timely,Passed,,Works as expected
+Test Case # 3,Test API error handling,Disconnect API > Refresh page,Show fallback message,Error message shown,Passed,,Works as expected
+Test Case # 4,Check cart functionality,Add item to cart > Verify cart,Cart updates correctly,Cart updates correctly ,Passed,,Works as expected
+Test Case # 5,Test responsiveness layout,"Resize browser window > Check layout ",Layout adjusts properly ,Layout adjusts properly ,Passed,,"Responsiveness verified "
+Test Case # 6,Validate order placement,Select items > Proceed to checkout > Confirm order,Order is placed successfully,Order is placed successfully,Passed,,Works as expected
+Test Case # 7,Test search & filter options,Search for cuisine > Apply filters,Relevant results displayed,Relevant results displayed,Passed,,Works as expected
+Test Case # 8,Validate review and rating system,Submit a review and rating for a product,Review and rating are displayed correctly,Review and rating are displayed correctly,Passed,,Works as expected
+Test Case # 9,Language Translator,Change language from dropdown > Navigate site,Website content updates to selected language,Website content updates to selected language,Passed,,Translations are accurate
+Test Case # 10,Validate wishlist functionality,Add item to wishlist > View wishlist page,Item is correctly saved in wishlist,Item is correctly saved in wishlist,Passed,,Works as expected
+Test Case # 11,Product comparison feature,Select multiple products > Click compare,Comparison table displays correct details,Comparison table displays correct details,Passed,,Works as expected
+Test Case # 12,Verify product detail page,"Open product page > Check images, descriptions, and pricing",Product details are displayed correctly,Product details are displayed correctly,Passed,,images and data load properly
+Test Case # 13,Validate removal from wishlist,Add item to wishlist > Remove item,Item is removed successfully,Item is removed successfully,Passed,,Works as expected
+Test Case # 14,Validate order details in sanity check,Place an order > Check order details in sanity,Order details are accurately stored and displayed	,Order details are accurately stored and displayed,Passed,,Works as expected
