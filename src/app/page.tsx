@@ -35,7 +35,7 @@ function HomePage() {
 
         <div className='mt-[50px] md:mt-0 '>   
             <Image 
-                src="/hero.webp"
+                src="/hero.png"
                 alt='Hero Image'
                 width={700}
                 height={500}
