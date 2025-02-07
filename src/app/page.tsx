@@ -23,7 +23,7 @@ function HomePage() {
           </h1>
 
           <p className='text-[10px] md:text-[16px] font-normal'>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Varius sed pharetra dictum neque massa congue
+          Experience the perfect blend of speed and quality with our customized & international cuisine delivery. Fresh flavors, fast service—right at your doorstep!
           </p>
 
           <div className='flex flex-col md:flex-row items-center md:items-start'>
