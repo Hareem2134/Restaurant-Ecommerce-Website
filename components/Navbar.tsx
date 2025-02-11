@@ -24,6 +24,13 @@ const Navbar: React.FC<NavbarProps> = ({ children }) => {
   const searchDropdownRef = useRef<HTMLDivElement | null>(null);
   const navRef = useRef<HTMLDivElement | null>(null);
 
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+
   const totalCartItems = cart.reduce((acc, item) => acc + item.quantity, 0);
 
   // Handle Search Submit
@@ -264,13 +271,15 @@ const Navbar: React.FC<NavbarProps> = ({ children }) => {
               alt="Basket Icon"
               width={28}
               height={28}
+              priority unoptimized
               className="cursor-pointer"
             />
-            {totalCartItems > 0 && (
+            {isClient && totalCartItems > 0 && (
               <span className="absolute -top-2 -right-2 bg-[#FF9F0D] text-black text-xs font-bold rounded-full px-2 py-1 animate-pulse">
                 {totalCartItems}
               </span>
             )}
+
           </Link>
 
           {/* Render children (e.g., LanguageSwitcher) */}

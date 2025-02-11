@@ -61,25 +61,25 @@ const SocialMediaShare: React.FC<SocialMediaShareProps> = ({
 
   return (
     <div className="flex items-center space-x-4">
-      <span className="font-semibold text-xl">Share:</span>
+      <span className="font-semibold text-lg">Share:</span>
       <FaFacebook
-        className="text-blue-600 w-6 h-6 cursor-pointer hover:opacity-75"
+        className="text-blue-600 w-5 h-5 cursor-pointer hover:scale-125 hover:opacity-90 transform transition-transform"
         onClick={() => shareProduct("facebook")}
       />
       <FaTwitter
-        className="text-blue-400 w-6 h-6 cursor-pointer hover:opacity-75"
+        className="text-blue-400 w-5 h-5 cursor-pointer hover:scale-125 hover:opacity-90 transform transition-transform"
         onClick={() => shareProduct("twitter")}
       />
       <FaWhatsapp
-        className="text-green-500 w-6 h-6 cursor-pointer hover:opacity-75"
+        className="text-green-500 w-5 h-5 cursor-pointer hover:scale-125 hover:opacity-90 transform transition-transform"
         onClick={() => shareProduct("whatsapp")}
       />
       <FaPinterest
-        className="text-red-600 w-6 h-6 cursor-pointer hover:opacity-75"
+        className="text-red-600 w-5 h-5 cursor-pointer hover:scale-125 hover:opacity-90 transform transition-transform"
         onClick={() => shareProduct("pinterest")}
       />
       <FaLinkedin
-        className="text-blue-700 w-6 h-6 cursor-pointer hover:opacity-75"
+        className="text-blue-700 w-5 h-5 cursor-pointer hover:scale-125 hover:opacity-90 transform transition-transform"
         onClick={() => shareProduct("linkedin")}
       />
     </div>

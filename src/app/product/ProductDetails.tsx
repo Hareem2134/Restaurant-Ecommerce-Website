@@ -186,7 +186,7 @@ const ProductDetails = ({
 
     return (
   <motion.div
-    className="container mx-auto px-4 lg:px-20 py-12"
+    className="container mx-auto px-18 lg:px-36 py-10"
     initial={{ opacity: 0, y: 100, scale: 0.9 }}
     animate={{ opacity: 1, y: 0, scale: 1 }}
     exit={{ opacity: 0, y: 50, scale: 0.95 }}
@@ -200,18 +200,18 @@ const ProductDetails = ({
         </div>
       )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12">
         {/* Thumbnails Section */}
         <div className="lg:col-span-2 hidden lg:flex flex-col items-center">
           {images.map((imgUrl, index) => (
             <motion.div
               key={index}
-              className={`w-full h-36 shadow-black hover:shadow-black hover:shadow-md rounded-lg overflow-hidden border cursor-pointer mb-6 ${
+              className={`w-full h-28 shadow-black shadow-md hover:shadow-black hover:shadow-lg rounded-lg overflow-hidden border cursor-pointer mb-6 ${
                 selectedImage === imgUrl
-                  ? "ring-2 ring-orange-500"
-                  : "hover:opacity-75"
+                  ? "ring-1 ring-orange-500"
+                  : "hover:opacity-95"
               }`}
-              whileHover={{ scale: 1.05 }}
+              whileHover={{ scale: 1.10 }}
               onClick={() => {
                 setSelectedImage(index);
                 setSelectedImage(images[index]); // Ensure immediate update
@@ -220,8 +220,8 @@ const ProductDetails = ({
               <Image
                 src={imgUrl}
                 alt={`Thumbnail ${index + 1}`}
-                width={140}
-                height={140}
+                width={110}
+                height={110}
                 className="object-cover w-full h-full hover:shadow-black hover:shadow-sm"
               />
             </motion.div>
@@ -231,8 +231,8 @@ const ProductDetails = ({
         {/* Main Product Image */}
         <div className="lg:col-span-6 flex flex-col items-center relative">
           <motion.div 
-            className="w-full max-w-[90%] aspect-square lg:aspect-auto shadow-black hover:shadow-black hover:shadow-md" 
-            whileHover={{ scale: 1.02 }} 
+            className="max-w-[80%] aspect-square lg:aspect-auto shadow-black hover:shadow-black hover:shadow-md" 
+            whileHover={{ scale: 1.10 }} 
             transition={{ duration: 0.5 }}
           >
             <Image
@@ -240,8 +240,8 @@ const ProductDetails = ({
               alt={product.name}
               layout="responsive"
               width={1}
-              height={1}
-              className="object-contain shadow-black hover:shadow-black hover:shadow-md transition-transform"
+              height={350}
+              className="object-contain rounded shadow-black shadow-lg hover:shadow-xl hover:shadow-black transition-transform"
               key={selectedImage} 
             />
           </motion.div>
@@ -250,7 +250,7 @@ const ProductDetails = ({
         {/* Product details */}
         <div className="lg:col-span-4 space-y-4">
           <div className="flex justify-between items-center mb-2">
-          <div className="text-md text-white" style={{ backgroundColor: '#FF9F0D', padding: '0.5rem 1.7rem', borderRadius: '9px', fontWeight: '600' }}>
+          <div className="text-sm text-white" style={{ backgroundColor: '#FF9F0D', padding: '0.5rem 1.7rem', borderRadius: '9px', fontWeight: '600' }}>
           In Stock
           </div>
 
@@ -279,16 +279,14 @@ const ProductDetails = ({
           </div>
 
           {/* Title */}
-          <h1 className="text-4xl font-bold mb-2">{product.name}</h1>
+          <h1 className="text-2xl font-bold mb-2">{product.name}</h1>
 
           {/* Description */}
-          <p className="text-gray-700 text-base leading-relaxed max-w-md mb-4">{product.description}</p>
-
-          <hr/>
+          <p className="text-gray-700 text-sm leading-relaxed max-w-md mb-2">{product.description}</p>
 
           {/* Price */}
-          <div className="flex items-baseline space-x-4 mb-2">
-            <span className="text-4xl font-semibold text-gray-800">${product.price}</span>
+          <div className="flex items-baseline space-x-4">
+            <span className="text-2xl font-semibold text-gray-800">${product.price}</span>
             {product.originalPrice && (
               <span className="text-xl text-gray-500 line-through">${product.originalPrice}</span>
             )}
@@ -318,15 +316,15 @@ const ProductDetails = ({
             <a href="/Shop" className="hover:text-orange-500">
               Shop
             </a>{" "}
-            / <span className="text-gray-800">{product.name}</span>
+            / <span className="text-gray-800 hover:text-orange-500">{product.name}</span>
           </nav>
 
           {/* Quantity Selector and Add to Cart */}
-          <div className="flex items-center space-x-4 pb-3">
+          <div className="flex items-center space-x-4 pb-1">
             <div className="flex items-center border border-gray-300 rounded-lg">
               <button
                 onClick={() => setQuantity(quantity > 1 ? quantity - 1 : 1)}
-                className="px-4 py-2 text-lg font-semibold"
+                className="px-4 py-2 text-md font-semibold"
               >
                 -
               </button>
@@ -343,9 +341,7 @@ const ProductDetails = ({
             </button>
           </div>
 
-          <hr/>
-
-          <div className="flex items-center space-x-6 mb-2 text-xl pt-3">
+          <div className="flex items-center space-x-6 mb-1 text-lg pt-1">
             <button
               onClick={handleAddToWishlist}
               className="flex items-center space-x-2 text-gray-600 hover:text-gray-800"
@@ -363,7 +359,7 @@ const ProductDetails = ({
           </div>
 
           {/* Product Meta */}
-          <div className="text-xl text-gray-600 space-y-1 mb-2">
+          <div className="text-lg text-gray-600 space-y-1 mb-1">
             <p>
               <span className="font-semibold">Category:</span> {product.category || "General"}
             </p>
@@ -373,7 +369,7 @@ const ProductDetails = ({
               </p>
             )}
           </div>
-        <hr/>
+
           {/* Social Media Sharing */}
           <SocialMediaSharing
               productUrl={productUrl}
@@ -388,7 +384,7 @@ const ProductDetails = ({
       <div className="mt-16 px-16">
       <div className="flex border-b border-gray-300">
         <button
-          className={`px-16 py-3 text-lg font-semibold ${
+          className={`px-16 py-3 text-md font-semibold ${
             selectedTab === "longDescription"
               ? "text-orange-500 border-b-2 border-orange-500"
               : "text-gray-600"
@@ -398,7 +394,7 @@ const ProductDetails = ({
           Description
         </button>
         <button
-          className={`px-6 py-3 text-lg font-semibold ${
+          className={`px-6 py-3 text-md font-semibold ${
             selectedTab === "reviews"
               ? "text-orange-500 border-b-2 border-orange-500"
               : "text-gray-600"
@@ -412,7 +408,7 @@ const ProductDetails = ({
       {/* Tab Content */}
       <div className="p-5">
         {selectedTab === "longDescription" ? (
-          <p className="text-gray-700 text-base leading-relaxed">
+          <p className="text-gray-700 text-sm leading-relaxed">
             {product.longDescription}
           </p>
         ) : (

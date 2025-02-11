@@ -13,18 +13,23 @@ interface CartItem {
 }
 
 export default function ShoppingCart() {
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [cartItems, setCartItems] = useState<CartItem[]>([]); // Use empty array instead of null
+  const [loading, setLoading] = useState(true); // Track loading state
   const [couponCode, setCouponCode] = useState('');
   const [discount, setDiscount] = useState(0);
   const router = useRouter();
 
   useEffect(() => {
-    const fetchCart = () => {
+    if (typeof window !== 'undefined') {
       const storedCart = JSON.parse(localStorage.getItem('cart') || '[]') as CartItem[];
       setCartItems(storedCart);
-    };
-    fetchCart();
-  }, []); // Run once on mount
+      setLoading(false); // Mark loading as complete
+    }
+  }, []);
+
+  if (loading) {
+    return <div className="text-center p-6">Loading...</div>;
+  }
 
   const handleQuantityChange = (id: number, newQuantity: number) => {
     if (newQuantity < 0) return;
@@ -42,11 +47,7 @@ export default function ShoppingCart() {
   };
 
   const handleApplyCoupon = () => {
-    if (couponCode === 'DISCOUNT10') {
-      setDiscount(0.1); // 10% discount
-    } else {
-      setDiscount(0);
-    }
+    setDiscount(couponCode === 'DISCOUNT10' ? 0.1 : 0);
   };
 
   const handleCheckout = () => {
@@ -55,96 +56,85 @@ export default function ShoppingCart() {
   };
 
   const cartSubtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const shippingCharges = 30.0;
+  const shippingCharges = 0.0;
   const totalAmount = cartSubtotal - cartSubtotal * discount + shippingCharges;
 
   return (
-    <div className="min-h-screen bg-white px-8 py-12">
-      <div className="mx-auto max-w-screen-lg">
-        <h1 className="text-3xl font-bold mb-6">Shopping Cart</h1>
+    <div className="min-h-screen bg-white px-4 py-8 sm:px-8 md:px-12 lg:px-16">
+      <div className="max-w-screen-lg mx-auto">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6">Shopping Cart</h1>
 
         {cartItems.length === 0 ? (
           <p className="text-gray-500 text-lg">
             Your cart is empty.{' '}
-            <a href="/Shop" className="text-orange-500">
-              Continue Shopping
-            </a>
+            <a href="/Shop" className="text-orange-500">Continue Shopping</a>
           </p>
         ) : (
           <>
-            <table className="w-full border-collapse">
-              <thead>
-                <tr className="bg-gray-100 text-left">
-                  <th className="p-4 font-semibold">Product</th>
-                  <th className="p-4 font-semibold">Price</th>
-                  <th className="p-4 font-semibold">Quantity</th>
-                  <th className="p-4 font-semibold">Total</th>
-                  <th className="p-4 font-semibold">Remove</th>
-                </tr>
-              </thead>
-              <tbody>
-                {cartItems.map((item, index) => (
-                  <tr key={item.id ?? `cart-item-${index}`} className="border-b">
-                    <td className="p-4 flex items-center">
-                      <Image
-                        src={item.image}
-                        alt={item.name}
-                        width={64}
-                        height={64}
-                        className="w-16 h-16 object-cover rounded mr-4"
-                      />
-                      <span>{item.name}</span>
-                    </td>
-                    <td className="p-4">${item.price.toFixed(2)}</td>
-                    <td className="p-4">
-                      <input
-                        type="number"
-                        value={item.quantity}
-                        onChange={(e) =>
-                          handleQuantityChange(item.id, parseInt(e.target.value) || 0)
-                        }
-                        className="w-16 border rounded px-2 py-1 text-center"
-                        min="0"
-                      />
-                    </td>
-                    <td className="p-4">${(item.price * item.quantity).toFixed(2)}</td>
-                    <td
-                      className="p-4 text-red-500 cursor-pointer"
-                      onClick={() => handleRemoveItem(item.id)}
-                    >
-                      &times;
-                    </td>
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse min-w-[600px]">
+                <thead>
+                  <tr className="bg-gray-100 text-left">
+                    <th className="p-4 font-semibold">Product</th>
+                    <th className="p-4 font-semibold">Price</th>
+                    <th className="p-4 font-semibold">Quantity</th>
+                    <th className="p-4 font-semibold">Total</th>
+                    <th className="p-4 font-semibold">Remove</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {cartItems.map((item) => (
+                    <tr key={item.id} className="border-b">
+                      <td className="p-4 flex items-center space-x-4">
+                        <Image src={item.image} alt={item.name} width={64} height={64} className="w-16 h-16 object-cover rounded" />
+                        <span>{item.name}</span>
+                      </td>
+                      <td className="p-4">${item.price.toFixed(2)}</td>
+                      <td className="p-4">
+                        <input
+                          type="number"
+                          value={item.quantity}
+                          onChange={(e) => handleQuantityChange(item.id, parseInt(e.target.value) || 0)}
+                          className="w-16 border rounded px-2 py-1 text-center"
+                          min="0"
+                        />
+                      </td>
+                      <td className="p-4">${(item.price * item.quantity).toFixed(2)}</td>
+                      <td className="p-4">
+                        <button
+                          onClick={() => handleRemoveItem(item.id)}
+                          className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition"
+                        >
+                          Remove
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
 
-            <div className="flex justify-end mt-6">
-              <div className="w-full lg:w-1/3">
-                <div className="bg-gray-100 p-6 rounded-lg">
-                  <div className="flex justify-between mb-4">
-                    <span>Cart Subtotal</span>
-                    <span>${cartSubtotal.toFixed(2)}</span>
-                  </div>
-                  <div className="flex justify-between mb-4">
-                    <span>Discount</span>
-                    <span>${(cartSubtotal * discount).toFixed(2)}</span>
-                  </div>
-                  <div className="flex justify-between mb-4">
-                    <span>Shipping Charges</span>
-                    <span>${shippingCharges.toFixed(2)}</span>
-                  </div>
-                  <div className="flex justify-between font-semibold text-lg">
-                    <span>Total Amount</span>
-                    <span>${totalAmount.toFixed(2)}</span>
-                  </div>
-                  <button
-                    onClick={handleCheckout}
-                    className="block text-center bg-orange-500 text-white mt-6 py-3 rounded font-semibold hover:bg-orange-600 w-full"
-                  >
-                    Proceed to Checkout
-                  </button>
+            <div className="mt-6 flex flex-col sm:flex-row sm:justify-end">
+              <div className="w-full sm:w-2/3 md:w-1/2 lg:w-1/3 bg-gray-100 p-6 rounded-lg text-center md:text-left">
+                <div className="flex justify-between mb-2 text-sm md:text-base">
+                  <span>Subtotal</span>
+                  <span>${cartSubtotal.toFixed(2)}</span>
                 </div>
+                <div className="flex justify-between mb-2 text-sm md:text-base">
+                  <span>Discount</span>
+                  <span>${(cartSubtotal * discount).toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between mb-2 text-sm md:text-base">
+                  <span>Shipping</span>
+                  <span>Choose shipping on checkout</span>
+                </div>
+                <div className="flex justify-between font-semibold text-lg md:text-xl">
+                  <span>Total</span>
+                  <span>${totalAmount.toFixed(2)}</span>
+                </div>
+                <button onClick={handleCheckout} className="w-full bg-orange-500 text-white mt-4 py-2 rounded font-semibold hover:bg-orange-600 text-sm md:text-lg">
+                  Proceed to Checkout
+                </button>
               </div>
             </div>
           </>
