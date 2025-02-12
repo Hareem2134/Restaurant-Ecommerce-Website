@@ -241,19 +241,19 @@ const ProductDetails = ({
               layout="responsive"
               width={1}
               height={350}
-              className="object-contain rounded shadow-black shadow-lg hover:shadow-xl hover:shadow-black transition-transform"
+              className="object-contain rounded shadow-black shadow-md hover:shadow-lg hover:shadow-black transition-transform"
               key={selectedImage} 
             />
           </motion.div>
         </div>
 
         {/* Product details */}
-        <div className="lg:col-span-4 space-y-4">
-          <div className="flex justify-between items-center mb-2">
+        <div className="lg:col-span-4 space-y-6">
+          <div className="flex justify-between items-center mb-1">
           <div className="text-xs sm:text-sm text-white bg-[#FF9F0D] px-3 py-0.5 sm:px-4 sm:py-1 rounded-lg font-semibold">
             In Stock
           </div>
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2">
               <button
                 className={`flex items-center text-orange-500 hover:underline ${
                   !previousSlug ? "opacity-50 cursor-not-allowed" : ""
@@ -278,10 +278,10 @@ const ProductDetails = ({
           </div>
 
           {/* Title */}
-          <h1 className="text-2xl font-bold mb-2">{product.name}</h1>
+          <h1 className="text-2xl font-bold">{product.name}</h1>
 
           {/* Description */}
-          <p className="text-gray-700 text-sm leading-relaxed max-w-md mb-2">{product.description}</p>
+          <p className="text-gray-700 text-sm leading-relaxed max-w-md">{product.description}</p>
 
           {/* Price */}
           <div className="flex items-baseline space-x-4">
@@ -292,17 +292,11 @@ const ProductDetails = ({
           </div>
 
           {/* Review Stars */}
-          <div className="flex items-center space-x-4 mb-2">
+          <div className="flex items-center space-x-4 mb-1">
             <div className="flex text-yellow-600 space-x-1">
               {[...Array(5)].map((_, i) => (
                 <FaStar key={i} />
               ))}
-            </div>
-            <div className="flex items-center text-gray-600 font-semibold space-x-3">
-              <span>│</span>
-              <span>5.0 Rating</span>
-              <span>│</span>
-              <span className="text-gray-600">22 Review</span>
             </div>
           </div>
 
@@ -319,7 +313,7 @@ const ProductDetails = ({
           </nav>
 
           {/* Quantity Selector and Add to Cart */}
-          <div className="flex items-center space-x-4 pb-1">
+          <div className="flex items-center space-x-2 pb-1">
             <div className="flex items-center border border-gray-300 rounded-lg">
               <button
                 onClick={() => setQuantity(quantity > 1 ? quantity - 1 : 1)}
@@ -327,7 +321,7 @@ const ProductDetails = ({
               >
                 -
               </button>
-              <span className="px-4 py-2">{quantity}</span>
+              <span className="px-2 py-2">{quantity}</span>
               <button onClick={() => setQuantity(quantity + 1)} className="px-4 py-2 text-lg font-semibold">
                 +
               </button>
@@ -340,22 +334,23 @@ const ProductDetails = ({
             </button>
           </div>
 
-          <div className="flex items-center space-x-6 mb-1 text-lg pt-1">
+          <div className="flex flex-col sm:flex-row items-center sm:space-x-10 space-y-2 sm:space-y-0 mb-1 text-sm pt-1">
             <button
               onClick={handleAddToWishlist}
-              className="flex items-center space-x-2 text-gray-600 hover:text-gray-800"
+              className="flex items-center space-x-6 text-gray-600 hover:text-gray-800"
             >
               <FaHeart />
               <span>Add to Wishlist</span>
             </button>
             <button
               onClick={handleAddToCompare}
-              className="flex items-center space-x-2 text-gray-600 hover:text-gray-800"
+              className="flex items-center space-x-6 text-gray-600 hover:text-gray-800"
             >
               <FaSyncAlt />
               <span>Add to Compare</span>
             </button>
           </div>
+
 
           {/* Product Meta */}
           <div className="text-sm text-gray-600 space-y-1 mb-1">
