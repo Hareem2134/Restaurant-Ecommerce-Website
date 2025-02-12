@@ -250,10 +250,9 @@ const ProductDetails = ({
         {/* Product details */}
         <div className="lg:col-span-4 space-y-4">
           <div className="flex justify-between items-center mb-2">
-          <div className="text-sm text-white" style={{ backgroundColor: '#FF9F0D', padding: '0.5rem 1.7rem', borderRadius: '9px', fontWeight: '600' }}>
-          In Stock
+          <div className="text-xs sm:text-sm text-white bg-[#FF9F0D] px-3 py-0.5 sm:px-4 sm:py-1 rounded-lg font-semibold">
+            In Stock
           </div>
-
             <div className="flex items-center space-x-4">
               <button
                 className={`flex items-center text-orange-500 hover:underline ${
@@ -359,7 +358,7 @@ const ProductDetails = ({
           </div>
 
           {/* Product Meta */}
-          <div className="text-lg text-gray-600 space-y-1 mb-1">
+          <div className="text-sm text-gray-600 space-y-1 mb-1">
             <p>
               <span className="font-semibold">Category:</span> {product.category || "General"}
             </p>
