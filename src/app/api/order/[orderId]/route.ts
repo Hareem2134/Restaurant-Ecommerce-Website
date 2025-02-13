@@ -1,0 +1,39 @@
+import { client } from "@/sanity/lib/client";
+import { NextResponse } from "next/server";
+
+export async function GET(req: Request, { params }: { params: { orderId: string } }) {
+  try {
+    const { orderId } = params;
+    if (!orderId) {
+      return NextResponse.json({ error: "Missing orderId" }, { status: 400 });
+    }
+
+    const order = await client.fetch(
+      `*[_type == "order" && _id == $orderId][0]{
+        _id,
+        items[] {
+          food->{name, price}, // ✅ Ensure price is fetched
+          quantity,
+          "image": food->image.asset->url
+        },
+        subtotal,
+        discount,
+        shippingCost,
+        total,
+        shippingAddress,
+        paymentMethod
+      }`,
+      { orderId }
+    );
+
+    if (!order) {
+      return NextResponse.json({ error: "Order not found" }, { status: 404 });
+    }
+
+    console.log("✅ Order fetched from Sanity:", order);
+    return NextResponse.json(order, { status: 200 });
+  } catch (error) {
+    console.error("❌ Error fetching order:", error);
+    return NextResponse.json({ error: "Failed to fetch order" }, { status: 500 });
+  }
+}

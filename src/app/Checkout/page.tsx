@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import ForAllHeroSections from "../../../components/ForAllHeroSections";
 import { v4 as uuidv4 } from "uuid"; // Import UUID library
-import DiscountPromotion from "../../../components/DiscountPromotion";
 import { client } from "@/sanity/lib/client";
   
 interface CartItem {
@@ -27,6 +26,7 @@ export default function CheckoutPage() {
     address2: "",
     billingSameAsShipping: false,
   });
+  const orderId = `ORD-${uuidv4().slice(0, 8).toUpperCase()}`; // Example: ORD-AB12CD34
 
   const handleCheckboxChange = () => {
     setShippingAddress((prev) => ({
@@ -170,16 +170,21 @@ export default function CheckoutPage() {
       transactionId: `TXN-${Date.now()}`,
     };
   
-  
+    localStorage.setItem("lastOrder", JSON.stringify(orderData)); // ✅ Save order for confirmation page
+
     try {
       const response = await fetch("/api/order/create", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(orderData),
       });
+
+      const responseData = await response.json();
+      console.log("🔹 API Response:", responseData);
   
       if (response.ok) {
-        const { orderId } = await response.json();
+        const orderId = responseData.orderId; // ✅ Get Order ID from API
+        localStorage.setItem("lastOrder", JSON.stringify({ ...orderData, orderId }));
         localStorage.removeItem("cart");
         window.location.href = `/Order-Confirmation?orderId=${orderId}`;
       } else {
