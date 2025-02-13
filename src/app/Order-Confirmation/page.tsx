@@ -100,44 +100,45 @@ export default function OrderConfirmation() {
       </div>
 
       <div className="border-t border-gray-300 mt-6 pt-6">
-  {/* Center ONLY the heading */}
-  <h3 className="text-2xl font-semibold text-gray-800 mb-4 text-center">📦 Order Summary</h3>
+      {/* Centered Heading */}
+      <h3 className="text-2xl font-semibold text-gray-800 mb-4 text-center">📦 Order Summary</h3>
 
-  {order.items.length > 0 ? (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center">
-      {order.items.map((item, index) => (
-        <motion.div
-          key={item.id || index}
-          whileHover={{ scale: 1.02 }}
-          className="w-full flex flex-col items-center justify-center border-b pb-4 transition-all duration-300 justify-self-center"
-        >
-          <motion.img
-            src={item.image || "/placeholder.jpg"}
-            alt={item.name}
-            className="w-24 md:w-28 h-24 md:h-28 rounded-lg shadow-md border border-gray-200 mx-auto"
-            whileHover={{ scale: 1.05 }}
-          />
-          <p className="font-semibold text-gray-900 text-base md:text-lg mt-2 text-center">
-            {item.name}
-          </p>
-          <p className="text-gray-600 text-sm text-center">Quantity: {item.quantity}</p>
-        </motion.div>
-      ))}
+      {order.items.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center">
+          {order.items.map((item, index) => (
+            <motion.div
+              key={item.id || index}
+              whileHover={{ scale: 1.02 }}
+              className="w-full flex flex-col items-center justify-center border-b pb-4 transition-all duration-300"
+            >
+              <motion.img
+                src={item.image || "/placeholder.jpg"}
+                alt={item.name}
+                className="w-24 md:w-28 h-24 md:h-28 rounded-lg shadow-md border border-gray-200 mx-auto block justify-self-center"
+                whileHover={{ scale: 1.05 }}
+              />
+              <p className="font-semibold text-gray-900 text-base md:text-lg mt-2 text-center">
+                {item.name}
+              </p>
+              <p className="text-gray-600 text-sm text-center">Quantity: {item.quantity}</p>
+            </motion.div>
+          ))}
+        </div>
+      ) : (
+        <p className="text-gray-500 text-center">No items found in this order.</p>
+      )}
+
+      {/* Centered Price Breakdown */}
+      <div className="mt-6 text-gray-700 text-base md:text-lg space-y-2 text-center">
+        <p><strong>Subtotal:</strong> ${order.subtotal.toFixed(2)}</p>
+        <p><strong>Discount:</strong> -${order.discount.toFixed(2)}</p>
+        <p><strong>Shipping Cost:</strong> ${order.shippingCost.toFixed(2)}</p>
+        <p className="text-2xl font-bold text-gray-900 mt-3">
+          <strong>Total:</strong> ${order.total.toFixed(2)}
+        </p>
+      </div>
     </div>
-  ) : (
-    <p className="text-gray-500 text-center">No items found in this order.</p>
-  )}
 
-  {/* Centering only the Price Breakdown */}
-  <div className="mt-6 text-gray-700 text-base md:text-lg space-y-2 text-center">
-    <p><strong>Subtotal:</strong> ${order.subtotal.toFixed(2)}</p>
-    <p><strong>Discount:</strong> -${order.discount.toFixed(2)}</p>
-    <p><strong>Shipping Cost:</strong> ${order.shippingCost.toFixed(2)}</p>
-    <p className="text-2xl font-bold text-gray-900 mt-3">
-      <strong>Total:</strong> ${order.total.toFixed(2)}
-    </p>
-  </div>
-</div>
 
       <div className="border-t border-gray-300 mt-6 pt-6 text-center">
         <h3 className="text-2xl font-semibold text-gray-800 mb-2">📍 Shipping Address</h3>

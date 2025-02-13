@@ -1,13 +1,9 @@
 import { client } from "@/sanity/lib/client";
 import { NextResponse } from "next/server";
 
-interface RouteParams {
-  params: { orderId: string };
-}
-
-export async function GET(req: Request, { params }: RouteParams) {
+export async function GET(req: Request, { params }: { params: { orderId: string } }) {
   try {
-    const orderId = params.orderId; // ✅ Correctly access orderId
+    const orderId = params.orderId;
 
     if (!orderId) {
       return NextResponse.json({ error: "Missing orderId" }, { status: 400 });
@@ -17,7 +13,7 @@ export async function GET(req: Request, { params }: RouteParams) {
       `*[_type == "order" && _id == $orderId][0]{
         _id,
         items[] {
-          food->{name, price}, // ✅ Ensure price is fetched
+          food->{name, price},
           quantity,
           "image": food->image.asset->url
         },
