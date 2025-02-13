@@ -193,26 +193,26 @@ export default function CheckoutPage() {
     }
   };
   
-  const validateDiscount = async (code: string) => {
-    try {
-      const response = await fetch(`/api/discounts?code=${code}`);
-      if (!response.ok) {
-        throw new Error("Discount not found");
-      }
+  // const validateDiscount = async (code: string) => {
+  //   try {
+  //     const response = await fetch(`/api/discounts?code=${code}`);
+  //     if (!response.ok) {
+  //       throw new Error("Discount not found");
+  //     }
   
-      const discounts = await response.json();
-      const discount = discounts.find((d: any) => d.code === code && d.active);
+  //     const discounts = await response.json();
+  //     const discount = discounts.find((d: any) => d.code === code && d.active);
   
-      if (!discount) {
-        throw new Error("Invalid or inactive discount");
-      }
+  //     if (!discount) {
+  //       throw new Error("Invalid or inactive discount");
+  //     }
   
-      return discount;
-    } catch (error) {
-      console.error("Error validating discount:", error);
-      return null;
-    }
-  };
+  //     return discount;
+  //   } catch (error) {
+  //     console.error("Error validating discount:", error);
+  //     return null;
+  //   }
+  // };
 
   const removeItemFromCart = (id: number) => {
     const updatedCart = cartItems.filter((item) => item.id !== id);
@@ -240,7 +240,7 @@ export default function CheckoutPage() {
       <div className="flex flex-col md:flex-row justify-between md:gap-8 px-40 py-12 bg-white">
 
         {/* Left Section: Shipping Address */}
-        <div className="w-full md:w-2/3 bg-white p-6 rounded-lg shadow-lg shadow-gray-400">
+        <div className="w-full md:w-2/3 border border-gray-300 bg-white p-6 rounded-lg shadow-lg shadow-gray-400">
         <h2 className="text-2xl font-semibold mb-4">Shipping Address</h2>
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       <input
@@ -281,10 +281,54 @@ export default function CheckoutPage() {
         value={shippingAddress.country}
         onChange={handleInputChange}
       >
-        <option value="">Select Country</option>
-        <option value="United States">United States</option>
-        <option value="Canada">Canada</option>
-        <option value="United Kingdom">United Kingdom</option>
+      <option value="">Select Country</option>
+      <option value="Pakistan">Pakistan</option>
+      <option value="United States">United States</option>
+      <option value="Canada">Canada</option>
+      <option value="United Kingdom">United Kingdom</option>
+      <option value="Australia">Australia</option>
+      <option value="Germany">Germany</option>
+      <option value="France">France</option>
+      <option value="Italy">Italy</option>
+      <option value="Spain">Spain</option>
+      <option value="Netherlands">Netherlands</option>
+      <option value="Sweden">Sweden</option>
+      <option value="Norway">Norway</option>
+      <option value="Denmark">Denmark</option>
+      <option value="Finland">Finland</option>
+      <option value="Brazil">Brazil</option>
+      <option value="Mexico">Mexico</option>
+      <option value="Argentina">Argentina</option>
+      <option value="India">India</option>
+      <option value="China">China</option>
+      <option value="Japan">Japan</option>
+      <option value="South Korea">South Korea</option>
+      <option value="Russia">Russia</option>
+      <option value="South Africa">South Africa</option>
+      <option value="New Zealand">New Zealand</option>
+      <option value="Switzerland">Switzerland</option>
+      <option value="Belgium">Belgium</option>
+      <option value="Portugal">Portugal</option>
+      <option value="Ireland">Ireland</option>
+      <option value="Singapore">Singapore</option>
+      <option value="Malaysia">Malaysia</option>
+      <option value="Indonesia">Indonesia</option>
+      <option value="Thailand">Thailand</option>
+      <option value="Philippines">Philippines</option>
+      <option value="United Arab Emirates">United Arab Emirates</option>
+      <option value="Saudi Arabia">Saudi Arabia</option>
+      <option value="Turkey">Turkey</option>
+      <option value="Greece">Greece</option>
+      <option value="Poland">Poland</option>
+      <option value="Czech Republic">Czech Republic</option>
+      <option value="Hungary">Hungary</option>
+      <option value="Austria">Austria</option>
+      <option value="Chile">Chile</option>
+      <option value="Colombia">Colombia</option>
+      <option value="Peru">Peru</option>
+      <option value="Vietnam">Vietnam</option>
+      <option value="Egypt">Egypt</option>
+      <option value="Nigeria">Nigeria</option>
       </select>
     </div>
 
@@ -322,7 +366,7 @@ export default function CheckoutPage() {
 
 
         {/* Right Section: Order Summary */}
-        <div className="w-full md:w-1/3 mt-8 md:mt-0 border p-6 rounded-lg">
+        <div className="w-full md:w-1/3 mt-8 md:mt-0 border border-gray-300 p-6 rounded-lg bg-white shadow-lg shadow-gray-400">
           <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
           <div className="flex flex-col gap-4">
             {cartItems.map((item, index) => (

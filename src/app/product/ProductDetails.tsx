@@ -185,13 +185,13 @@ const ProductDetails = ({
     }
 
     return (
-  <motion.div
-    className="container mx-auto px-18 lg:px-36 py-10"
-    initial={{ opacity: 0, y: 100, scale: 0.9 }}
-    animate={{ opacity: 1, y: 0, scale: 1 }}
-    exit={{ opacity: 0, y: 50, scale: 0.95 }}
-    transition={{ duration: 1.2, ease: "easeOut" }}
-  >
+      <motion.div
+      className="container mx-auto px-4 sm:px-8 md:px-12 lg:px-36 py-10"
+      initial={{ opacity: 0, y: 100, scale: 0.9 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, y: 50, scale: 0.95 }}
+      transition={{ duration: 1.2, ease: "easeOut" }}
+      >
 
       {/* Notification */}
       {notification && (
@@ -334,23 +334,23 @@ const ProductDetails = ({
             </button>
           </div>
 
-          <div className="flex flex-col sm:flex-row items-center sm:space-x-10 space-y-2 sm:space-y-0 mb-1 text-sm pt-1">
+          {/* Wishlist and Product Comparison */}
+          <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:gap-1 md:gap-2 lg:gap-4 mb-1 text-sm pt-1">
             <button
               onClick={handleAddToWishlist}
-              className="flex items-center space-x-6 text-gray-600 hover:text-gray-800"
+              className="flex items-center gap-1 text-gray-600 hover:text-gray-800 lg:-ml-2"
             >
               <FaHeart />
               <span>Add to Wishlist</span>
             </button>
             <button
               onClick={handleAddToCompare}
-              className="flex items-center space-x-6 text-gray-600 hover:text-gray-800"
+              className="flex items-center gap-1 text-gray-600 hover:text-gray-800 lg:-ml-2"
             >
               <FaSyncAlt />
               <span>Add to Compare</span>
             </button>
           </div>
-
 
           {/* Product Meta */}
           <div className="text-sm text-gray-600 space-y-1 mb-1">

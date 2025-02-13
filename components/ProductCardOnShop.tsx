@@ -71,7 +71,7 @@ const ProductCardOnShop: React.FC<ProductCardProps> = ({ product }) => {
   };
 
   return (
-    <div className="relative border rounded-lg overflow-hidden group hover:shadow-lg transition-shadow">
+    <div className="relative overflow-hidden group transition-shadow border border-gray-400 bg-white rounded-lg shadow-lg shadow-gray-400 hover:shadow-lg hover:hadow-gray-500">
       {product.isOnSale && (
         <span className="absolute top-2 left-2 text-sm text-white bg-orange-500 rounded px-2 py-1 z-10">
           Sale
