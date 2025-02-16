@@ -65,7 +65,7 @@ export default function OrderConfirmation() {
   }, [orderIdFromUrl]);
 
   if (loading) {
-    return <p className="text-center text-gray-600 text-lg">Loading order details...</p>;
+    return <p className="text-center text-gray-600 text-lg mt-60 mb-60">Loading order details...</p>;
   }
 
   if (!order) {
@@ -77,14 +77,14 @@ export default function OrderConfirmation() {
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
-      className="max-w-3xl mx-auto mt-10 border border-gray-400 bg-white p-6 rounded-lg shadow-xl shadow-gray-400 mb-32 text-center md:w-11/12 lg:w-3/4"
+      className="max-w-3xl mx-auto mt-10 border border-gray-400 bg-white p-6 rounded-lg shadow-2xl shadow-gray-500 mb-32 text-center w-[90%] sm:w-[90%] md:w-11/12 lg:w-3/4"
     >
       <div className="text-center mb-6">
         <motion.h2 
           initial={{ scale: 0.9, opacity: 0 }} 
           animate={{ scale: 1, opacity: 1 }} 
           transition={{ duration: 0.5, ease: "easeOut" }}
-          className="text-3xl md:text-4xl font-bold text-gray-900"
+          className="text-2xl md:text-3xl font-bold text-gray-900"
         >
           🎉 Order Confirmed!
         </motion.h2>
@@ -101,10 +101,10 @@ export default function OrderConfirmation() {
 
       <div className="border-t border-gray-300 mt-6 pt-6">
       {/* Centered Heading */}
-      <h3 className="text-2xl font-semibold text-gray-800 mb-4 text-center">📦 Order Summary</h3>
+      <h3 className="text-xl font-semibold text-gray-800 mb-4 text-center">📦 Order Summary</h3>
 
       {order.items.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center">
+        <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-6 justify-items-center">
           {order.items.map((item, index) => (
             <motion.div
               key={item.id || index}
