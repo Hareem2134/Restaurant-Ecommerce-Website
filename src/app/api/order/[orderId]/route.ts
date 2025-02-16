@@ -2,9 +2,9 @@ import { client } from "@/sanity/lib/client";
 import { NextResponse } from "next/server";
 import { NextRequest } from "next/server";
 
-export async function GET(req: NextRequest, context: { params: { orderId: string } }) {
+export async function GET(req: NextRequest, { params }: { params: { orderId: string } }) {
   try {
-    const { orderId } = context.params; // ✅ Correctly extract orderId
+    const orderId = params.orderId; // Correctly extract orderId
 
     if (!orderId) {
       return NextResponse.json({ error: "Missing orderId" }, { status: 400 });
