@@ -2,9 +2,11 @@ import { client } from "@/sanity/lib/client";
 import { NextResponse } from "next/server";
 import { NextRequest } from "next/server";
 
-export async function GET(req: NextRequest, { params }: { params: { orderId: string } }) {
+export async function GET(req: NextRequest) {
   try {
-    const orderId = params.orderId; // Correctly extract orderId
+    // Extract orderId from the request URL
+    const url = new URL(req.url);
+    const orderId = url.pathname.split("/").pop(); // Get the last segment of the path
 
     if (!orderId) {
       return NextResponse.json({ error: "Missing orderId" }, { status: 400 });
