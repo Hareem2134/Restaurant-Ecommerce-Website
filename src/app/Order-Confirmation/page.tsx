@@ -260,7 +260,7 @@ function OrderConfirmationContent() {
           <h3 className="text-lg font-medium mb-2">Order Invoice</h3>
           <a
               // Link to the new API route, passing the orderId and download=true
-              href={`/api/order/generate-pdf?orderId=${order?._id}&download=true`}
+              href={`/pages/api/order/generate-pdf?orderId=${order?._id}&download=true`}
               // No need for target="_blank" if download is forced by API headers
               // No need for download attribute if API forces it
               rel="noopener noreferrer" // Still good practice
