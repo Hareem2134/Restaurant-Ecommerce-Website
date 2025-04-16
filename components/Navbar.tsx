@@ -244,6 +244,13 @@ const Navbar: React.FC<NavbarProps> = ({ children }) => {
                   Signup
                 </Link>
                 <Link
+                  href="/track"
+                  className="block px-6 py-2 hover:bg-[#FF9F0D] hover:text-black transition-all duration-200 ease-in-out"
+                  onClick={() => setIsUserDropdownOpen(false)}
+                >
+                  Track Order
+                </Link>
+                <Link
                   href="/Checkout"
                   className="block px-6 py-2 hover:bg-[#FF9F0D] hover:text-black transition-all duration-200 ease-in-out"
                   onClick={() => setIsUserDropdownOpen(false)}

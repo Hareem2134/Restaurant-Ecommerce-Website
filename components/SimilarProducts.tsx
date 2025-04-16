@@ -28,7 +28,14 @@ const SimilarProductsSection: React.FC<SimilarProductsProps> = ({
   const [similarProducts, setSimilarProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
+
+  const isBrowser = typeof window !== "undefined";
+
+
   useEffect(() => {
+    if (!isBrowser) return;
+
+    
     async function fetchSimilarProducts() {
       console.log("Fetching similar products excluding currentProductId:", currentProductId);
 

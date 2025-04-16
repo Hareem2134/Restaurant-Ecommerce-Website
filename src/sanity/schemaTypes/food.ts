@@ -81,5 +81,24 @@ export default {
       title: "Available",
       description: "Availability status of the food item",
     },
+    {
+      name: "weight",
+      type: "number",
+      title: "Weight (lbs)",
+      description: "Product weight for shipping calculations",
+      validation: (Rule: any) => Rule.required().min(0.1),
+      initialValue: 1
+    },
+    {
+      name: "dimensions",
+      type: "string",
+      title: "Dimensions (LxWxH)",
+      description: "Dimensions in inches, format: LengthxWidthxHeight",
+      validation: (Rule: any) => Rule.required().regex(/^\d+x\d+x\d+$/, {
+        name: "dimensions",
+        description: "Must be in the format 5x5x5"
+      }),
+      initialValue: "5x5x5"
+    },
   ],
 };

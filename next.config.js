@@ -8,10 +8,10 @@ const nextConfig = {
       { protocol: "https", hostname: "placehold.co" },
     ],
   },
-  i18n: {
-    locales: ['en', 'ur', 'ar', 'fr', 'de'],
-    defaultLocale: 'en',
-  },
+  // i18n: {
+  //   locales: ['en', 'ur', 'ar', 'fr', 'de'],
+  //   defaultLocale: 'en',
+  // },
   eslint: {
     ignoreDuringBuilds: true,
   },

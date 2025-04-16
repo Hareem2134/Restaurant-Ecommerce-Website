@@ -50,7 +50,7 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 ### Frontend
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/foodtuck-marketplace.git
+   git clone https://github.com/hareem2134/foodtuck-marketplace.git
    ```
 2. Navigate to the frontend directory:
    ```bash

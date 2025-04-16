@@ -15,7 +15,7 @@ function HomePage() {
       <section className='bg-black px-3 md:px-[135px] flex flex-col justify-evenly md:flex-row  md:items-center py-[50px]'>
          <div className='text-white w-full md:w-[50%]'>
           <h1 className='md:text-[32px] text-[24px] font-normal text-[#FF9F0D] font whitespace-nowrap'>
-            Its Quick & Amusing!
+            Its Quick & Amazing!
           </h1>
 
           <h1 className='text-[25px] md:text-[50px] font-bold whitespace-nowrap md:whitespace-normal'>
