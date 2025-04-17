@@ -1,108 +1,109 @@
+// src/app/Checkout/page.tsx
+// Full component with Stripe Checkout integration
+
 "use client";
 import React, { useEffect, useState, useCallback } from "react";
 import Image from "next/image";
 import ForAllHeroSections from "../../../components/ForAllHeroSections"; // Adjust path if needed
 import { v4 as uuidv4 } from "uuid";
-// Remove direct client import if not used elsewhere here, API routes handle Sanity client
-// import { client } from "@/sanity/lib/client";
 import ShippingRates from "../../../components/ShippingRates"; // Adjust path if needed
-import { client } from "@/sanity/lib/client";
+import { client } from "@/sanity/lib/client"; // Used for fetching discounts initially
+import { loadStripe } from '@stripe/stripe-js'; // Import Stripe.js loader
 
-// Interface for items in the cart state (ensure 'id' is the Sanity _id)
+// --- Stripe.js Initialization ---
+// Load Stripe.js outside the component render cycle
+// Ensure NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY is set in your .env.local
+const stripePublishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
+if (!stripePublishableKey) {
+    console.error("CRITICAL ERROR: NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY environment variable is not set.");
+    // Potentially disable checkout button or show error if key is missing
+}
+const stripePromise = stripePublishableKey ? loadStripe(stripePublishableKey) : null;
+// --- End Stripe.js Initialization ---
+
+
+// --- Interface Definitions ---
 interface CartItem {
   id: string; // This MUST be the Sanity document _id of the product/food
   name: string;
   price: number;
   quantity: number;
-  image: string; // URL for the image
+  image: string;
 }
 
-// Type for shipping options received from the API
 type ShippingRateDetail = {
-  id: string; // e.g., 'dhl_express', 'fedex_ground'
-  provider: string; // e.g., 'DHL_EXPRESS', 'FEDEX_GROUND'
-  service?: string; // e.g., 'Standard Ground'
+  id: string;
+  provider: string;
+  service?: string;
   amount: number;
-  duration?: string; // e.g., '3-7 Business Days'
-  logo?: string; // e.g., '/logos/dhl_express.png'
+  duration?: string;
+  logo?: string;
 };
 
-// Define a type for the discount object fetched from Sanity
 interface Discount {
     _id: string;
     code: string;
     type: 'percentage' | 'fixed';
     value: number;
 }
+// --- End Interface Definitions ---
+
 
 export default function CheckoutPage() {
+  // --- Component State ---
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [subtotal, setSubtotal] = useState(0);
+  const [shippingAddress, setShippingAddress] = useState({
+    street: "", city: "", state: "", zip: "", country: "", address2: "",
+    billingSameAsShipping: true,
+  });
+  const [loading, setLoading] = useState(false); // For overall processing
+  const [loadingShipping, setLoadingShipping] = useState(false);
+  const [shippingError, setShippingError] = useState<string | null>(null);
+  const [shippingOptions, setShippingOptions] = useState<ShippingRateDetail[]>([]);
+  const [selectedShippingId, setSelectedShippingId] = useState<string | null>(null);
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(""); // For UI selection record keeping
+  const [discountCode, setDiscountCode] = useState("");
+  const [appliedDiscount, setAppliedDiscount] = useState(0);
+  const [discountDetails, setDiscountDetails] = useState<Discount | null>(null);
+  const [discounts, setDiscounts] = useState<Discount[]>([]);
+  // --- End Component State ---
 
+
+  // --- Helper Functions ---
   const calculateSubtotal = (items: CartItem[]) =>
     items.reduce((total, item) => total + item.price * item.quantity, 0);
 
-  // Fetch cart data from localStorage
   const fetchCartData = useCallback(() => {
     console.log("Fetching cart data...");
     const storedCart = localStorage.getItem("cart");
     if (storedCart) {
       try {
         const parsedItems = (JSON.parse(storedCart) as CartItem[]).map(item => {
-             // --- CRITICAL VALIDATION ---
              if (!item || typeof item.id !== 'string' || !item.name || typeof item.price !== 'number' || typeof item.quantity !== 'number' || item.quantity <= 0) {
-                 console.warn("Invalid item structure found in localStorage cart, skipping:", item);
-                 return null; // Mark invalid items
+                 console.warn("Invalid item structure found in localStorage cart, skipping:", item); return null;
              }
-             // --- Ensure ID is a string ---
-             return {
-                ...item,
-                id: String(item.id)
-             };
-        }).filter((item): item is CartItem => item !== null); // Filter out invalid items
+             return { ...item, id: String(item.id) };
+        }).filter((item): item is CartItem => item !== null);
 
         if (parsedItems.length !== JSON.parse(storedCart).length) {
              console.warn("Some cart items from localStorage were invalid and skipped.");
-             // Optionally update localStorage with the cleaned data
-             // localStorage.setItem("cart", JSON.stringify(parsedItems));
         }
-
         console.log("Cart items loaded:", parsedItems);
         setCartItems(parsedItems);
         setSubtotal(calculateSubtotal(parsedItems));
       } catch (error) {
         console.error("Error parsing cart data from localStorage:", error);
-        localStorage.removeItem("cart"); // Clear potentially corrupted data
+        localStorage.removeItem("cart");
         setCartItems([]);
         setSubtotal(0);
-      }
+       }
     } else {
       console.log("No cart data found in localStorage.");
       setCartItems([]);
       setSubtotal(0);
     }
   }, []);
-
-  // Effect to load cart on mount and listen for changes
-  useEffect(() => {
-    fetchCartData();
-    const handleStorageChange = (event: StorageEvent) => {
-      if (event.key === "cart") {
-        console.log("Storage change detected for 'cart', refetching...");
-        fetchCartData();
-      }
-    };
-    window.addEventListener("storage", handleStorageChange);
-    return () => {
-      window.removeEventListener("storage", handleStorageChange);
-    };
-  }, [fetchCartData]);
-
-  // --- Shipping Address State ---
-  const [shippingAddress, setShippingAddress] = useState({
-    street: "", city: "", state: "", zip: "", country: "", address2: "",
-    billingSameAsShipping: true,
-  });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -113,365 +114,230 @@ export default function CheckoutPage() {
     setShippingAddress((prev) => ({ ...prev, billingSameAsShipping: e.target.checked }));
   };
 
-  // --- Cart Item Removal ---
   const removeItemFromCart = (id: string) => {
     const updatedCart = cartItems.filter((item) => item.id !== id);
     setCartItems(updatedCart);
     localStorage.setItem("cart", JSON.stringify(updatedCart));
     setSubtotal(calculateSubtotal(updatedCart));
     console.log(`Item ${id} removed from cart.`);
-    // Trigger shipping refetch if needed (optional)
-    // fetchShippingRates();
   };
-
-  // --- Loading & Error States ---
-  const [loading, setLoading] = useState(false); // For overall order processing
-  const [loadingShipping, setLoadingShipping] = useState(false); // For shipping rates fetch
-  const [shippingError, setShippingError] = useState<string | null>(null); // For shipping rates fetch error
-
-  // --- Shipping Options State ---
-  const [shippingOptions, setShippingOptions] = useState<ShippingRateDetail[]>([]);
-  const [selectedShippingId, setSelectedShippingId] = useState<string | null>(null);
 
   const handleSelectShipping = useCallback((shippingId: string | null) => {
     console.log("CheckoutPage: handleSelectShipping called with:", shippingId);
     setSelectedShippingId(shippingId);
   }, []);
 
-  // --- Fetch Shipping Rates Logic (Debounced) ---
-  const fetchShippingRates = useCallback(async () => {
-    if (!shippingAddress.zip || !shippingAddress.country) {
-      // Don't log warning constantly, only if fetch is attempted without details
-      // console.warn("Skipping shipping rate fetch: Missing address details.");
-      setShippingOptions([]); setSelectedShippingId(null); setShippingError(null);
-      return;
+  const applyDiscount = () => {
+     const codeUpper = discountCode.trim().toUpperCase();
+    const discount = discounts.find((d) => d.code === codeUpper);
+    if (discount) {
+        if (discount.type === "percentage") { setAppliedDiscount(discount.value); }
+        else if (discount.type === "fixed" && subtotal > 0) { setAppliedDiscount(Math.min(100, (discount.value / subtotal) * 100)); }
+        else { setAppliedDiscount(0); }
+        setDiscountDetails(discount);
+        alert(`Discount Applied: ${discount.code}`);
+    } else {
+        alert("Invalid or expired discount code.");
+        setAppliedDiscount(0); setDiscountDetails(null); setDiscountCode("");
     }
-     if (cartItems.length === 0) {
-        console.warn("Skipping shipping rate fetch: Cart is empty.");
-        setShippingOptions([]); setSelectedShippingId(null); setShippingError(null);
-        return;
-     }
+  };
+  // --- End Helper Functions ---
 
-    console.log("Fetching shipping rates for:", shippingAddress.zip, shippingAddress.country);
-    setLoadingShipping(true); setShippingError(null); setShippingOptions([]); setSelectedShippingId(null);
 
-    try {
-      const response = await fetch("/api/shipping-rates", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ zip: shippingAddress.zip, country: shippingAddress.country }),
-      });
-
-      // Use the "read once" pattern here too for robustness
-      if (!response.ok) {
-        let errorMsg = `Failed to fetch shipping rates (Status: ${response.status})`;
-        let responseBodyText = '';
-        try {
-            responseBodyText = await response.text(); // Read body once
-            console.error("Shipping rates API error response:", responseBodyText);
-            try { const errorData = JSON.parse(responseBodyText); errorMsg = errorData.error || errorMsg; }
-            catch (_) { /* Ignore JSON parse error */ }
-        } catch (readError) { errorMsg += ` and response body could not be read.` }
-        throw new Error(errorMsg);
-      }
-
-      const data = await response.json(); // Parse JSON only if response.ok
-      console.log("Shipping API Response:", data);
-
-      if (typeof data !== 'object' || data === null || Object.keys(data).length === 0) {
-         setShippingError("No shipping rates available for this address.");
-         setShippingOptions([]); return;
-      }
-
-      // Map the received rates (adjust structure based on your actual API response)
-      const formattedOptions: ShippingRateDetail[] = Object.entries(data).map(([key, value]) => ({
-        id: key, // e.g., 'dhl_express'
-        provider: key.toUpperCase().replace('_', ' '), // e.g., 'DHL EXPRESS'
-        amount: Number(value),
-        logo: `/logos/${key.toLowerCase()}.png`, // Assumes logo naming convention
-        duration: "3-7 Business Days", // Placeholder
-        service: "Standard Service" // Placeholder
-      }));
-
-      if (formattedOptions.length === 0) {
-        setShippingError("No shipping rates formatted for this address.");
-        setShippingOptions([]);
-      } else {
-        setShippingOptions(formattedOptions);
-      }
-
-    } catch (error) {
-      console.error("Shipping fetch error:", error);
-      setShippingError(error instanceof Error ? error.message : "An unknown error occurred while fetching shipping rates.");
-      setShippingOptions([]);
-    } finally {
-      setLoadingShipping(false);
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [shippingAddress.zip, shippingAddress.country, cartItems]); // Re-fetch if address or cart changes
-
-  useEffect(() => {
-    const timerId = setTimeout(() => { fetchShippingRates(); }, 1000); // Debounce
-    return () => clearTimeout(timerId);
-  }, [fetchShippingRates]);
-
-  // --- Discount State & Logic ---
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("");
-  const [discountCode, setDiscountCode] = useState("");
-  const [appliedDiscount, setAppliedDiscount] = useState(0); // Percentage value
-  const [discountDetails, setDiscountDetails] = useState<Discount | null>(null); // Store matched discount object
-  const [discounts, setDiscounts] = useState<Discount[]>([]); // Use specific type
+  // --- Effects ---
+  useEffect(() => { // Fetch cart on mount & listen for storage changes
+    fetchCartData();
+    const handleStorageChange = (event: StorageEvent) => { if (event.key === "cart") fetchCartData(); };
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, [fetchCartData]);
 
   useEffect(() => { // Fetch discounts on mount
     const fetchDiscounts = async () => {
       try {
-        // Fetch only active discounts that haven't expired
         const discountData = await client.fetch<Discount[]>(
-          `*[_type == "discount" && active == true && (!defined(expiry) || expiry > now())] {
-            code, type, value, _id
-          }`
+          `*[_type == "discount" && active == true && (!defined(expiry) || expiry > now())] { code, type, value, _id }`
         );
         setDiscounts(discountData || []);
         console.log("Fetched discounts:", discountData);
-      } catch (error) {
-        console.error("Error fetching discounts from Sanity:", error);
-      }
+      } catch (error) { console.error("Error fetching discounts from Sanity:", error); }
     };
     fetchDiscounts();
   }, []);
 
-  const applyDiscount = () => {
-    const codeUpper = discountCode.trim().toUpperCase();
-    const discount = discounts.find((d) => d.code === codeUpper);
-
-    if (discount) {
-      if (discount.type === "percentage") {
-        setAppliedDiscount(discount.value);
-      } else if (discount.type === "fixed" && subtotal > 0) {
-        const percentage = Math.min(100, (discount.value / subtotal) * 100);
-        setAppliedDiscount(percentage);
-      } else {
-        setAppliedDiscount(0);
+  const fetchShippingRates = useCallback(async () => { // Fetch shipping rates
+    if (!shippingAddress.zip || !shippingAddress.country || cartItems.length === 0) { return; }
+    console.log("Fetching shipping rates for:", shippingAddress.zip, shippingAddress.country);
+    setLoadingShipping(true); setShippingError(null); setShippingOptions([]); setSelectedShippingId(null);
+    try {
+      const response = await fetch("/api/shipping-rates", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ zip: shippingAddress.zip, country: shippingAddress.country }) });
+      // Handle fetch error (using read-once pattern)
+      if (!response.ok) {
+        let errorMsg = `Failed to fetch shipping rates (Status: ${response.status})`; let responseBodyText = '';
+        try { responseBodyText = await response.text(); console.error("Shipping API error:", responseBodyText); try { const d = JSON.parse(responseBodyText); errorMsg = d.error || errorMsg; } catch (_) {} } catch (e) { errorMsg += ' & could not read response.' }
+        throw new Error(errorMsg);
       }
-      setDiscountDetails(discount);
-      alert(`Discount Applied: ${discount.code}`);
-    } else {
-      alert("Invalid or expired discount code.");
-      setAppliedDiscount(0); setDiscountDetails(null); setDiscountCode("");
-    }
-  };
+      const data = await response.json();
+      if (!data || Object.keys(data).length === 0) { setShippingError("No rates available."); setShippingOptions([]); return; }
+      // Map rates
+      const formattedOptions: ShippingRateDetail[] = Object.entries(data).map(([key, value]) => ({ id: key, provider: key.toUpperCase().replace('_', ' '), amount: Number(value), logo: `/logos/${key.toLowerCase()}.png`, duration: "3-7 Days", service: "Std" }));
+      setShippingOptions(formattedOptions);
+    } catch (error) { console.error("Shipping fetch error:", error); setShippingError(error instanceof Error ? error.message : "Unknown shipping error."); setShippingOptions([]); }
+    finally { setLoadingShipping(false); }
+  }, [shippingAddress.zip, shippingAddress.country, cartItems]);
 
-  // --- Calculated Totals ---
+  useEffect(() => { // Debounced shipping fetch
+    const timerId = setTimeout(() => { fetchShippingRates(); }, 1000);
+    return () => clearTimeout(timerId);
+  }, [fetchShippingRates]);
+  // --- End Effects ---
+
+
+  // --- Calculated Values ---
   const selectedShippingRate = shippingOptions.find(opt => opt.id === selectedShippingId);
   const selectedShippingCost = selectedShippingRate?.amount ?? 0;
   const discountRate = appliedDiscount / 100;
-  const discountAmount = subtotal * discountRate; // Amount deducted
+  const discountAmount = subtotal * discountRate;
   const totalWithDiscount = Math.max(0, subtotal - discountAmount + selectedShippingCost);
+  // --- End Calculated Values ---
 
 
-  // --- Handle Order Submission ---
+  // --- INTEGRATED: Handle Order Submission & Stripe Checkout Redirect ---
   const handlePlaceOrder = async () => {
     // 1. Frontend Validations
+    if (!stripePromise) {
+        alert("Payment system is not available. Please contact support.");
+        console.error("Stripe Promise is null. Check NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY.");
+        return;
+    }
     if (cartItems.length === 0) { alert("Your cart is empty."); return; }
     const { street, city, state, zip, country } = shippingAddress;
     if (!street || !city || !state || !zip || !country) { alert("Please fill in all required shipping address fields."); return; }
     if (!selectedShippingId) { alert("Please select a shipping method."); return; }
     const selectedShippingOption = shippingOptions.find(s => s.id === selectedShippingId);
-    if (!selectedShippingOption) { alert("Selected shipping method is invalid. Please re-select."); setSelectedShippingId(null); return; } // Should not happen ideally
-    if (!selectedPaymentMethod) { alert("Please select a payment method."); return; }
+    if (!selectedShippingOption) { alert("Selected shipping method is invalid."); return; }
+    if (!selectedPaymentMethod) { alert("Please select a payment method (for our records)."); return; }
+
 
     setLoading(true); // Start loading indicator
-    console.log("--- Initiating Order Placement ---");
-    console.log("Selected Shipping Option Details:", selectedShippingOption);
+    console.log("--- Initiating Order & Redirect to Payment ---");
 
-    // 2. Prepare Data Object for /api/order/create
-    //    (Structure defined based on what the API route expects)
-    console.log("🛒 Cart Items before mapping for API:", JSON.stringify(cartItems, null, 2));
-
-    const orderDataForApi = {
-      // Fields needed by /api/order/create to build the Sanity document
-      items: cartItems.map((item) => {
-          // Log each item being prepared
-          console.log(`Preparing item for API: ID=${item.id}, Name=${item.name}, Qty=${item.quantity}, Price=${item.price}`);
-          // *** CRITICAL: Ensure item.id is the Sanity _id ***
-          if (!item.id || !item.name || typeof item.price !== 'number' || typeof item.quantity !== 'number') {
-              console.error("❌ Invalid item structure being sent:", item);
-          }
-          return {
-            id: item.id, // The Sanity _id of the product/food
-            name: item.name,
-            price: item.price,
-            quantity: item.quantity,
-            image: item.image || null
-          };
-      }),
-      subtotal: subtotal,
-      discountAmount: discountAmount,
-      discountCode: discountDetails ? discountDetails.code : null,
-      shippingCost: selectedShippingOption.amount, // Send calculated cost
-      total: totalWithDiscount,
-      shippingAddress: { // Send the address object
-        street: shippingAddress.street,
-        address2: shippingAddress.address2 || null,
-        city: shippingAddress.city,
-        state: shippingAddress.state,
-        zip: shippingAddress.zip,
-        country: shippingAddress.country,
-      },
-      billingSameAsShipping: shippingAddress.billingSameAsShipping, // Send the flag
-      // Conditionally send billing address if different (assuming structure is same as shipping)
-      ...(shippingAddress.billingSameAsShipping === false && {
-           billingAddress: { // API needs to handle creating this object
-                street: shippingAddress.street, // Replace with actual billing fields if different
-                address2: shippingAddress.address2 || null,
-                city: shippingAddress.city,
-                state: shippingAddress.state,
-                zip: shippingAddress.zip,
-                country: shippingAddress.country,
-           }
-      }),
-      paymentMethod: selectedPaymentMethod,
-      shippingMethod: { // Send the selected shipping method details
-        provider: selectedShippingOption.provider,
-        service: selectedShippingOption.service || "Standard",
-        cost: selectedShippingOption.amount,
-        estimatedDelivery: selectedShippingOption.duration || "N/A",
-        rateId: selectedShippingOption.id
-      },
+    // 2. Prepare Data for INITIAL Order Creation in Sanity (Pending Status)
+    const initialOrderData = {
+        items: cartItems.map((item) => {
+             console.log(`Preparing item for API: ID=${item.id}, Name=${item.name}`);
+             if (!item.id || !item.name || typeof item.price !== 'number' || typeof item.quantity !== 'number') {
+                console.error("❌ Invalid item structure detected before sending to API:", item);
+                // Consider throwing an error here to stop the process if an item is invalid
+                 throw new Error(`Invalid item data for ${item.name || 'unknown item'}. Cannot proceed.`);
+             }
+             return { id: item.id, name: item.name, price: item.price, quantity: item.quantity, image: item.image || null };
+        }),
+        subtotal: subtotal,
+        discountAmount: discountAmount,
+        discountCode: discountDetails ? discountDetails.code : null,
+        shippingCost: selectedShippingOption.amount,
+        total: totalWithDiscount,
+        shippingAddress: {
+            street: shippingAddress.street, address2: shippingAddress.address2 || null,
+            city: shippingAddress.city, state: shippingAddress.state, zip: shippingAddress.zip, country: shippingAddress.country,
+        },
+        billingSameAsShipping: shippingAddress.billingSameAsShipping,
+        // Conditionally add billing address
+        ...(shippingAddress.billingSameAsShipping === false && {
+             billingAddress: { street: '', city: '', state: '', zip: '', country: '' /* Populate with actual billing fields */ }
+        }),
+        paymentMethod: selectedPaymentMethod, // Record UI selection
+        shippingMethod: {
+            provider: selectedShippingOption.provider, service: selectedShippingOption.service || "Standard",
+            cost: selectedShippingOption.amount, estimatedDelivery: selectedShippingOption.duration || "N/A",
+            rateId: selectedShippingOption.id
+        },
     };
-    console.log("📦 Order Data Prepared for /api/order/create:", JSON.stringify(orderDataForApi, null, 2));
+    console.log("📦 Initial Order Data Prepared for /api/order/create:", JSON.stringify(initialOrderData, null, 2));
 
 
-    // 3. Process Order (API Calls)
-    let orderId = null; // To store the Sanity document ID
+    let sanityOrderId: string | null = null; // Store the created Sanity order _id
+
     try {
-      // === Step 1: Create Order Document ===
-      console.log("📞 Calling POST /api/order/create...");
-      const orderResponse = await fetch("/api/order/create", {
-        method: "POST",
-        headers: { "Content-Type": 'application/json' },
-        body: JSON.stringify(orderDataForApi), // Send the prepared data
-      });
+        // === Step 1: Create the PENDING Order in Sanity ===
+        console.log("📞 Calling POST /api/order/create...");
+        const orderResponse = await fetch("/api/order/create", {
+            method: "POST", headers: { "Content-Type": 'application/json' }, body: JSON.stringify(initialOrderData),
+        });
 
-      // Handle potential errors from order creation API
-      if (!orderResponse.ok) {
-        let errorMsg = `Failed to create order (Status: ${orderResponse.status})`;
-        let responseBodyText = '';
-        try {
-            responseBodyText = await orderResponse.text(); // Read body once
-            console.error("Order creation API error response:", responseBodyText);
-            try { const errorData = JSON.parse(responseBodyText); errorMsg = errorData.message || errorData.error || errorMsg; }
-            catch (_) { console.warn("Could not parse order creation error response as JSON.") }
-        } catch (readError) { errorMsg += ` and response body could not be read.` }
-        throw new Error(errorMsg); // Throw to main catch block
-      }
+        // Handle errors from order creation using "read once" pattern
+        if (!orderResponse.ok) {
+            let errorMsg = `Failed to create initial order (Status: ${orderResponse.status})`; let responseBodyText = '';
+            try { responseBodyText = await orderResponse.text(); console.error("Order creation API error:", responseBodyText); try { const d=JSON.parse(responseBodyText); errorMsg=d.message||d.error||errorMsg; } catch(_){} } catch(e){ errorMsg+=' & could not read response.' }
+            throw new Error(errorMsg);
+        }
 
-      // Extract the REAL Sanity document ID from the successful response
-      const responseData = await orderResponse.json();
-      orderId = responseData?.orderId; // Use optional chaining
-      console.log("✅ Response data received from /api/order/create:", JSON.stringify(responseData, null, 2));
-
-      if (!orderId) {
-        console.error("❌ 'orderId' key was missing or falsy in the response from /api/order/create:", responseData);
-        throw new Error("Order created, but API did not return a valid Sanity Order ID.");
-      }
-      console.log("✅ Order created successfully with Sanity ID:", orderId);
+        const responseData = await orderResponse.json();
+        sanityOrderId = responseData?.orderId;
+        console.log("✅ Initial pending order created response:", JSON.stringify(responseData, null, 2));
+        if (!sanityOrderId) throw new Error("Order created, but API did not return a valid Sanity Order ID.");
+        console.log("✅ Pending Order created successfully with Sanity ID:", sanityOrderId);
 
 
-      // --- *** TEMPORARY TRANSACTION ID SIMULATION *** ---
-      const fakeTransactionId = `txn_fake_${Date.now()}`;
-      console.log("🧪 Simulating successful payment with Fake Transaction ID:", fakeTransactionId);
-      // --- *** END SIMULATION *** ---
+        // === Step 2: Call API to Create Stripe Checkout Session ===
+        console.log("📞 Calling POST /api/payment to create Stripe Checkout Session...");
+        const paymentApiData = {
+             items: cartItems.map(item => ({ name: item.name, price: item.price, quantity: item.quantity, image: item.image })),
+             currency: 'usd', // Or get dynamically
+             metadata: { sanityOrderId: sanityOrderId } // Link session to Sanity order
+        };
+        const paymentResponse = await fetch('/api/payment', { // Ensure path is correct
+            method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(paymentApiData)
+        });
+
+        // Handle errors from payment session API using "read once" pattern
+        if (!paymentResponse.ok) {
+            let errorMsg = `Failed to create payment session (Status: ${paymentResponse.status})`; let responseBodyText = '';
+            try { responseBodyText = await paymentResponse.text(); console.error("Payment session API error:", responseBodyText); try { const d=JSON.parse(responseBodyText); errorMsg=d.message||d.error||errorMsg; } catch(_){} } catch(e){ errorMsg+=' & could not read response.' }
+            throw new Error(errorMsg);
+        }
+
+        const { sessionId, error: sessionError } = await paymentResponse.json();
+        if (sessionError) throw new Error(sessionError.message || "Failed to get payment session ID.");
+        if (!sessionId) throw new Error("Payment session created, but API did not return a Session ID.");
+        console.log("✅ Stripe Checkout Session ID received:", sessionId);
 
 
-      // === Step 2: Create Shipping Label ===
-      console.log(`📞 Calling POST /api/shipping/create-label for Order ID: ${orderId}, Rate ID: ${selectedShippingId}`);
-      const labelResponse = await fetch('/api/shipping/create-label', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ rateId: selectedShippingId, orderSanityId: orderId }),
-      });
+        // === Step 3: Redirect to Stripe Checkout ===
+        console.log("⏳ Redirecting to Stripe Checkout...");
+        const stripe = await stripePromise;
+        if (!stripe) throw new Error("Stripe.js failed to load."); // Should be caught by initial check
 
-       // Handle potential errors from label creation API
-      if (!labelResponse.ok) {
-        let labelErrorMsg = `Shipping label creation failed (Status: ${labelResponse.status})`;
-        let labelResponseBodyText = '';
-        try {
-            labelResponseBodyText = await labelResponse.text(); // Read body once
-            console.error("Label creation API error response:", labelResponseBodyText);
-            try { const errorData = JSON.parse(labelResponseBodyText); labelErrorMsg = errorData.message || errorData.error || labelErrorMsg; }
-            catch (_) { console.warn("Could not parse label creation error response as JSON.") }
-        } catch (readError) { labelErrorMsg += ` and response body could not be read.` }
-        throw new Error(labelErrorMsg); // Throw to main catch block
-      }
+        const { error: stripeRedirectError } = await stripe.redirectToCheckout({ sessionId });
+        // If redirect fails (unlikely unless session ID is bad client-side), error is thrown
+        if (stripeRedirectError) {
+            console.error("Stripe redirect error:", stripeRedirectError);
+            throw new Error(stripeRedirectError.message || "Failed to redirect to payment page.");
+        }
+        // On successful redirect start, this component potentially unmounts / stops execution here
 
-      // Extract label details from successful response
-      const { trackingNumber, labelUrl } = await labelResponse.json();
-      console.log("✅ Label created successfully:", { trackingNumber, labelUrl });
-
-
-      // === Step 3: Update Order Document (Tracking, Status, TxnID) ===
-      console.log(`📞 Calling PATCH /api/order/update for Order ID: ${orderId}`);
-      const updateResponse = await fetch('/api/order/update', {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-              orderId: orderId, // The Sanity _id
-              trackingNumber: trackingNumber,
-              labelUrl: labelUrl,
-              status: 'processing', // Update status
-              transactionId: fakeTransactionId // Include fake (or real) ID
-          })
-      });
-
-      // Handle potential errors from update API
-      if (!updateResponse.ok) {
-        let updateErrorMsg = `Failed to update order status (Status: ${updateResponse.status})`;
-        let updateResponseBodyText = '';
-        try {
-            updateResponseBodyText = await updateResponse.text(); // Read body once
-            console.error("Order update API error response:", updateResponseBodyText);
-            try { const errorData = JSON.parse(updateResponseBodyText); updateErrorMsg = errorData.message || errorData.error || updateErrorMsg; }
-            catch (_) { console.warn("Could not parse order update error response as JSON.") }
-        } catch (readError) { updateErrorMsg += ` and response body could not be read.` }
-        // Decide how critical this is. Maybe log error but don't throw? For now, throw.
-        throw new Error(updateErrorMsg);
-      }
-
-      console.log("✅ Order update API call successful.");
-      const updateData = await updateResponse.json(); // Optional: log update response data
-      console.log("Order update response data:", updateData);
-
-
-      // === Step 4: Success - Clear Cart & Redirect ===
-      localStorage.removeItem("cart");
-      setCartItems([]); // Clear local state
-      setSubtotal(0);
-      console.log("✅ Cart cleared, redirecting to confirmation page...");
-      window.location.href = `/Order-Confirmation?orderId=${orderId}`; // Redirect
-
-    } catch (error) { // Catch errors from any step above
-      console.error('💥 Order processing failed:', error);
-      // Show user-friendly error message
-      alert(`Order processing failed: ${error instanceof Error ? error.message : 'An unknown error occurred.'}\nPlease check the console for details or contact support.`);
-      // Keep loading state true until alert is dismissed? Maybe not. Let finally handle it.
-    } finally {
-      setLoading(false); // Stop loading indicator regardless of success or failure
-      console.log("--- Order Placement Attempt Finished ---");
+    } catch (error) { // Catch errors from any step
+        console.error('💥 Order placement or payment initiation failed:', error);
+        alert(`Processing failed: ${error instanceof Error ? error.message : 'An unknown error occurred.'}\nPlease try again or contact support.`);
+        setLoading(false); // Stop loading ON ERROR
     }
-  }; // End of handlePlaceOrder
+    // No 'finally' block for setLoading(false) needed here, as success involves navigating away.
+  };
+  // --- End handlePlaceOrder ---
 
-  // --- Payment Methods ---
+
+  // --- Payment Methods (for UI display) ---
   const paymentMethods = [
-    { id: "credit_card", name: "Credit Card (Placeholder)" },
-    { id: "paypal", name: "PayPal (Placeholder)" },
+    { id: "stripe_checkout", name: "Card / Other (via Stripe)" },
   ];
+  // --- End Payment Methods ---
+
 
   // --- JSX Rendering ---
   return (
     <>
-      {/* Assume ForAllHeroSections is a valid component */}
-      <ForAllHeroSections/>
+      <ForAllHeroSections />
 
       {/* Loading Overlay */}
       {loading && (
@@ -479,7 +345,7 @@ export default function CheckoutPage() {
            <div className="bg-white p-8 rounded-lg shadow-xl text-center">
              <div className="loader mb-4 mx-auto"></div>
              <p className="text-lg font-semibold text-gray-700">Processing your order...</p>
-             <p className="text-sm text-gray-500">Please wait...</p>
+             <p className="text-sm text-gray-500">Redirecting to payment...</p>
            </div>
          </div>
       )}
@@ -517,8 +383,7 @@ export default function CheckoutPage() {
                     {!shippingAddress.billingSameAsShipping && (
                         <div className="mt-4 p-4 border rounded bg-gray-50">
                             <p className="text-sm text-gray-600 font-medium mb-2">Enter Billing Address:</p>
-                            {/* Add actual billing address input fields here, similar to shipping */}
-                            {/* Example: <input type="text" name="billingStreet" ... /> */}
+                            {/* Implement actual input fields for billing address here */}
                             <p className="text-xs text-red-500">(Billing address input fields need to be implemented)</p>
                         </div>
                     )}
@@ -530,7 +395,7 @@ export default function CheckoutPage() {
                 <h2 className="text-xl font-semibold mb-4 text-gray-800">Shipping Method</h2>
                 <ShippingRates
                     shippingAddress={shippingAddress}
-                    cartItems={cartItems} // Pass cart if needed by API
+                    cartItems={cartItems}
                     onSelectShipping={handleSelectShipping}
                     selectedShippingId={selectedShippingId}
                     shippingOptionsFromParent={shippingOptions}
@@ -550,18 +415,20 @@ export default function CheckoutPage() {
                         </label>
                     ))}
                 </div>
-                {/* Placeholder for actual payment form (e.g., Stripe Elements) */}
-                {selectedPaymentMethod === 'credit_card' && ( <div className="mt-4 p-4 border rounded bg-gray-50 text-sm text-gray-600">Credit Card input form placeholder. Implement secure payment capture here.</div> )}
-                {selectedPaymentMethod === 'paypal' && ( <div className="mt-4 p-4 border rounded bg-gray-50 text-sm text-gray-600">PayPal button integration placeholder.</div> )}
-            </div> {/* End Payment Method Section */}
+                {/* No direct payment inputs needed here for Stripe Checkout */}
+             </div> {/* End Payment Method Section */}
 
             {/* Action Buttons */}
              <div className="flex flex-col sm:flex-row justify-between items-center mt-8 gap-4">
-                <button className="px-6 py-3 bg-gray-200 text-gray-700 rounded-md shadow-sm hover:bg-gray-300 transition duration-200 order-2 sm:order-1 w-full sm:w-auto" onClick={() => window.history.back()}> {/* Or link to cart */}
+                <button className="px-6 py-3 bg-gray-200 text-gray-700 rounded-md shadow-sm hover:bg-gray-300 transition duration-200 order-2 sm:order-1 w-full sm:w-auto" onClick={() => window.history.back()}>
                     ← Back
                 </button>
-                <button className="px-8 py-3 bg-[#FF9F0D] text-white rounded-md shadow-md hover:bg-[#e58b0a] transition duration-200 flex items-center justify-center gap-2 order-1 sm:order-2 w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed" onClick={handlePlaceOrder} disabled={loading || cartItems.length === 0 || !selectedShippingId || !selectedPaymentMethod}> {/* More robust disabled check */}
-                    {loading ? 'Processing...' : 'Place Order'} →
+                {/* Changed button text to reflect payment step */}
+                <button className="px-8 py-3 bg-[#FF9F0D] text-white rounded-md shadow-md hover:bg-[#e58b0a] transition duration-200 flex items-center justify-center gap-2 order-1 sm:order-2 w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
+                    onClick={handlePlaceOrder}
+                    disabled={loading || cartItems.length === 0 || !selectedShippingId || !selectedPaymentMethod || !stripePromise} // Disable if stripe not loaded
+                >
+                    {loading ? 'Processing...' : 'Proceed to Payment'} → {/* Updated Button Text */}
                 </button>
              </div> {/* End Action Buttons */}
 
@@ -581,35 +448,34 @@ export default function CheckoutPage() {
                                         <Image src={item.image || "/placeholder-image.png"} alt={item.name} className="w-14 h-14 rounded object-cover border" width={56} height={56}/>
                                         <span className="absolute -top-2 -right-2 bg-orange-500 text-white text-[10px] font-bold rounded-full h-5 w-5 flex items-center justify-center">{item.quantity}</span>
                                     </div>
-                                    <div className="flex-grow">
-                                        <h3 className="text-sm font-medium text-gray-700 line-clamp-1">{item.name}</h3>
+                                    <div className="flex-grow min-w-0"> {/* Added min-w-0 for flex shrink */}
+                                        <h3 className="text-sm font-medium text-gray-700 truncate">{item.name}</h3> {/* Added truncate */}
                                         <p className="text-xs text-gray-500">${item.price.toFixed(2)}</p>
                                     </div>
                                     <div className="text-sm font-semibold text-gray-800 flex-shrink-0">${(item.price * item.quantity).toFixed(2)}</div>
-                                    <button title="Remove item" className="text-red-400 hover:text-red-600 text-lg ml-1 flex-shrink-0" onClick={() => removeItemFromCart(item.id)}> × </button>
+                                    <button title="Remove item" className="text-red-400 hover:text-red-600 text-lg ml-1 flex-shrink-0 p-1" onClick={() => removeItemFromCart(item.id)}> × </button>
                                 </div>
                             ))
                         ) : ( <p className="text-gray-500 text-center py-4">Your cart is empty.</p> )}
                     </div>
                     {/* Discount Code Input */}
                     <div className="mt-4 border-t pt-4">
-                        <label htmlFor="discountCode" className="block text-sm font-medium text-gray-600 mb-1">Apply Discount Code</label>
-                        <div className="flex gap-2">
-                            <input id="discountCode" type="text" className="border p-2 rounded w-full text-sm focus:ring-1 focus:ring-orange-400 outline-none" placeholder="Enter code" value={discountCode} onChange={(e) => setDiscountCode(e.target.value)} disabled={!!discountDetails}/>
-                            <button onClick={applyDiscount} className="bg-gray-600 text-white px-4 py-2 rounded text-sm hover:bg-gray-700 transition duration-200 disabled:opacity-50" disabled={!discountCode || !!discountDetails || subtotal === 0}>Apply</button>
-                        </div>
-                        {discountDetails && (
-                            <div className="mt-2 text-green-600 text-sm flex justify-between items-center">
-                                <span>Code "{discountDetails.code}" applied!</span>
-                                <button onClick={() => { setAppliedDiscount(0); setDiscountDetails(null); setDiscountCode(''); }} className="text-red-500 text-xs hover:underline">Remove</button>
-                            </div>
-                        )}
+                         <label htmlFor="discountCode" className="block text-sm font-medium text-gray-600 mb-1">Apply Discount Code</label>
+                         <div className="flex gap-2">
+                             <input id="discountCode" type="text" className="border p-2 rounded w-full text-sm focus:ring-1 focus:ring-orange-400 outline-none" placeholder="Enter code" value={discountCode} onChange={(e) => setDiscountCode(e.target.value)} disabled={!!discountDetails}/>
+                             <button onClick={applyDiscount} className="bg-gray-600 text-white px-4 py-2 rounded text-sm hover:bg-gray-700 transition duration-200 disabled:opacity-50" disabled={!discountCode || !!discountDetails || subtotal === 0}>Apply</button>
+                         </div>
+                         {discountDetails && (
+                             <div className="mt-2 text-sm text-green-600">
+                                 Discount applied: {discountDetails.code}
+                             </div>
+                         )}
                     </div>
                     {/* Price Breakdown */}
                     <div className="mt-5 space-y-2 border-t pt-4 text-sm">
-                        <div className="flex justify-between text-gray-600"><span>Subtotal</span> <span>${subtotal.toFixed(2)}</span></div>
-                        {discountAmount > 0 && (<div className="flex justify-between text-green-600"><span>Discount ({appliedDiscount.toFixed(0)}%)</span> <span>-${discountAmount.toFixed(2)}</span></div>)}
-                        <div className="flex justify-between text-gray-600"><span>Shipping</span> <span>{selectedShippingId ? `$${selectedShippingCost.toFixed(2)}` : 'Select address'}</span></div>
+                         <div className="flex justify-between text-gray-600"><span>Subtotal</span> <span>${subtotal.toFixed(2)}</span></div>
+                         {discountAmount > 0 && (<div className="flex justify-between text-green-600"><span>Discount ({appliedDiscount.toFixed(0)}%)</span> <span>-${discountAmount.toFixed(2)}</span></div>)}
+                         <div className="flex justify-between text-gray-600"><span>Shipping</span> <span>{selectedShippingId ? `$${selectedShippingCost.toFixed(2)}` : 'Select address'}</span></div>
                     </div>
                     {/* Total */}
                     <div className="flex justify-between text-lg font-bold text-gray-800 mt-4 border-t pt-4">
@@ -628,4 +494,4 @@ export default function CheckoutPage() {
       `}</style>
     </>
   );
-} // End of CheckoutPage component
+}
