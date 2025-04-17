@@ -17,24 +17,7 @@ import { useCart } from "../Context/CartContext"; // Ensure this path is correct
 import { motion } from "framer-motion";
 import SocialMediaSharing from "../../../components/SocialMediaSharing"; // Adjust path if needed
 import SimilarProductsSection from "../../../components/SimilarProducts"; // Adjust path if needed
-
-// Define a type for the product structure coming from Sanity fetch
-// Adjust this based on your actual Sanity schema fields
-interface SanityProduct {
-  _id: string;
-  name: string;
-  slug?: { current?: string };
-  description?: string;
-  longDescription?: string; // Added for the description tab
-  price: number;
-  originalPrice?: number | null;
-  image?: { asset?: { _ref?: string } }; // Main image
-  images?: { asset?: { _ref?: string } }[]; // Array of additional images
-  category?: string;
-  tags?: string[];
-  reviews?: any[]; // Define a proper review type if available
-  // Add any other fields you fetch
-}
+import { SanityProduct } from "../../types/productTypes"; // <-- Import from shared file
 
 // Props for the ProductDetails component
 interface ProductDetailsProps {

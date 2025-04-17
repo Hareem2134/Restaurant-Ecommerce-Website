@@ -1,20 +1,34 @@
+// src/app/product/[slug]/ProductDetailsWrapper.tsx
+
 "use client";
 
 import dynamic from "next/dynamic";
-import { ProductType } from "../../../types/product"; // Adjust the import path as needed
+// *** IMPORT THE SHARED TYPE ***
+import { SanityProduct } from "@/types/productTypes"; // Adjust path if needed
 
+// Dynamically import the main details component
 const DynamicProductDetails = dynamic(() => import("@/app/product/ProductDetails"), {
-  ssr: false,
+  ssr: false, // Keep ssr: false if ProductDetails uses client-only hooks/features heavily
 });
+
+// Define props using the SHARED type
+interface WrapperProps {
+  product: SanityProduct; // <-- Use the imported SanityProduct type
+  previousSlug: string | null;
+  nextSlug: string | null;
+}
 
 export default function ProductDetailsWrapper({
   product,
   previousSlug,
   nextSlug,
-}: {
-  product: ProductType;
-  previousSlug: string | null;
-  nextSlug: string | null;
-}) {
-  return <DynamicProductDetails product={product} previousSlug={previousSlug} nextSlug={nextSlug} />;
+}: WrapperProps) { // Use the interface for props
+  // No transformation needed, types match now
+  return (
+    <DynamicProductDetails
+        product={product}
+        previousSlug={previousSlug}
+        nextSlug={nextSlug}
+    />
+  );
 }
