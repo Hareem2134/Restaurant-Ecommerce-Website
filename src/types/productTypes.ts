@@ -1,5 +1,3 @@
-// src/types/productTypes.ts (Create this file in this location)
-
 // Define the structure reflecting Sanity data
 // This should be the SINGLE SOURCE OF TRUTH for your product data structure
 export interface SanityProduct {
@@ -24,6 +22,3 @@ export interface SanityProduct {
     // Add any other fields fetched from your 'food' or product schema
     available?: boolean;             // Example: If you have availability
   }
-  
-  // You can add other related types here, e.g., for CartItem if different
-  // export interface CartItemType { ... }

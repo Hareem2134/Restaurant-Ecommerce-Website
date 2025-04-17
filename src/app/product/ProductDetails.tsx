@@ -1,6 +1,3 @@
-// src/app/product/ProductDetails.tsx
-// Full corrected component
-
 "use client";
 import React, { useState, useEffect } from "react"; // Added useEffect for clarity if needed later
 import Image from "next/image";

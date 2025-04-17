@@ -1,5 +1,3 @@
-// src/app/Order-Confirmation/page.tsx
-
 "use client";
 
 import React, { useEffect, useState, Suspense } from "react";

@@ -1,5 +1,3 @@
-// src/app/product/[slug]/ProductDetailsWrapper.tsx
-
 "use client";
 
 import dynamic from "next/dynamic";
