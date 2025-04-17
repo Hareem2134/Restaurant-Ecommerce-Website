@@ -72,11 +72,28 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
   const [selectedImage, setSelectedImage] = useState<string>(allImages[0] ?? PLACEHOLDER_IMAGE);
 
   // State for reviews (using placeholder structure)
-  const [reviews, setReviews] = useState(
-    product.reviews?.length > 0
-      ? product.reviews // Use real reviews if available
-      : [ /* Your placeholder reviews */ ]
-  );
+  // --- FIX: State for reviews initialization ---
+  // Check if product.reviews exists, is an array, AND has length > 0
+  // Define placeholder reviews structure
+  const PLACEHOLDER_REVIEWS = [
+    {
+      user: "John Doe",
+      rating: 5,
+      comment: "Great product! Highly recommended.",
+      date: new Date().toISOString()
+    },
+    {
+      user: "Jane Smith",
+      rating: 4,
+      comment: "Good quality and fast delivery.",
+      date: new Date().toISOString()
+    }
+  ];
+
+  const initialReviews = (product.reviews && Array.isArray(product.reviews) && product.reviews.length > 0)
+      ? product.reviews // Use real reviews if valid
+      : PLACEHOLDER_REVIEWS; // Use placeholder reviews if none exist
+  const [reviews, setReviews] = useState(initialReviews);
   const [newReview, setNewReview] = useState({ user: "", rating: 0, comment: "" });
   // --- End State Variables ---
 
