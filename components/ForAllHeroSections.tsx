@@ -5,7 +5,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const ForAllHeroSections = () => {
-  const pathname = usePathname(); // Get current route path
+  const pathnameRaw = usePathname(); // Get current route path (string | null)
+
+  // Provide a default value if pathnameRaw is null
+  const pathname = pathnameRaw ?? "/"; // Default to homepage if null
 
   // Mapping of paths to display text
   const pageTitles: Record<string, string> = {
@@ -25,10 +28,13 @@ const ForAllHeroSections = () => {
     "/Shoplist": "Shop List",
     "/ShopDetails": "Shop Details",
     "/Cart": "Shopping Cart",
-  };
+    "/Track": "Track Your Order",
+    "/Order-Confirmation": "Order Confirmation", // Add confirmation page title
+  } as const; // Use 'as const' if this mapping is static
 
   // Get current page title or default to "Page"
-  const currentTitle = pageTitles[pathname] || "Page";
+  const currentTitle = pageTitles[pathname as keyof typeof pageTitles] ?? // Assert type or check if key exists
+                      (pathname === "/" ? "Home" : "Page"); // Fallback logic refined
 
   return (
     <section className="w-full bg-[url('/heropic.png')] bg-cover bg-no-repeat bg-center py-12 sm:py-16 md:py-20 lg:py-24 xl:py-28">
@@ -44,10 +50,18 @@ const ForAllHeroSections = () => {
             <Link href="/" className="text-white hover:text-[#FF9F0D] transition-colors duration-300">
               Home
             </Link>
-            <span className="text-white">/</span>
-            <Link href={pathname} className="text-[#FF9F0D]">
-              {currentTitle}
-            </Link>
+            
+            {/* Only show breadcrumb for non-home pages */}
+            {pathname !== "/" && (
+              <>
+                <span className="text-white">/</span>
+                {/* Link href uses the potentially null pathnameRaw for correctness */}
+                <Link href={pathnameRaw ?? '#'} className="text-[#FF9F0D]">
+                  {currentTitle}
+                </Link>
+              </>
+            )}
+
           </div>
         </div>
       </div>
