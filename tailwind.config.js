@@ -8,6 +8,18 @@ module.exports = {
   safelist: [
     'text-red-500',
     'bg-blue-500',
+    'lg:col-span-2',
+    'lg:col-span-4',
+    'lg:col-span-6',
+    'lg:col-span-8',
+    'lg:flex',
+    'hidden',
+    'lg:block',
+    'lg:grid',
+    'lg:grid-cols-2',
+    'lg:grid-cols-3',
+    'lg:grid-cols-4',
+    
   ],
   theme: {
     extend: {

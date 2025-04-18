@@ -15,6 +15,7 @@ import { motion } from "framer-motion";
 import SocialMediaSharing from "../../../components/SocialMediaSharing"; // Adjust path if needed
 import SimilarProductsSection from "../../../components/SimilarProducts"; // Adjust path if needed
 import { SanityProduct } from "../../types/productTypes"; // <-- Import from shared file
+import clsx from 'clsx';
 
 // Props for the ProductDetails component
 interface ProductDetailsProps {
@@ -218,11 +219,10 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
             {allImages.map((imgUrl, index) => (
                 <motion.div
                 key={index}
-                className={`w-full aspect-square shadow-md hover:shadow-lg rounded-lg overflow-hidden border-2 cursor-pointer transition-all duration-200 ${
-                    selectedImage === imgUrl
-                    ? "border-orange-500 ring-2 ring-orange-300" // Highlight selected
-                    : "border-transparent hover:border-gray-300"
-                }`}
+                className={clsx(
+                                     'w-full aspect-square shadow-md hover:shadow-lg rounded-lg overflow-hidden border-2 cursor-pointer transition-all duration-200', // Base classes
+                                     selectedImage === imgUrl ? "border-orange-500 ring-2 ring-orange-300" : "border-transparent hover:border-gray-300" // Conditional classes
+                                 )}
                 whileHover={{ scale: 1.05 }}
                 onClick={() => setSelectedImage(imgUrl)} // Set selected image directly
                 >
@@ -243,7 +243,10 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
 
 
         {/* Main Product Image (Center Column) */}
-        <div className={`lg:col-span-${allImages.length > 1 ? '6' : '8'} flex flex-col items-center relative`}> {/* Adjust span if no thumbs */}
+        <div className={clsx(
+           'flex flex-col items-center relative', // Base classes
+           allImages.length > 1 ? 'lg:col-span-6' : 'lg:col-span-8' // Conditional responsive class
+       )}> {/* Adjust span if no thumbs */}
           <motion.div
             className="w-full max-w-md lg:max-w-full aspect-square relative overflow-hidden rounded-lg shadow-lg border"
             // Add hover effect if desired
@@ -268,7 +271,10 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
                        <button
                            key={`dot-${index}`}
                            onClick={() => setSelectedImage(imgUrl)}
-                           className={`w-3 h-3 rounded-full transition-colors ${selectedImage === imgUrl ? 'bg-orange-500' : 'bg-gray-300 hover:bg-gray-400'}`}
+                           className={clsx(
+                                                           'w-3 h-3 rounded-full transition-colors', // Base classes
+                                                           selectedImage === imgUrl ? 'bg-orange-500' : 'bg-gray-300 hover:bg-gray-400' // Conditional classes
+                                                       )}
                            aria-label={`View image ${index + 1}`}
                        />
                    ))}
@@ -376,15 +382,25 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
       {/* Tabs Section */}
       <div className="mt-16 border-t pt-8">
         <div className="flex border-b border-gray-200 mb-6 justify-center">
-          <button
-            className={`px-6 py-3 text-sm font-medium transition-colors ${selectedTab === "longDescription" ? "text-orange-600 border-b-2 border-orange-600" : "text-gray-500 hover:text-gray-800"}`}
-            onClick={() => handleTabClick("longDescription")}
+                  <button
+              className={clsx(
+                  'px-6 py-3 text-sm font-medium transition-colors',
+                  selectedTab === "longDescription" ? "text-orange-600 border-b-2 border-orange-600" : "text-gray-500 hover:text-gray-800"
+              )}
+              onClick={() => handleTabClick("longDescription")}
           >
             Description
           </button>
+         <button
+           className={`px-6 py-3 text-sm font-medium transition-colors ${selectedTab === "reviews" ? "text-orange-600 border-b-2 border-orange-600" : "text-gray-500 hover:text-gray-800"}`}
+           onClick={() => handleTabClick("reviews")}
+         ></button>
           <button
-            className={`px-6 py-3 text-sm font-medium transition-colors ${selectedTab === "reviews" ? "text-orange-600 border-b-2 border-orange-600" : "text-gray-500 hover:text-gray-800"}`}
-            onClick={() => handleTabClick("reviews")}
+              className={clsx(
+                  'px-6 py-3 text-sm font-medium transition-colors',
+                  selectedTab === "reviews" ? "text-orange-600 border-b-2 border-orange-600" : "text-gray-500 hover:text-gray-800"
+              )}
+              onClick={() => handleTabClick("reviews")}
           >
             Reviews ({reviews.length}) {/* Dynamic count */}
           </button>

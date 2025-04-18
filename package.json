@@ -21,6 +21,7 @@
     "axios": "^1.8.4",
     "bcrypt": "^5.1.1",
     "chart.js": "^4.4.8",
+    "clsx": "^2.1.1",
     "esbuild": "^0.25.1",
     "framer-motion": "^12.4.2",
     "lucide-react": "^0.483.0",
