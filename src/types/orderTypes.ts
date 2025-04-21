@@ -1,10 +1,16 @@
 // src/types/orderTypes.ts
 
 export interface OrderDetails {
+    discountCode: any;
+    trackingNumber: ReactI18NextChildren | Iterable<ReactI18NextChildren>;
+    shippingMethod: any;
+    shippingMethod: any;
+    shippingLabelUrl: any;
     _id: string;
     orderNumber: string;
     orderDate: string;
-    items?: { // Make items optional initially if fetch might fail
+    items?: {
+        image: string; // Make items optional initially if fetch might fail
         _key: string;
         nameAtPurchase: string;
         priceAtPurchase: number;
