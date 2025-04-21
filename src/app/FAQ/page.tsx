@@ -1,5 +1,6 @@
 "use client"
 import React, { useState } from 'react';
+import ForAllHeroSections from '../../../components/ForAllHeroSections'
 
 const faqData = [
   {
@@ -52,10 +53,15 @@ const FAQPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <>
+    <div>
+    <ForAllHeroSections/>
+    </div>
+
+    <div className="min-h-screen bg-black">
       <main className="max-w-4xl mx-auto py-16 px-4">
         <h2 className="text-4xl font-bold text-center mb-8">Frequently Asked Questions</h2>
-        <p className="text-center text-gray-600 mb-12">
+        <p className="text-center text-gray-100 mb-12">
           Find answers to common questions about our customized & international cuisine delivery service.
         </p>
 
@@ -63,7 +69,7 @@ const FAQPage: React.FC = () => {
           {faqData.map((faq, index) => (
             <div
               key={index}
-              className="bg-white p-6 rounded-lg shadow-lg transition-transform duration-200"
+              className="bg-grey-400 p-6 rounded-lg shadow-lg transition-transform duration-200"
             >
               <div
                 onClick={() => toggleFAQ(index)}
@@ -75,13 +81,14 @@ const FAQPage: React.FC = () => {
                 </span>
               </div>
               {openIndex === index && (
-                <p className="text-sm text-gray-600 mt-4">{faq.answer}</p>
+                <p className="text-sm text-gray-100 mt-4">{faq.answer}</p>
               )}
             </div>
           ))}
         </div>
       </main>
     </div>
+    </>
   );
 };
 

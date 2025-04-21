@@ -21,14 +21,14 @@ const ForAllHeroSections = () => {
     "/Checkout": "Checkout",
     "/About": "About Us",
     "/OurChef": "Our Chef",
-    "/FAQ": "FAQ Page",
+    "/FAQ": "Frequent Asked Questions",
     "/Login": "SignIn Page",
     "/Signup": "SignUp Page",
     "/404": "404 Error",
     "/Shoplist": "Shop List",
     "/ShopDetails": "Shop Details",
     "/Cart": "Shopping Cart",
-    "/Track": "Track Your Order",
+    "/track": "Track Your Order",
     "/Order-Confirmation": "Order Confirmation", // Add confirmation page title
   } as const; // Use 'as const' if this mapping is static
 

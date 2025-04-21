@@ -130,13 +130,13 @@ const ProductCardOnShop: React.FC<ProductCardProps> = ({ product }) => {
 
       <div className="p-4 text-center">
         <Link href={`/product/${product.slug}`}>
-          <h3 className="font-semibold text-lg cursor-pointer transition-colors duration-300 hover:text-orange-500">
+          <h3 className="text-gray-800 font-semibold text-lg cursor-pointer transition-colors duration-300 hover:text-orange-500">
             {product.name}
           </h3>
         </Link>
         <div className="text-orange-500 font-bold">${product.price}</div>
         {product.oldPrice && (
-          <div className="text-gray-500 line-through">${product.oldPrice}</div>
+          <div className="text-gray-800 font-bold line-through">${product.oldPrice}</div>
         )}
       </div>
     </div>

@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+  darkMode: 'class',
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
@@ -16,10 +17,6 @@ module.exports = {
     'hidden',
     'lg:block',
     'lg:grid',
-    'lg:grid-cols-2',
-    'lg:grid-cols-3',
-    'lg:grid-cols-4',
-    
   ],
   theme: {
     extend: {
@@ -27,6 +24,14 @@ module.exports = {
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
+      // Add dark mode specific colors if needed
+      // Example:
+      // colors: {
+      //   'brand-primary': {
+      //     light: '#ff9f0d',
+      //     dark: '#e58b0a', // A slightly different shade for dark mode
+      //   },
+      // }
     },
   },
   plugins: [],

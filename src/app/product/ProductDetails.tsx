@@ -304,14 +304,14 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
            </div>
 
           {/* Title */}
-          <h1 className="text-2xl md:text-3xl font-bold text-gray-800">{product.name}</h1>
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-100">{product.name}</h1>
 
           {/* Rating & Stock */}
           <div className="flex items-center justify-between">
              {/* Static Stars - Replace with dynamic rating later */}
              <div className="flex text-yellow-500 space-x-1">
                 {[...Array(5)].map((_, i) => <FaStar key={i} size={16}/>)}
-                <span className="text-xs text-gray-500 ml-2">({reviews.length} Reviews)</span>
+                <span className="text-xs text-gray-100 ml-2">({reviews.length} Reviews)</span>
              </div>
              <div className="text-xs sm:text-sm text-green-700 bg-green-100 px-3 py-1 rounded-full font-medium">
                 In Stock
@@ -328,16 +328,16 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
 
           {/* Short Description */}
           {product.description && (
-              <p className="text-gray-600 text-sm leading-relaxed">{product.description}</p>
+              <p className="text-gray-100 text-sm leading-relaxed">{product.description}</p>
           )}
 
           {/* Quantity & Add to Cart */}
           <div className="flex flex-col sm:flex-row sm:items-center gap-4 pt-2">
             {/* Quantity */}
             <div className="flex items-center border border-gray-300 rounded">
-              <button onClick={() => handleQuantityChange(-1)} className="px-4 py-2 text-lg font-medium text-gray-600 hover:bg-gray-100 rounded-l">-</button>
+              <button onClick={() => handleQuantityChange(-1)} className="px-4 py-2 text-lg font-medium text-gray-100 hover:text-gray-800 hover:bg-gray-100 rounded-l">-</button>
               <span className="px-5 py-2 text-md font-semibold w-16 text-center">{quantity}</span>
-              <button onClick={() => handleQuantityChange(1)} className="px-4 py-2 text-lg font-medium text-gray-600 hover:bg-gray-100 rounded-r">+</button>
+              <button onClick={() => handleQuantityChange(1)} className="px-4 py-2 text-lg font-medium text-gray-100 hover:text-gray-800 hover:bg-gray-100 rounded-r">+</button>
             </div>
             {/* Add to Cart Button */}
             <button
@@ -349,7 +349,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
           </div>
 
           {/* Wishlist & Compare */}
-          <div className="flex items-center space-x-6 text-sm text-gray-600 pt-2">
+          <div className="flex items-center space-x-6 text-sm text-gray-100 pt-2">
             <button onClick={handleAddToWishlist} className="flex items-center gap-1 hover:text-orange-600 transition-colors">
               <FaHeart size={14} /> Add to Wishlist
             </button>
@@ -359,12 +359,12 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
           </div>
 
           {/* Meta Info (Category/Tags) */}
-          <div className="text-xs text-gray-500 space-y-1 border-t pt-4 mt-4">
-             <p><strong className="text-gray-600">Category:</strong> {product.category || "Uncategorized"}</p>
+          <div className="text-xs text-gray-100 space-y-1 border-t pt-4 mt-4">
+             <p><strong className="text-gray-100">Category:</strong> {product.category || "Uncategorized"}</p>
              {product.tags && product.tags.length > 0 && (
-                <p><strong className="text-gray-600">Tags:</strong> {product.tags.join(", ")}</p>
+                <p><strong className="text-gray-100">Tags:</strong> {product.tags.join(", ")}</p>
              )}
-             <p><strong className="text-gray-600">SKU/ID:</strong> {product._id}</p>
+             <p><strong className="text-gray-100">SKU/ID:</strong> {product._id}</p>
           </div>
 
           {/* Social Media Sharing */}
@@ -385,20 +385,20 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
                   <button
               className={clsx(
                   'px-6 py-3 text-sm font-medium transition-colors',
-                  selectedTab === "longDescription" ? "text-orange-600 border-b-2 border-orange-600" : "text-gray-500 hover:text-gray-800"
+                  selectedTab === "longDescription" ? "text-orange-600 border-b-2 border-orange-600" : "text-gray-100 hover:text-gray-400"
               )}
               onClick={() => handleTabClick("longDescription")}
           >
             Description
           </button>
          <button
-           className={`px-6 py-3 text-sm font-medium transition-colors ${selectedTab === "reviews" ? "text-orange-600 border-b-2 border-orange-600" : "text-gray-500 hover:text-gray-800"}`}
+           className={`px-6 py-3 text-sm font-medium transition-colors ${selectedTab === "reviews" ? "text-orange-600 border-b-2 border-orange-600" : "text-gray-100 hover:text-gray-400"}`}
            onClick={() => handleTabClick("reviews")}
          ></button>
           <button
               className={clsx(
                   'px-6 py-3 text-sm font-medium transition-colors',
-                  selectedTab === "reviews" ? "text-orange-600 border-b-2 border-orange-600" : "text-gray-500 hover:text-gray-800"
+                  selectedTab === "reviews" ? "text-orange-600 border-b-2 border-orange-600" : "text-gray-100 hover:text-gray-400"
               )}
               onClick={() => handleTabClick("reviews")}
           >
@@ -410,7 +410,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
         {/* Tab Content */}
         <div className="p-1 min-h-[200px]"> {/* Added min-height */}
           {selectedTab === "longDescription" && (
-            <div className="prose prose-sm max-w-none text-gray-700 leading-relaxed"> {/* Use Tailwind Prose for styling */}
+            <div className="prose prose-sm max-w-none text-gray-100 leading-relaxed"> {/* Use Tailwind Prose for styling */}
               {/* Use longDescription field from Sanity if it exists */}
               {product.longDescription ? (
                  <p>{product.longDescription}</p> // Render actual long description
@@ -435,7 +435,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
                                {[...Array(5)].map((_, i) => <FaStar key={i} size={14}/>)}
                            </div>
                        </div>
-                      <p className="text-sm text-gray-600">{review.comment}</p>
+                      <p className="text-sm text-gray-800">{review.comment}</p>
                     </div>
                   ))}
                 </div>
@@ -448,11 +448,11 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
                 <h4 className="text-lg font-semibold mb-4">Write a Review</h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                     <div>
-                        <label htmlFor="reviewUser" className="block text-sm font-medium text-gray-700 mb-1">Your Name</label>
+                        <label htmlFor="reviewUser" className="block text-sm font-medium text-gray-100 mb-1">Your Name</label>
                         <input id="reviewUser" type="text" value={newReview.user} onChange={(e) => setNewReview({ ...newReview, user: e.target.value })} className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500" required/>
                     </div>
                     <div>
-                        <label htmlFor="reviewRating" className="block text-sm font-medium text-gray-700 mb-1">Rating</label>
+                        <label htmlFor="reviewRating" className="block text-sm font-medium text-gray-100 mb-1">Rating</label>
                         <select id="reviewRating" value={newReview.rating} onChange={(e) => setNewReview({ ...newReview, rating: Number(e.target.value) })} className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500 bg-white" required>
                             <option value="0" disabled>Select Rating</option>
                             {[5, 4, 3, 2, 1].map(r => <option key={r} value={r}>{r} Star{r > 1 ? "s" : ""}</option>)}
@@ -460,7 +460,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
                     </div>
                 </div>
                  <div className="mb-4">
-                     <label htmlFor="reviewComment" className="block text-sm font-medium text-gray-700 mb-1">Your Review</label>
+                     <label htmlFor="reviewComment" className="block text-sm font-medium text-gray-100 mb-1">Your Review</label>
                      <textarea id="reviewComment" value={newReview.comment} onChange={(e) => setNewReview({ ...newReview, comment: e.target.value })} rows={4} className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500" required/>
                  </div>
                 <button type="submit" className="px-5 py-2 bg-orange-500 text-white text-sm font-semibold rounded shadow hover:bg-orange-600 transition duration-200">Submit Review</button>

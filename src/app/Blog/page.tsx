@@ -39,7 +39,7 @@ export default function Blog() {
         <ForAllHeroSections/>
     </div>
 
-    <div className="bg-gray-100 min-h-screen p-5 px-48 py-20">
+    <div className="bg-black min-h-screen p-5 px-48 py-20">
       <div className="container mx-auto flex flex-col md:flex-row">
         <div className="w-full md:w-2/3 lg:w-3/4 space-y-6 pr-8">
           {blogs.map((blog, idx) => (

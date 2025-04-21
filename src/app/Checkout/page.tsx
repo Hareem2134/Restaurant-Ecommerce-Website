@@ -180,7 +180,7 @@ export default function CheckoutPage() {
       const data = await response.json();
       if (!data || Object.keys(data).length === 0) { setShippingError("No rates available."); setShippingOptions([]); return; }
       // Map rates
-      const formattedOptions: ShippingRateDetail[] = Object.entries(data).map(([key, value]) => ({ id: key, provider: key.toUpperCase().replace('_', ' '), amount: Number(value), logo: `/logos/${key.toLowerCase()}.png`, duration: "3-7 Days", service: "Std" }));
+      const formattedOptions: ShippingRateDetail[] = Object.entries(data).map(([key, value]) => ({ id: key, provider: key.toUpperCase().replace('_', ' '), amount: Number(value), logos: `/logos/${key.toLowerCase()}.png`, duration: "3-7 Days", service: "Std" }));
       setShippingOptions(formattedOptions);
     } catch (error) { console.error("Shipping fetch error:", error); setShippingError(error instanceof Error ? error.message : "Unknown shipping error."); setShippingOptions([]); }
     finally { setLoadingShipping(false); }
@@ -333,6 +333,7 @@ export default function CheckoutPage() {
   ];
   // --- End Payment Methods ---
 
+  console.log("📦 Final Shipping Options being passed to component:", JSON.stringify(shippingOptions, null, 2));
 
   // --- JSX Rendering ---
   return (
@@ -357,26 +358,43 @@ export default function CheckoutPage() {
           {/* Left Section: Shipping & Payment */}
           <div className="w-full lg:w-3/5 order-2 lg:order-1">
             {/* Shipping Address Form */}
-             <div className="bg-white p-6 rounded-lg shadow-md border border-gray-200 mb-6">
-                <h2 className="text-xl font-semibold mb-4 text-gray-800">Shipping Address</h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <input type="text" name="street" placeholder="Street Address *" className="border p-3 rounded w-full focus:ring-1 focus:ring-orange-400 outline-none" value={shippingAddress.street} onChange={handleInputChange} required />
-                    <input type="text" name="address2" placeholder="Apt, Suite, etc. (Optional)" className="border p-3 rounded w-full focus:ring-1 focus:ring-orange-400 outline-none" value={shippingAddress.address2} onChange={handleInputChange} />
-                    <input type="text" name="city" placeholder="City *" className="border p-3 rounded w-full focus:ring-1 focus:ring-orange-400 outline-none" value={shippingAddress.city} onChange={handleInputChange} required />
-                    <input type="text" name="state" placeholder="State / Province *" className="border p-3 rounded w-full focus:ring-1 focus:ring-orange-400 outline-none" value={shippingAddress.state} onChange={handleInputChange} required />
-                    <input type="text" name="zip" placeholder="ZIP / Postal Code *" className="border p-3 rounded w-full focus:ring-1 focus:ring-orange-400 outline-none" value={shippingAddress.zip} onChange={handleInputChange} required />
-                    <select name="country" value={shippingAddress.country} onChange={handleInputChange} className="border p-3 rounded w-full text-gray-500 focus:ring-1 focus:ring-orange-400 outline-none bg-white" required>
+             <div className="bg-gray-800 p-6 rounded-lg shadow-md border border-gray-200 mb-6">
+                <h2 className="text-xl font-semibold mb-4 text-white">Shipping Address</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-white">
+                    <input type="text" name="street" placeholder="Street Address *" className="text-white border p-3 rounded w-full focus:ring-1 focus:ring-orange-400 outline-1 bg-gray-800" value={shippingAddress.street} onChange={handleInputChange} required />
+
+                    <input type="text" name="address2" placeholder="Apt, Suite, etc. (Optional)" className="text-white border p-3 rounded w-full focus:ring-1 focus:ring-orange-400 outline-1 bg-gray-800" value={shippingAddress.address2} onChange={handleInputChange} />
+
+                    <input type="text" name="city" placeholder="City *" className="text-white border p-3 rounded w-full focus:ring-1 focus:ring-orange-400 outline-1 bg-gray-800" value={shippingAddress.city} onChange={handleInputChange} required />
+
+                    <input type="text" name="state" placeholder="State / Province *" className="text-white border p-3 rounded w-full focus:ring-1 focus:ring-orange-400 outline-1 bg-gray-800" value={shippingAddress.state} onChange={handleInputChange} required />
+
+                    <input type="text" name="zip" placeholder="ZIP / Postal Code *" className="text-white border p-3 rounded w-full focus:ring-1 focus:ring-orange-400 outline-1 bg-gray-800" value={shippingAddress.zip} onChange={handleInputChange} required />
+
+                    <select name="country" value={shippingAddress.country} onChange={handleInputChange} className="border p-3 rounded w-full text-gray-100 focus:ring-1 focus:ring-orange-400 outline-1 bg-gray-800" required>
                         <option value="">Select Country *</option>
                         <option value="PK">Pakistan</option>
                         <option value="US">United States</option>
                         <option value="CA">Canada</option>
-                        {/* Add other countries */}
+                        <option value="UK">United Kingdom</option>
+                        <option value="AU">Australia</option>
+                        <option value="DE">Germany</option>
+                        <option value="FR">France</option>
+                        <option value="JP">Japan</option>
+                        <option value="BR">Brazil</option>
+                        <option value="IN">India</option>
+                        <option value="CN">China</option>
+                        <option value="RU">Russia</option>
+                        <option value="NG">Nigeria</option>
+                        <option value="ZA">South Africa</option>
+                        <option value="EG">Egypt</option>
+                        <option value="KE">Kenya</option>
                     </select>
                 </div>
                 {/* Billing Address Section */}
                  <div className="mt-6 border-t pt-4">
-                    <h3 className="text-lg font-medium mb-2 text-gray-700">Billing Address</h3>
-                    <label className="flex items-center gap-2 text-gray-600 cursor-pointer">
+                    <h3 className="text-lg font-medium mb-2 text-white">Billing Address</h3>
+                    <label className="flex items-center gap-2 text-white cursor-pointer">
                         <input type="checkbox" className="w-4 h-4 text-orange-500 border-gray-300 rounded focus:ring-orange-400" onChange={handleCheckboxChange} checked={shippingAddress.billingSameAsShipping} />
                         <span>Same as shipping address</span>
                     </label>
@@ -391,8 +409,8 @@ export default function CheckoutPage() {
             </div> {/* End Shipping Address Form */}
 
             {/* Shipping Method Section */}
-            <div id="shipping-options-section" className="bg-white p-6 rounded-lg shadow-md border border-gray-200 mb-6">
-                <h2 className="text-xl font-semibold mb-4 text-gray-800">Shipping Method</h2>
+            <div id="shipping-options-section" className="bg-gray-800 text-white p-6 rounded-lg shadow-md border border-gray-200 mb-6">
+                <h2 className="text-xl font-semibold mb-4 text-white">Shipping Method</h2>
                 <ShippingRates
                     shippingAddress={shippingAddress}
                     cartItems={cartItems}
@@ -405,13 +423,13 @@ export default function CheckoutPage() {
             </div> {/* End Shipping Method Section */}
 
             {/* Payment Method Section */}
-             <div className="bg-white p-6 rounded-lg shadow-md border border-gray-200">
-                <h2 className="text-xl font-semibold mb-4 text-gray-800">Payment Method</h2>
-                <div className="space-y-3">
+             <div className="bg-gray-800 text-white p-6 rounded-lg shadow-md border border-gray-200">
+                <h2 className="text-xl font-semibold mb-4 text-white">Payment Method</h2>
+                <div className="space-y-3 text-white bg-gray-800">
                     {paymentMethods.map((method) => (
-                        <label key={method.id} className="flex items-center gap-3 p-4 border rounded-lg cursor-pointer hover:border-orange-400 transition-colors duration-200 has-[:checked]:bg-orange-50 has-[:checked]:border-orange-500">
+                        <label key={method.id} className="text-white flex items-center gap-3 p-4 border rounded-lg cursor-pointer hover:border-orange-400 transition-colors duration-200 has-[:checked]:bg-gray-700 has-[:checked]:border-orange-500">
                             <input type="radio" name="paymentMethod" value={method.id} checked={selectedPaymentMethod === method.id} onChange={(e) => setSelectedPaymentMethod(e.target.value)} className="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300"/>
-                            <span className="text-gray-700 font-medium">{method.name}</span>
+                            <span className="text-white font-medium">{method.name}</span>
                         </label>
                     ))}
                 </div>
@@ -419,12 +437,12 @@ export default function CheckoutPage() {
              </div> {/* End Payment Method Section */}
 
             {/* Action Buttons */}
-             <div className="flex flex-col sm:flex-row justify-between items-center mt-8 gap-4">
-                <button className="px-6 py-3 bg-gray-200 text-gray-700 rounded-md shadow-sm hover:bg-gray-300 transition duration-200 order-2 sm:order-1 w-full sm:w-auto" onClick={() => window.history.back()}>
+             <div className="text-white flex flex-col sm:flex-row justify-between items-center mt-8 gap-4">
+                <button className="px-6 py-3 bg-gray-800 text-white rounded-md shadow-sm hover:bg-gray-700 transition duration-200 order-2 sm:order-1 w-full sm:w-auto" onClick={() => window.history.back()}>
                     ← Back
                 </button>
                 {/* Changed button text to reflect payment step */}
-                <button className="px-8 py-3 bg-[#FF9F0D] text-white rounded-md shadow-md hover:bg-[#e58b0a] transition duration-200 flex items-center justify-center gap-2 order-1 sm:order-2 w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
+                <button className="w-full bg-orange-500 text-white mt-4 py-3 rounded font-semibold hover:bg-orange-600 text-sm md:text-lg px-8 transition duration-50 flex items-center justify-center gap-2 order-1 sm:order-2 sm:w-auto disabled:cursor-not-allowed"
                     onClick={handlePlaceOrder}
                     disabled={loading || cartItems.length === 0 || !selectedShippingId || !selectedPaymentMethod || !stripePromise} // Disable if stripe not loaded
                 >
@@ -434,11 +452,10 @@ export default function CheckoutPage() {
 
           </div> {/* End Left Section */}
 
-
           {/* Right Section: Order Summary */}
            <div className="w-full lg:w-2/5 order-1 lg:order-2 mb-8 lg:mb-0">
-                <div className="sticky top-24 bg-white p-6 rounded-lg shadow-md border border-gray-200">
-                    <h2 className="text-xl font-semibold mb-5 text-gray-800 border-b pb-3">Order Summary</h2>
+                <div className="sticky top-24 bg-gray-800 p-6 rounded-lg shadow-md border border-gray-200">
+                    <h2 className="text-xl font-semibold mb-5 text-white border-b pb-3">Order Summary</h2>
                     {/* Cart Items Display */}
                     <div className="max-h-60 overflow-y-auto space-y-4 mb-4 pr-2">
                         {cartItems.length > 0 ? (
@@ -449,21 +466,21 @@ export default function CheckoutPage() {
                                         <span className="absolute -top-2 -right-2 bg-orange-500 text-white text-[10px] font-bold rounded-full h-5 w-5 flex items-center justify-center">{item.quantity}</span>
                                     </div>
                                     <div className="flex-grow min-w-0"> {/* Added min-w-0 for flex shrink */}
-                                        <h3 className="text-sm font-medium text-gray-700 truncate">{item.name}</h3> {/* Added truncate */}
-                                        <p className="text-xs text-gray-500">${item.price.toFixed(2)}</p>
+                                        <h3 className="text-sm font-medium text-gray-100 truncate">{item.name}</h3> {/* Added truncate */}
+                                        <p className="text-xs text-gray-200">${item.price.toFixed(2)}</p>
                                     </div>
-                                    <div className="text-sm font-semibold text-gray-800 flex-shrink-0">${(item.price * item.quantity).toFixed(2)}</div>
+                                    <div className="text-sm font-semibold text-white flex-shrink-0">${(item.price * item.quantity).toFixed(2)}</div>
                                     <button title="Remove item" className="text-red-400 hover:text-red-600 text-lg ml-1 flex-shrink-0 p-1" onClick={() => removeItemFromCart(item.id)}> × </button>
                                 </div>
                             ))
-                        ) : ( <p className="text-gray-500 text-center py-4">Your cart is empty.</p> )}
+                        ) : ( <p className="text-white text-center py-4">Your cart is empty.</p> )}
                     </div>
                     {/* Discount Code Input */}
                     <div className="mt-4 border-t pt-4">
-                         <label htmlFor="discountCode" className="block text-sm font-medium text-gray-600 mb-1">Apply Discount Code</label>
+                         <label htmlFor="discountCode" className="block text-sm font-medium text-white mb-1">Apply Discount Code</label>
                          <div className="flex gap-2">
-                             <input id="discountCode" type="text" className="border p-2 rounded w-full text-sm focus:ring-1 focus:ring-orange-400 outline-none" placeholder="Enter code" value={discountCode} onChange={(e) => setDiscountCode(e.target.value)} disabled={!!discountDetails}/>
-                             <button onClick={applyDiscount} className="bg-gray-600 text-white px-4 py-2 rounded text-sm hover:bg-gray-700 transition duration-200 disabled:opacity-50" disabled={!discountCode || !!discountDetails || subtotal === 0}>Apply</button>
+                             <input id="discountCode" type="text" className="bg-gray-800 border p-2 rounded w-full text-sm focus:ring-1 focus:ring-orange-400 outline-none" placeholder="Enter code" value={discountCode} onChange={(e) => setDiscountCode(e.target.value)} disabled={!!discountDetails}/>
+                             <button onClick={applyDiscount} className="bg-gray-600 text-white px-4 py-2 rounded text-sm hover:bg-gray-700 transition duration-200" disabled={!discountCode || !!discountDetails || subtotal === 0}>Apply</button>
                          </div>
                          {discountDetails && (
                              <div className="mt-2 text-sm text-green-600">
@@ -473,17 +490,16 @@ export default function CheckoutPage() {
                     </div>
                     {/* Price Breakdown */}
                     <div className="mt-5 space-y-2 border-t pt-4 text-sm">
-                         <div className="flex justify-between text-gray-600"><span>Subtotal</span> <span>${subtotal.toFixed(2)}</span></div>
+                         <div className="flex justify-between text-white"><span>Subtotal</span> <span>${subtotal.toFixed(2)}</span></div>
                          {discountAmount > 0 && (<div className="flex justify-between text-green-600"><span>Discount ({appliedDiscount.toFixed(0)}%)</span> <span>-${discountAmount.toFixed(2)}</span></div>)}
-                         <div className="flex justify-between text-gray-600"><span>Shipping</span> <span>{selectedShippingId ? `$${selectedShippingCost.toFixed(2)}` : 'Select address'}</span></div>
+                         <div className="flex justify-between text-white"><span>Shipping</span> <span>{selectedShippingId ? `$${selectedShippingCost.toFixed(2)}` : 'Select address'}</span></div>
                     </div>
                     {/* Total */}
-                    <div className="flex justify-between text-lg font-bold text-gray-800 mt-4 border-t pt-4">
+                    <div className="flex justify-between text-lg font-bold text-white mt-4 border-t pt-4">
                         <span>Total</span> <span>${totalWithDiscount.toFixed(2)}</span>
                     </div>
                 </div>
            </div> {/* End Right Section */}
-
         </div>
       </div>
 

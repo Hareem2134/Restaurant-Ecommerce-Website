@@ -43,7 +43,7 @@ export default function ShippingRates({
     <div className="my-2"> {/* Reduced margin slightly */}
       {/* Loading State */}
       {loading && (
-        <div className="flex items-center gap-2 text-gray-500 py-4">
+        <div className="flex items-center gap-2 text-gray-100 py-4">
           <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-gray-500"></div>
           <span>Loading shipping options...</span>
         </div>
@@ -58,7 +58,7 @@ export default function ShippingRates({
 
       {/* Options Display State */}
       {!loading && !error && shippingOptionsFromParent.length === 0 && (
-        <p className="text-gray-500 py-4 text-sm">
+        <p className="text-gray-100 py-4 text-sm">
           Please enter your ZIP/Postal code and Country above to see shipping options.
         </p>
       )}
@@ -70,7 +70,7 @@ export default function ShippingRates({
               key={option.id}
               className={`flex items-center gap-4 p-4 border rounded-lg cursor-pointer transition-colors duration-200 ${
                 selectedShippingId === option.id
-                  ? 'border-orange-500 bg-orange-50 ring-1 ring-orange-500' // Enhanced selected style
+                  ? 'border-orange-500 ring-1 ring-orange-500' // Enhanced selected style
                   : 'border-gray-200 hover:border-gray-400' // Hover effect for non-selected
               }`}
             >
@@ -97,15 +97,15 @@ export default function ShippingRates({
 
               {/* Details */}
               <div className="flex-1">
-                <p className="font-medium text-gray-800">{option.provider}</p>
-                <p className="text-sm text-gray-500">
+                <p className="font-medium text-gray-100">{option.provider}</p>
+                <p className="text-sm text-gray-100">
                   {option.service || 'Standard'} {/* Default service name */}
                   {option.duration && ` (${option.duration})`} {/* Show duration if available */}
                 </p>
               </div>
 
               {/* Price */}
-              <p className="font-semibold text-gray-900">
+              <p className="font-semibold text-gray-100">
                 ${option.amount.toFixed(2)}
               </p>
             </label>

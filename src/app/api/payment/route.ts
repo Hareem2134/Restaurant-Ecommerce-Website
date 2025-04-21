@@ -1,77 +1,87 @@
-import { NextRequest, NextResponse } from "next/server"; // Import NextRequest if needed later
+// src/app/api/payment/route.ts
+
+import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 
-// Validate environment variable (optional but good practice)
+// --- Environment Variable Setup ---
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
-if (!stripeSecretKey) {
-    console.error("FATAL ERROR: STRIPE_SECRET_KEY environment variable is not set.");
-    // Avoid using fallback keys in production environments if possible
-    // For local dev, the fallback is okay, but ensure it's a TEST key
-    // throw new Error("Stripe secret key is not configured.");
-}
+const successUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/payment-success?session_id={CHECKOUT_SESSION_ID}`;
+const cancelUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/cart`;
 
-// Initialize Stripe with a VALID and recommended API version
-const stripe = new Stripe(stripeSecretKey || "sk_test_...", { // Use your TEST key for fallback
-  // --- Use the latest recommended version from Stripe Docs ---
-  // Example: As of mid-2024
-  apiVersion: "2025-02-24.acacia",
-  // --- Or the specific version your integration requires ---
-  typescript: true, // Enable TypeScript definitions from the library
+if (!stripeSecretKey) { console.error("..."); /* Handle missing key */ }
+// ... check NEXT_PUBLIC_BASE_URL ...
+
+// --- Initialize Stripe ---
+const stripe = new Stripe(stripeSecretKey || "sk_test_...", {
+  apiVersion: "2025-02-24.acacia", // Use latest Stripe API version
+  typescript: true,
 });
 
-export async function POST(req: Request) {
-  console.log("API Route /api/payment hit");
+// --- API Route Handler ---
+export async function POST(req: NextRequest) {
+  console.log("API Route /api/payment (Checkout Session) hit");
   try {
     const body = await req.json();
-    const { amount, currency, payment_method_id, customer_id } = body; // Destructure expected fields
+    // --- FIX: Destructure ITEMS, currency, etc. ---
+    const { items, currency, customerEmail, metadata } = body;
 
-    // Basic Validation
-    if (typeof amount !== 'number' || amount <= 0) {
-        console.error("Invalid amount received:", amount);
-        return NextResponse.json({ error: "Invalid payment amount." }, { status: 400 });
+    // --- FIX: Validate the ITEMS array ---
+    if (!items || !Array.isArray(items) || items.length === 0) {
+        console.error("Invalid/Missing items array received:", items);
+        // *** THIS IS LIKELY THE ERROR MESSAGE YOU SHOULD BE SEEING ***
+        // If you see "Invalid payment amount" it means you're running OLD API code
+        return NextResponse.json({ error: "Invalid or missing line items." }, { status: 400 });
     }
-    const finalCurrency = currency || "usd"; // Default currency
-    console.log(`Received payment request: Amount=${amount}, Currency=${finalCurrency}, PM_ID=${payment_method_id}, Cust_ID=${customer_id}`);
+    // --- End Validation Fix ---
 
+    const finalCurrency = currency || "usd";
+    console.log(`Received checkout request: ${items.length} items, Currency=${finalCurrency}, Email=${customerEmail}, Meta=${JSON.stringify(metadata)}`);
 
-    // --- Create a Payment Intent ---
-    // Amount must be in the smallest currency unit (e.g., cents for USD)
-    const amountInCents = Math.round(amount * 100);
-    console.log(`Creating PaymentIntent for ${amountInCents} ${finalCurrency.toUpperCase()}`);
+    // --- Format Line Items ---
+    const line_items: Stripe.Checkout.SessionCreateParams.LineItem[] = items.map((item: any) => {
+        // Add more robust validation inside the map
+        const price = Number(item.price);
+        const quantity = Number(item.quantity);
+        if (typeof item.name !== 'string' || isNaN(price) || isNaN(quantity) || quantity <= 0 || price < 0.50) { // Stripe min $0.50
+            console.error("Invalid item data found during mapping:", item);
+            throw new Error(`Invalid item data provided: ${item.name || 'Unknown Item'}`); // Throw error to stop session creation
+        }
+        return {
+            price_data: {
+                currency: finalCurrency,
+                product_data: { name: item.name, images: item.image ? [item.image] : [] },
+                unit_amount: Math.round(price * 100), // Use validated price
+            },
+            quantity: quantity, // Use validated quantity
+        };
+    });
 
-    const paymentIntentOptions: Stripe.PaymentIntentCreateParams = {
-        amount: amountInCents,
-        currency: finalCurrency,
-        // Add payment method types if needed (often automatic)
-        automatic_payment_methods: { enabled: true },
-        // --- Optionally include other parameters ---
-        // payment_method: payment_method_id, // Required if not using automatic methods and confirming immediately
-        // customer: customer_id, // Associate with a Stripe Customer object if available
-        // confirm: true, // Set to true to attempt capture immediately (requires payment_method)
-        // off_session: false, // Usually false for checkout flows
-        // description: `Order payment for [Your Order ID]`, // Add description
-        // metadata: { order_id: 'your_order_id' }, // Link to your internal order
+    // --- Create a Stripe Checkout Session ---
+    console.log("Creating Stripe Checkout Session...");
+    const sessionParams: Stripe.Checkout.SessionCreateParams = {
+        payment_method_types: ["card"],
+        line_items: line_items,
+        mode: "payment",
+        success_url: successUrl,
+        cancel_url: cancelUrl,
+        ...(customerEmail && { customer_email: customerEmail }),
+        ...(metadata && { metadata: metadata }), // Pass received metadata
     };
 
-    const paymentIntent = await stripe.paymentIntents.create(paymentIntentOptions);
-    console.log(`PaymentIntent created: ${paymentIntent.id}, Status: ${paymentIntent.status}`);
+    const session = await stripe.checkout.sessions.create(sessionParams);
+    console.log(`Stripe Checkout Session created: ${session.id}`);
 
-    // Return only the client_secret needed by the frontend (Stripe.js/Elements)
-    return NextResponse.json({ clientSecret: paymentIntent.client_secret });
+    return NextResponse.json({ sessionId: session.id });
 
   } catch (error: any) {
-    console.error("Stripe API Error:", error);
-    // Provide a more generic error message to the client for security
-    let clientErrorMessage = "Failed to initiate payment.";
-    if (error instanceof Stripe.errors.StripeCardError) {
-        // Handle card errors specifically if needed
-        clientErrorMessage = error.message; // Can show card errors directly
+    console.error("Stripe Checkout Session Error:", error);
+    let clientErrorMessage = "Failed to create checkout session.";
+    if (error instanceof Stripe.errors.StripeError) { clientErrorMessage = error.message; }
+    else if (error instanceof Error && error.message.startsWith('Invalid item data')) {
+        // Pass back specific item validation error
+        clientErrorMessage = error.message;
+        return NextResponse.json({ error: clientErrorMessage }, { status: 400 }); // Return 400 for bad item data
     }
-    // You might want different handling for StripeAuthenticationError, StripeConnectionError etc.
-
-    return NextResponse.json(
-        { error: clientErrorMessage, details: error.message }, // Include details for server logs/debugging
-        { status: 500 }
-    );
+    return NextResponse.json({ error: clientErrorMessage, details: error.message }, { status: 500 });
   }
 }

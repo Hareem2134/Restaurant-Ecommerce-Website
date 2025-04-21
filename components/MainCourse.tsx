@@ -42,7 +42,7 @@ interface MenuItem {
       <section className="w-full mx-auto mt-[80px] sm:mt-[120px] px-8 pl-32">
         <div className="container mx-auto py-16 flex flex-col lg:flex-row gap-12 items-center">
           {/* Menu Content */}
-          <div className="w-full lg:w-1/2 text-center lg:text-left">
+          <div className="w-full lg:w-1/2 text-left">
             {/* Heading with Coffee Icon */}
             <div className="mb-10">
               <Image
@@ -51,13 +51,13 @@ interface MenuItem {
                 className="mx-auto lg:mx-0 mb-3"
                 width={28} height={28}
               />
-              <h2 className="text-4xl font-bold text-gray-800 tracking-wide">
+              <h2 className="text-4xl font-bold text-gray-100 tracking-wide">
                 Main Course
               </h2>
             </div>
   
             {/* Menu Items */}
-            <div className="space-y-8">
+            <div className="space-y-6">
               {MainCoursItem.map((item, index) => (
                 <div
                   key={index}
@@ -65,9 +65,7 @@ interface MenuItem {
                 >
                   <div className="flex justify-between items-start">
                     <h3
-                      className={`text-base font-semibold ${
-                        item.highlight ? "text-[#FF9F0D]" : "text-gray-800"
-                      }`}
+                      className={`text-base font-semibold text-[#FF9F0D]`}
                     >
                       {item.name}
                     </h3>
@@ -75,10 +73,10 @@ interface MenuItem {
                       {item.price}$
                     </span>
                   </div>
-                  <p className="text-sm text-gray-600 mt-2">
+                  <p className="text-sm text-gray-100 mt-2">
                     {item.description}
                   </p>
-                  <p className="text-xs text-gray-500 mt-1">
+                  <p className="text-xs text-gray-100 mt-1">
                     {item.calories} CAL
                   </p>
                 </div>

@@ -34,11 +34,11 @@ export default function Contact() {
     <>
       <ForAllHeroSections />
 
-      <div className="min-h-screen bg-gray-100 p-8">
-        <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-lg p-6">
+      <div className="min-h-screen bg-black p-8">
+        <div className="max-w-4xl mx-auto bg-gray-800 text-white shadow-lg rounded-lg p-6">
 
-          <h1 className="flex justify-center text-3xl font-semibold text-gray-800 mb-2 px-4">Contact Us</h1>
-          <p className="flex justify-center text-gray-600 mb-10 px-4">
+          <h1 className="flex justify-center text-3xl font-semibold text-white mb-2 px-4">Contact Us</h1>
+          <p className="flex justify-center text-white mb-10 px-4">
             Have questions or need assistance? Feel free to reach out to us. We're here to help!
           </p>
 
@@ -53,7 +53,7 @@ export default function Contact() {
               )}
 
               <div className="relative">
-                <label htmlFor="name" className="block text-sm font-medium text-gray-300">
+                <label htmlFor="name" className="block text-sm text-gray-200 font-bold">
                   Your Name
                 </label>
                 <input
@@ -63,12 +63,12 @@ export default function Contact() {
                   value={formData.name}
                   onChange={handleInputChange}
                   placeholder="John Doe"
-                  className="mt-2 block w-full border border-gray-700 bg-gray-800 text-gray-300 rounded-lg shadow-sm focus:ring-[#FF9F0D] focus:border-[#FF9F0D] px-4 py-3 transition duration-200"
+                  className="mt-2 block w-full border border-gray-700 bg-gray-800 text-gray-200 font-bold rounded-lg shadow-sm focus:ring-[#FF9F0D] focus:border-[#FF9F0D] px-4 py-3 transition duration-200"
                 />
               </div>
 
               <div className="relative">
-                <label htmlFor="email" className="block text-sm font-medium text-gray-300">
+                <label htmlFor="email" className="block text-sm text-gray-200 font-bold">
                   Your Email
                 </label>
                 <input
@@ -78,12 +78,12 @@ export default function Contact() {
                   value={formData.email}
                   onChange={handleInputChange}
                   placeholder="example@domain.com"
-                  className="mt-2 block w-full border border-gray-700 bg-gray-800 text-gray-300 rounded-lg shadow-sm focus:ring-[#FF9F0D] focus:border-[#FF9F0D] px-4 py-3 transition duration-200"
+                  className="mt-2 block w-full border border-gray-700 bg-gray-800 text-gray-200 font-bold rounded-lg shadow-sm focus:ring-[#FF9F0D] focus:border-[#FF9F0D] px-4 py-3 transition duration-200"
                 />
               </div>
 
               <div className="relative">
-                <label htmlFor="message" className="block text-sm font-medium text-gray-300">
+                <label htmlFor="message" className="block text-sm text-gray-200 font-bold">
                   Your Message
                 </label>
                 <textarea
@@ -93,14 +93,14 @@ export default function Contact() {
                   onChange={handleInputChange}
                   placeholder="Write your message here..."
                   rows={5}
-                  className="mt-2 block w-full border border-gray-700 bg-gray-800 text-gray-300 rounded-lg shadow-sm focus:ring-[#FF9F0D] focus:border-[#FF9F0D] px-4 py-3 transition duration-200"
+                  className="mt-2 block w-full border border-gray-700 bg-gray-800 text-gray-200 font-bold rounded-lg shadow-sm focus:ring-[#FF9F0D] focus:border-[#FF9F0D] px-4 py-3 transition duration-200"
                 ></textarea>
               </div>
 
               <div className="text-center">
                 <button
                   type="submit"
-                  className="px-8 py-3 bg-[#FF9F0D] text-white rounded-full shadow-lg hover:bg-[#e58b0a] focus:outline-none focus:ring focus:ring-[#FF9F0D] transition duration-300"
+                  className="px-8 py-3 bg-[#FF9F0D] text-black font-bold rounded-full shadow-lg hover:bg-[#e58b0a] focus:outline-none focus:ring focus:ring-[#FF9F0D] transition duration-300"
                 >
                   Submit
                 </button>
@@ -114,17 +114,17 @@ export default function Contact() {
 
           <div className="mt-16 grid grid-cols-1 md:grid-cols-2 gap-8">
             <div>
-              <h2 className="text-xl font-semibold text-gray-800 mb-4 px-4">Our Address</h2>
-              <p className="text-gray-600 px-4">123 Main Street</p>
-              <p className="text-gray-600 px-4">City, State, ZIP</p>
-              <p className="text-gray-600 px-4">Country</p>
+              <h2 className="text-xl font-semibold text-white mb-4 px-4">Our Address</h2>
+              <p className="px-4">123 Main Street</p>
+              <p className="px-4">City, State, ZIP</p>
+              <p className="px-4">Country</p>
             </div>
             <div>
-              <h2 className="text-xl font-semibold text-gray-800 mb-4 px-4">Contact Information</h2>
-              <p className="text-gray-600 px-4">
+              <h2 className="text-xl font-semibold text-white mb-4 px-4">Contact Information</h2>
+              <p className="px-4">
                 <span className="font-medium">Phone:</span> +1 (123) 456-7890
               </p>
-              <p className="text-gray-600 px-4">
+              <p className="text-white px-4">
                 <span className="font-medium">Email:</span> support@example.com
               </p>
             </div>

@@ -5,13 +5,13 @@ import ForAllHeroSections from "../../../components/ForAllHeroSections";
 
 export default function SignUpPage() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-black">
 
       <ForAllHeroSections/>
 
       {/* Signup Form */}
       <section className="py-16">
-        <div className="container mx-auto max-w-md bg-white shadow-lg rounded-md p-8">
+        <div className="container mx-auto max-w-md bg-gray-800 shadow-lg rounded-md p-8">
           <h3 className="text-2xl font-bold mb-6 text-center">Sign Up</h3>
           <form>
             <div className="mb-4">
@@ -20,7 +20,7 @@ export default function SignUpPage() {
                 <Image src="/SignupUser.png" alt="Name Icon" width={16} height={16} className="mr-2" />
                 <input
                   type="text"
-                  className="w-full focus:ring focus:ring-yellow-300 outline-none"
+                  className="w-full focus:ring focus:ring-gray-500 outline-1 bg-gray-800"
                   placeholder="Name"
                 />
               </div>
@@ -31,7 +31,7 @@ export default function SignUpPage() {
                 <Image src="/Envelope.png" alt="Email Icon" width={16} height={16} className="mr-2" />
                 <input
                   type="email"
-                  className="w-full focus:ring focus:ring-yellow-300 outline-none"
+                  className="w-full focus:ring focus:ring-gray-500 outline-1 bg-gray-800"
                   placeholder="Email"
                 />
               </div>
@@ -42,7 +42,7 @@ export default function SignUpPage() {
                 <Image src="/Lock.png" alt="Password Icon" width={16} height={16} className="mr-2" />
                 <input
                   type="password"
-                  className="w-full focus:ring focus:ring-yellow-300 outline-none"
+                  className="w-full focus:ring focus:ring-gray-500 outline-1 bg-gray-800"
                   placeholder="Password"
                 />
               </div>

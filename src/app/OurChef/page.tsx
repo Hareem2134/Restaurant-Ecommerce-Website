@@ -86,11 +86,11 @@ export default function OurChef() {
 
                 {/* Chef Info */}
                 <div className="text-center py-4">
-                  <h3 className="text-gray-800 font-semibold text-lg">
+                  <h3 className="text-black font-semibold text-lg">
                     {chef.name}
                   </h3>
-                  <p className="text-gray-600">{chef.position}</p>
-                  <p className="text-gray-500 text-sm">
+                  <p className="text-gray-800 font-semibold">{chef.position}</p>
+                  <p className="text-gray-700 text-sm">
                     {chef.specialty} ({chef.experience} years experience)
                   </p>
                 </div>

@@ -60,7 +60,7 @@ export default function ShoppingCart() {
   const totalAmount = cartSubtotal - cartSubtotal * discount + shippingCharges;
 
   return (
-    <div className="min-h-screen bg-white px-4 py-8 sm:px-8 md:px-12 lg:px-16">
+    <div className="min-h-screen bg-black px-4 py-8 sm:px-8 md:px-12 lg:px-16">
       <div className="max-w-screen-lg mx-auto">
         <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6">Shopping Cart</h1>
 
@@ -74,7 +74,7 @@ export default function ShoppingCart() {
             <div className="overflow-x-auto">
               <table className="w-full border-collapse min-w-[600px]">
                 <thead>
-                  <tr className="bg-gray-100 text-left">
+                  <tr className="bg-gray-900 text-left">
                     <th className="p-4 font-semibold">Product</th>
                     <th className="p-4 font-semibold">Price</th>
                     <th className="p-4 font-semibold">Quantity</th>
@@ -95,7 +95,7 @@ export default function ShoppingCart() {
                           type="number"
                           value={item.quantity}
                           onChange={(e) => handleQuantityChange(item.id, parseInt(e.target.value) || 0)}
-                          className="w-16 border rounded px-2 py-1 text-center"
+                          className="bg-black w-16 border rounded px-2 py-1 text-center"
                           min="0"
                         />
                       </td>
@@ -115,7 +115,7 @@ export default function ShoppingCart() {
             </div>
 
             <div className="mt-6 flex flex-col sm:flex-row sm:justify-end">
-              <div className="w-full sm:w-2/3 md:w-1/2 lg:w-1/3 bg-gray-100 p-6 rounded-lg text-center md:text-left">
+              <div className="w-full sm:w-2/3 md:w-1/2 lg:w-1/3 border border-spacing-1 p-6 rounded-lg text-center md:text-left">
                 <div className="flex justify-between mb-2 text-sm md:text-base">
                   <span>Subtotal</span>
                   <span>${cartSubtotal.toFixed(2)}</span>
