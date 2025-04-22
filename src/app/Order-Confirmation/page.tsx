@@ -88,12 +88,12 @@ function OrderConfirmationContent() {
   if (error) return <div className="text-center py-20 px-6 text-red-600 dark:text-red-400 flex flex-col items-center gap-4"><Info size={48}/> <p>Error: {error}</p> <Link href="/shop" className="text-blue-600 dark:text-blue-400 hover:underline">Go Shopping</Link></div>;
   if (!order) return <div className="text-center py-20 text-gray-500 dark:text-gray-400">Order not found.</div>;
 
-
   // --- Prepare Derived Data ---
   const address = order.shippingAddress || {};
   const trackingUrl = getCarrierTrackingUrl(order.shippingMethod?.provider, order.trackingNumber);
   // --- End Derived Data ---
 
+  console.log("CONFIRMATION PAGE - Rendering link for Order ID:", order?._id);
 
   // --- Render Order Details ---
   return (
