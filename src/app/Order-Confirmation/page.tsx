@@ -7,7 +7,7 @@ import Link from "next/link";
 import { client } from '@/sanity/lib/client'; // Adjust path if needed
 import Image from "next/image";
 
-// Assuming OrderDetails type is defined in @/types/orderTypes and includes all necessary fields
+//OrderDetails type is defined in @/types/orderTypes and includes all necessary fields
 import { OrderDetails } from "@/types/orderTypes"; // Use your shared type
 
 // Placeholder image if item image is missing
@@ -267,6 +267,3 @@ export default function OrderConfirmationPage() {
     </div>
   );
 }
-
-{/* // Add CSS for custom scrollbar if desired
-// <style jsx global>{` ... scrollbar styles ... `}</style> */}
