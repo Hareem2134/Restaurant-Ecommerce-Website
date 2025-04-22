@@ -176,73 +176,74 @@ function OrderConfirmationContent() {
                </div>
            </div>
 
-           {/* Shipping & Tracking (Takes 3 cols on desktop) */}
+       {/* --- Financial & Shipping Grid --- */}
+       {/* This div contains the two columns */}
+       <div className="grid grid-cols-1 md:grid-cols-5 gap-6 md:gap-8 mb-8">
+
+           {/* Billing Summary (Column 1: Spans 2 cols on medium+) */}
+           <div className="md:col-span-2 border-t border-gray-200 dark:border-gray-700 pt-6">
+               <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4">Billing Summary</h2>
+               <div className="text-sm text-gray-700 dark:text-gray-300 space-y-2.5 bg-gray-50 dark:bg-gray-700/40 p-5 rounded-lg border dark:border-gray-600/50">
+                   {/* ... Subtotal, Discount, Shipping, Total, Payment Method ... */}
+                   <div className="flex justify-between"><span>Subtotal:</span> <span className="font-medium">${(order.subtotal ?? 0).toFixed(2)}</span></div>
+                   {order.discountAmount > 0 && ( <div className="flex justify-between text-green-600 dark:text-green-400"> ... </div> )}
+                   <div className="flex justify-between"><span>Shipping:</span> <span className="font-medium">${(order.shippingCost ?? 0).toFixed(2)}</span></div>
+                   <div className="flex justify-between text-base font-bold text-gray-900 dark:text-white mt-3 border-t border-gray-300 dark:border-gray-500 pt-3"> ... </div>
+                   <div className="flex justify-between text-xs pt-1 text-gray-500 dark:text-gray-400"> ... </div>
+               </div>
+           </div>
+
+           {/* Shipping, Tracking & Downloads (Column 2: Spans 3 cols on medium+) */}
            <div className="md:col-span-3 border-t border-gray-200 dark:border-gray-700 pt-6">
-               <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2"><Truck size={20}/> Shipping & Tracking</h2>
-               <div className="space-y-4">
+               <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2"><Truck size={20}/> Shipping & Downloads</h2> {/* Combined Heading */}
+               <div className="space-y-4"> {/* Container for boxes within this column */}
+
                    {/* Address Box */}
-                   <div className="text-sm text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-700/50 p-4 rounded-md border dark:border-gray-600 space-y-1">
+                   <div className="text-sm text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-700/40 p-4 rounded-md border dark:border-gray-600/50 space-y-1">
                         <p className="font-medium text-gray-800 dark:text-gray-100">Shipping Address:</p>
                         <p>{address.street || 'N/A'}</p>
                         {address.address2 && <p>{address.address2}</p>}
                         <p>{address.city || ''}, {address.state || ''} {address.zip || ''} [{address.country || ''}]</p>
                    </div>
-                   {/* Tracking Box */}
-                   <div className="text-sm text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-700/50 p-4 rounded-md border dark:border-gray-600 space-y-2">
-                        <p className="font-medium text-gray-800 dark:text-gray-100">Tracking Information:</p>
-                        {order.trackingNumber ? (
-                            <>
-                                <p><strong>Number:</strong> {order.trackingNumber}</p>
-                                {order.shippingMethod?.provider && ( <p><strong>Carrier:</strong> {order.shippingMethod.provider}</p> )}
-                                {trackingUrl ? (
-                                    <a href={trackingUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-sm text-blue-600 dark:text-blue-400 hover:underline font-medium">
-                                        Track Package <ExternalLink size={14} />
-                                    </a>
-                                ) : ( <p className="text-xs text-gray-500 dark:text-gray-400 italic">Official tracking link not available.</p> )}
-                            </>
-                         ) : <p className="italic text-gray-500 dark:text-gray-400">Tracking information not yet available.</p>}
-                   </div>
-                   
-          {/* Tracking & Downloads Box */}
-          <div className="text-sm text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-700/40 p-5 rounded-lg border dark:border-gray-600/50 space-y-3"> {/* Use space-y-3 for consistent vertical spacing */}
-               <p className="font-medium text-gray-800 dark:text-gray-100 mb-1">Tracking & Downloads:</p> {/* Combined heading */}
 
-               {/* Tracking Info */}
-               {order.trackingNumber ? (
-                   <div className="border-t dark:border-gray-600/50 pt-2"> {/* Separator */}
-                       <p><strong>Number:</strong> <span className="font-mono bg-gray-200 dark:bg-gray-600 px-1.5 py-0.5 rounded text-xs">{order.trackingNumber}</span></p>
-                       {order.shippingMethod?.provider && ( <p><strong>Carrier:</strong> {order.shippingMethod.provider}</p> )}
-                       {trackingUrl ? (
-                           <a href={trackingUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs text-blue-600 dark:text-blue-400 hover:underline font-medium mt-1">
-                               Track Package <ExternalLink size={12} />
-                           </a>
-                       ) : ( <p className="text-xs text-gray-500 dark:text-gray-400 italic mt-1">Official tracking link could not be generated.</p> )}
-                   </div>
-                ) : <p className="italic text-gray-500 dark:text-gray-400 border-t dark:border-gray-600/50 pt-2">Tracking information pending.</p>}
+                   {/* --- SINGLE Tracking & Downloads Box --- */}
+                   <div className="text-sm text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-700/40 p-5 rounded-lg border dark:border-gray-600/50 space-y-3">
+                        <p className="font-medium text-gray-800 dark:text-gray-100 mb-1">Tracking & Downloads:</p>
 
-                {/* Shipping Label Download */}
-                <div className="border-t dark:border-gray-600/50 pt-2">
-                    {order.shippingLabelUrl ? (
-                       <a href={order.shippingLabelUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:underline">
-                          <Download size={14} /> Shipping Label
-                       </a>
-                    ) : <p className="italic text-gray-500 dark:text-gray-400 text-xs">Shipping label not available.</p>}
-                </div>
+                        {/* Tracking Info */}
+                        <div className="border-t dark:border-gray-600/50 pt-2">
+                            {order.trackingNumber ? (
+                                <>
+                                    <p><strong>Number:</strong> <span className="font-mono bg-gray-200 dark:bg-gray-600 px-1.5 py-0.5 rounded text-xs">{order.trackingNumber}</span></p>
+                                    {order.shippingMethod?.provider && ( <p><strong>Carrier:</strong> {order.shippingMethod.provider}</p> )}
+                                    {trackingUrl ? (
+                                        <a href={trackingUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs text-blue-600 dark:text-blue-400 hover:underline font-medium mt-1">
+                                            Track Package <ExternalLink size={12} />
+                                        </a>
+                                    ) : ( <p className="text-xs text-gray-500 dark:text-gray-400 italic mt-1">Official tracking link could not be generated.</p> )}
+                                </>
+                             ) : <p className="italic text-gray-500 dark:text-gray-400">Tracking information pending.</p>}
+                        </div>
 
-                 {/* Invoice Download */}
-                <div className="border-t dark:border-gray-600/50 pt-2">
-                    <a
-                         // *** CORRECTED HREF for Pages API Route ***
-                        href={`/api/order/generate-pdf?orderId=${order._id}&download=true`}
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:underline"
-                    >
-                        <FileText size={14} /> Invoice (PDF)
-                    </a>
-                </div>
-          </div>
-       </div>
-       </div>
+                        {/* Shipping Label Download */}
+                        <div className="border-t dark:border-gray-600/50 pt-2">
+                            {order.shippingLabelUrl ? (
+                               <a href={order.shippingLabelUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:underline">
+                                  <Download size={14} /> Shipping Label
+                               </a>
+                            ) : <p className="italic text-gray-500 dark:text-gray-400 text-xs">Shipping label not available.</p>}
+                        </div>
+
+                         {/* Invoice Download */}
+                        <div className="border-t dark:border-gray-600/50 pt-2">
+                            <a href={`/api/order/generate-pdf?orderId=${order._id}&download=true`} rel="noopener noreferrer" className="inline-flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:underline">
+                                <FileText size={14} /> Invoice (PDF)
+                            </a>
+                        </div>
+                   </div>{/* --- END SINGLE Tracking & Downloads Box --- */}
+               </div>
+           </div>{/* --- End Shipping, Tracking & Downloads Column --- */}
+       </div> {/* --- End Financial & Shipping Grid --- */}
 
       {/* --- Action Buttons --- */}
       <motion.div className="flex flex-col sm:flex-row justify-center items-center mt-10 pt-6 border-t border-gray-200 dark:border-gray-700 gap-4">
