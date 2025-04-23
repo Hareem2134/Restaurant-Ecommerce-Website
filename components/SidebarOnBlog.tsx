@@ -64,7 +64,7 @@ const SidebarOnBlog = () => {
           <input
             type="text"
             placeholder="Search Your Keyword"
-            className="w-full h-12 pl-4 pr-14 border border-gray-300 text-sm text-gray-700 bg-transparent focus:outline-none"
+            className="w-full h-12 pl-4 pr-14 border border-gray-300 text-sm text-gray-100 bg-transparent focus:outline-none"
           />
           <div className="absolute right-0 w-12 h-12 bg-[#FFA500] flex justify-center items-center rounded-md">
             <img src="/Search.png" alt="Search Icon" className="w-4 h-4" />
@@ -83,7 +83,7 @@ const SidebarOnBlog = () => {
         />
         
         <h4 className="font-semibold text-lg mb-1">Prince Miyako</h4>
-        <p className="text-sm text-gray-600 mb-3">Blogger/Photographer</p>
+        <p className="text-sm text-gray-100 mb-3">Blogger/Photographer</p>
 
         <div className="flex justify-center items-center space-x-2 mb-4">
           <img
@@ -91,10 +91,10 @@ const SidebarOnBlog = () => {
             alt="Stars"
             className="w-24 h-auto"
           />
-          <span className="text-sm text-gray-600">(1 Review)</span>
+          <span className="text-sm text-gray-100">(1 Review)</span>
         </div>
 
-        <p className="text-sm text-gray-500 mb-5">
+        <p className="text-sm text-gray-100 mb-5">
           Lorem ipsum dolor sit amet, consectetur adipisicing elit. Veritatis distinctio, odio eligendi suscipit reprehenderit atque.
         </p>
 
@@ -119,7 +119,7 @@ const SidebarOnBlog = () => {
                 className="w-12 h-12 object-cover rounded-lg"
               />
               <div>
-                <p className="text-xs text-gray-500">{post.date}</p>
+                <p className="text-xs text-gray-100">{post.date}</p>
                 <p className="text-sm">{post.title}</p>
               </div>
             </li>
@@ -144,7 +144,7 @@ const SidebarOnBlog = () => {
                 />
                 <span>{item.label}</span>
               </div>
-              <span className="text-gray-500 pl-4">{item.count}</span>
+              <span className="text-gray-100 pl-4">{item.count}</span>
             </li>
           ))}
         </ul>
@@ -157,7 +157,7 @@ const SidebarOnBlog = () => {
           {tags.map((tag, idx) => (
             <span
               key={idx}
-              className="px-3 py-2 mb-2 border border-gray-300 text-sm text-gray-600 rounded"
+              className="px-3 py-2 mb-2 border border-gray-300 text-sm text-gray-100 rounded"
             >
               {tag}
             </span>

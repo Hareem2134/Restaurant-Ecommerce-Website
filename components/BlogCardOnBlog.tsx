@@ -15,7 +15,7 @@ const BlogCardOnBlog = ({ image, title, description }: any) => {
       {/* Blog Details */}
       <div className="p-0 pl-0 pr-8 pt-3">
         {/* Date and Details Section */}
-        <div className="flex items-center text-sm text-gray-500 space-x-4 mb-3 pl-0">
+        <div className="flex items-center text-sm text-gray-100 space-x-4 mb-3 pl-0">
           <span className="flex items-center">
             <img src="/CalendarOnBlog.png" alt="Calendar Icon" className="w-4 h-4 mr-1" />
             Feb 14, 2022
@@ -31,13 +31,13 @@ const BlogCardOnBlog = ({ image, title, description }: any) => {
         </div>
 
         {/* Blog Title */}
-        <h2 className="text-lg font-bold text-gray-800 leading-6 mb-5 pl-0">{title}</h2>
+        <h2 className="text-lg font-bold text-gray-100 leading-6 mb-5 pl-0">{title}</h2>
 
         {/* Horizontal Line */}
         <hr className="border-t border-gray-300 mb-5 mr-6" />
 
         {/* Blog Description */}
-        <p className="text-xs text-gray-600 leading-5 pl-0 pr-16">{description}</p>
+        <p className="text-xs text-gray-100 leading-5 pl-0 pr-16">{description}</p>
 
         {/* Read More Button */}
         <a
