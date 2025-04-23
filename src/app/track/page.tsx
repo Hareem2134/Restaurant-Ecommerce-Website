@@ -147,11 +147,11 @@ function TrackingContent() {
 
     // --- Render Logic ---
     return (
-        <div className="container mx-auto px-4 py-8 max-w-2xl"> {/* Increased max-width */}
+        <div className="bg-grey-900 container mx-auto px-4 py-8 max-w-2xl"> {/* Increased max-width */}
             <Link href="/" className="text-blue-600 hover:underline mb-6 inline-block text-sm">
                 <ArrowLeft size={16} className="inline mr-1 relative -top-px" /> Back to Home
             </Link>
-            <h1 className="text-2xl md:text-3xl font-bold mb-6 text-center text-gray-800 dark:text-gray-100">Track Your Order</h1>
+            <h1 className="text-2xl md:text-3xl font-bold mb-6 text-center text-gray-100">Track Your Order</h1>
 
             {/* Tracking Input Form */}
             <form onSubmit={handleTrackSubmit} className="mb-8 flex gap-2 items-center max-w-lg mx-auto">
@@ -162,12 +162,12 @@ function TrackingContent() {
                     value={trackingInput}
                     onChange={(e) => setTrackingInput(e.target.value)}
                     placeholder="Enter your tracking number..."
-                    className="flex-grow px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400"
+                    className="bg-gray-900 flex-grow px-4 py-2 border font-bold border-gray-300 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400"
                 />
                 <button
                     type="submit"
                     disabled={loading}
-                    className="px-5 py-2 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-md shadow transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5"
+                    className="px-5 py-2 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-md shadow transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5"
                 >
                     <Search size={16} /> Track
                 </button>
@@ -220,8 +220,8 @@ export default function TrackPage() { // Renamed component for clarity
             {/* Assuming ForAllHeroSections handles dark mode internally */}
             <ForAllHeroSections />
 
-            <div className="bg-white dark:bg-black text-gray-900 dark:text-gray-200 py-8 md:py-12"> {/* Added container div with background */}
-                <Suspense fallback={<p className="text-center p-10 text-gray-600 dark:text-gray-400">Loading Tracking Page...</p>}>
+            <div className="text-gray-100 dark:text-gray-200 py-8 md:py-12"> {/* Added container div with background */}
+                <Suspense fallback={<p className="text-center p-10 text-gray-100 dark:text-gray-400">Loading Tracking Page...</p>}>
                     <TrackingContent />
                 </Suspense>
             </div>
