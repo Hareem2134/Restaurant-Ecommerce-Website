@@ -37,7 +37,7 @@ export default function FiltersSidebarOnShop() {
           <input
             type="text"
             placeholder="Search Product..."
-            className="w-full h-11 md:h-12 pl-4 pr-14 text-sm text-gray-700 dark:text-gray-200 bg-transparent border-none focus:outline-none focus:ring-1 focus:ring-orange-500 rounded-md" // Ensure rounded-md for focus ring
+            className="w-full h-11 md:h-12 pl-4 pr-14 text-sm text-gray-100 dark:text-gray-200 bg-transparent border-none focus:outline-none focus:ring-1 focus:ring-orange-500 rounded-md" // Ensure rounded-md for focus ring
           />
           {/* Restore Search Button Style */}
           <button
@@ -52,7 +52,7 @@ export default function FiltersSidebarOnShop() {
 
       {/* Category Section */}
       <div>
-        <h3 className="font-semibold text-lg mb-3 text-gray-800 dark:text-gray-100">Category</h3>
+        <h3 className="font-semibold text-lg mb-3 text-gray-100 dark:text-gray-100">Category</h3>
         {/* --- Keep max-height for desktop, maybe less strict on mobile --- */}
         <ul className="space-y-1.5 max-h-60 md:max-h-72 lg:max-h-80 overflow-y-auto pr-2 custom-scrollbar"> {/* Added custom-scrollbar class */}
           {categories.map((category, index) => (
@@ -64,7 +64,7 @@ export default function FiltersSidebarOnShop() {
                   checked={selectedCategories.includes(category)}
                   onChange={() => toggleCategory(category)}
                 />
-                <span className="text-gray-700 dark:text-gray-300 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
+                <span className="text-gray-100 dark:text-gray-300 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
                   {category}
                 </span>
               </label>
@@ -76,7 +76,7 @@ export default function FiltersSidebarOnShop() {
       {/* Selected Categories Tags - Restoring original style */}
       {selectedCategories.length > 0 && (
         <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
-          <h4 className="font-medium text-sm mb-2 text-gray-600 dark:text-gray-400">Selected Filters:</h4>
+          <h4 className="font-medium text-sm mb-2 text-gray-100 dark:text-gray-400">Selected Filters:</h4>
           <div className="flex flex-wrap gap-2">
             {selectedCategories.map((category) => (
               <span
@@ -110,7 +110,7 @@ export default function FiltersSidebarOnShop() {
 
       {/* Filter By Price */}
       <div>
-        <h3 className="font-semibold text-lg mb-3 text-gray-800 dark:text-gray-100">Filter By Price</h3>
+        <h3 className="font-semibold text-lg mb-3 text-gray-100 dark:text-gray-100">Filter By Price</h3>
         <div className="space-y-2 px-1">
            {/* Restore pulsing dots if desired, using absolute positioning relative to the range container */}
            <div className="relative pt-1"> {/* Add padding-top to contain dots */}
@@ -123,7 +123,7 @@ export default function FiltersSidebarOnShop() {
                {/* Restore pulsing dots - position relative to the input's container */}
                <div className="w-4 h-4 bg-orange-500 rounded-full absolute left-0 top-0 ring-2 ring-orange-300 dark:ring-orange-700 animate-pulse" style={{ left: `calc(${(priceRange / 8000) * 100}% - 8px)` }}></div> {/* Approximate position */}
            </div>
-          <div className="flex justify-between items-center text-xs text-gray-600 dark:text-gray-400 pt-1">
+          <div className="flex justify-between items-center text-xs text-gray-100 dark:text-gray-400 pt-1">
             <span>Price: $0 - ${priceRange}</span>
             {/* Optionally restore reset button */}
              <button className="text-xs hover:underline text-orange-600 hover:text-orange-700" onClick={() => setPriceRange(8000)} > Reset </button>
@@ -133,7 +133,7 @@ export default function FiltersSidebarOnShop() {
 
       {/* Latest Products Section */}
       <div>
-        <h3 className="font-semibold text-lg mb-3 text-gray-800 dark:text-gray-100">Latest Products</h3>
+        <h3 className="font-semibold text-lg mb-3 text-gray-100 dark:text-gray-100">Latest Products</h3>
         <div className="space-y-4 max-h-80 overflow-y-auto pr-2 custom-scrollbar">
           {filteredProducts.length > 0 ? filteredProducts.map((product) => (
             // Restore hover scale effect and structure
@@ -151,24 +151,24 @@ export default function FiltersSidebarOnShop() {
                     {[...Array(product.stars ?? 0)].map((_, i) => <FaStar key={`f-${i}`} />)}
                     {[...Array(5 - (product.stars ?? 0))].map((_, i) => <FaStar key={`e-${i}`} className="text-gray-300 dark:text-gray-600" />)}
                 </div>
-                <p className="text-gray-700 dark:text-gray-300 font-semibold mt-0.5">${product.price}</p>
+                <p className="text-gray-100 dark:text-gray-300 font-semibold mt-0.5">${product.price}</p>
               </div>
             </div>
           )) : (
-             <p className="text-sm text-gray-500 italic p-2">No products match filters.</p>
+             <p className="text-sm text-gray-100 italic p-2">No products match filters.</p>
           )}
         </div>
       </div>
 
       {/* Product Tags Section - Restore hover effect */}
       <div>
-        <h3 className="font-semibold text-lg mb-3 text-gray-800 dark:text-gray-100">Product Tags</h3>
+        <h3 className="font-semibold text-lg mb-3 text-gray-100 dark:text-gray-100">Product Tags</h3>
         <div className="flex flex-wrap gap-2">
           {productTags.map((tag, index) => (
             <span
               key={index}
               // Restore original hover effect
-              className="border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 text-xs px-3 py-1 rounded-md transition-all duration-200 hover:bg-orange-500 hover:text-white hover:border-orange-500 dark:hover:bg-orange-600 dark:hover:border-orange-600 cursor-pointer"
+              className="border border-gray-300 dark:border-gray-600 text-gray-100 dark:text-gray-300 text-xs px-3 py-1 rounded-md transition-all duration-200 hover:bg-orange-500 hover:text-white hover:border-orange-500 dark:hover:bg-orange-600 dark:hover:border-orange-600 cursor-pointer"
             >
               {tag}
             </span>
