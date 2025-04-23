@@ -65,7 +65,7 @@ export default function ShoppingCart() {
         <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6">Shopping Cart</h1>
 
         {cartItems.length === 0 ? (
-          <p className="text-gray-500 text-lg">
+          <p className="text-gray-500 text-lg font-bold">
             Your cart is empty.{' '}
             <a href="/Shop" className="text-orange-500">Continue Shopping</a>
           </p>
@@ -75,35 +75,35 @@ export default function ShoppingCart() {
               <table className="w-full border-collapse min-w-[600px]">
                 <thead>
                   <tr className="bg-gray-900 text-left">
-                    <th className="p-4 font-semibold">Product</th>
-                    <th className="p-4 font-semibold">Price</th>
-                    <th className="p-4 font-semibold">Quantity</th>
-                    <th className="p-4 font-semibold">Total</th>
-                    <th className="p-4 font-semibold">Remove</th>
+                    <th className="p-4 font-bold">Product</th>
+                    <th className="p-4 font-bold">Price</th>
+                    <th className="p-4 font-bold">Quantity</th>
+                    <th className="p-4 font-bold">Total</th>
+                    <th className="p-4 font-bold">Remove</th>
                   </tr>
                 </thead>
                 <tbody>
                   {cartItems.map((item) => (
                     <tr key={item.id} className="border-b">
-                      <td className="p-4 flex items-center space-x-4">
+                      <td className="p-4 font-bold flex items-center space-x-4">
                         <Image src={item.image} alt={item.name} width={64} height={64} className="w-16 h-16 object-cover rounded" />
                         <span>{item.name}</span>
                       </td>
-                      <td className="p-4">${item.price.toFixed(2)}</td>
+                      <td className="p-4 font-bold">${item.price.toFixed(2)}</td>
                       <td className="p-4">
                         <input
                           type="number"
                           value={item.quantity}
                           onChange={(e) => handleQuantityChange(item.id, parseInt(e.target.value) || 0)}
-                          className="bg-black w-16 border rounded px-2 py-1 text-center"
+                          className="bg-black font-bold w-16 border rounded px-2 py-1 text-center"
                           min="0"
                         />
                       </td>
-                      <td className="p-4">${(item.price * item.quantity).toFixed(2)}</td>
+                      <td className="p-4 font-bold">${(item.price * item.quantity).toFixed(2)}</td>
                       <td className="p-4">
                         <button
                           onClick={() => handleRemoveItem(item.id)}
-                          className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition"
+                          className="bg-red-500 text-white font-bold px-3 py-1 rounded hover:bg-red-600 transition"
                         >
                           Remove
                         </button>

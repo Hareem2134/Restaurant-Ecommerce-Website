@@ -116,9 +116,9 @@ const SimilarProductsSection: React.FC<SimilarProductsProps> = ({
 
   return (
     // Added more padding and background color for definition
-    <div className="mt-16 md:mt-24 py-12 bg-gray-50 dark:bg-gray-900/50 rounded-lg">
+    <div className="mt-16 md:mt-24 py-12 dark:bg-gray-900/50 rounded-lg">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8"> {/* Ensure container padding */}
-        <h2 className="text-2xl md:text-3xl font-bold text-center mb-8 text-gray-800 dark:text-gray-100">
+        <h2 className="text-2xl md:text-3xl font-bold text-center mb-8 text-gray-100 dark:text-gray-100">
           You Might Also Like {/* Changed Title */}
         </h2>
 

@@ -81,16 +81,16 @@ const ProductComparison: React.FC = () => {
 
   return (
     <div className="max-w-4xl mx-auto my-12 px-4 sm:px-8 mb-36">
-      <h1 className="text-3xl font-bold mb-8 text-center text-gray-800">Product Comparison</h1>
+      <h1 className="text-3xl font-bold mb-8 text-center text-gray-100">Product Comparison</h1>
 
       <div className="mb-6 flex flex-col sm:flex-row justify-between items-center gap-4">
         <div>
-          <label htmlFor="rating-filter" className="font-medium text-gray-700 mr-2">
+          <label htmlFor="rating-filter" className="font-medium text-gray-100 mr-2">
             Minimum Rating:
           </label>
           <select
             id="rating-filter"
-            className="border border-gray-300 rounded-lg p-2"
+            className="bg-black font-bold border border-gray-300 rounded-lg p-2"
             value={filterRating || ""}
             onChange={(e) => setFilterRating(Number(e.target.value) || null)}
           >
@@ -104,12 +104,12 @@ const ProductComparison: React.FC = () => {
         </div>
 
         <div>
-          <label htmlFor="sort-order" className="font-medium text-gray-700 mr-2">
+          <label htmlFor="sort-order" className="font-medium text-gray-100 mr-2">
             Sort by Price:
           </label>
           <select
             id="sort-order"
-            className="border border-gray-300 rounded-lg p-2"
+            className="bg-black font-bold border border-gray-300 rounded-lg p-2"
             value={sortOrder}
             onChange={(e) => setSortOrder(e.target.value)}
           >
@@ -120,20 +120,20 @@ const ProductComparison: React.FC = () => {
       </div>
 
       <div className="text-right mb-6">
-        <span className="text-lg font-medium text-gray-800">
+        <span className="text-lg font-medium text-gray-100">
           Cart Items: <span className="text-orange-500 font-bold">{cart.length}</span>
         </span>
       </div>
 
       {filteredProducts.length === 0 ? (
-        <p className="text-center text-lg text-gray-600">No products match the criteria.</p>
+        <p className="text-center text-lg text-gray-100">No products match the criteria.</p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           <AnimatePresence>
             {filteredProducts.map((product) => (
               <motion.div
                 key={product.id}
-                className="bg-white border border-gray-200 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 flex flex-col"
+                className="bg-black border border-gray-200 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 flex flex-col"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
@@ -148,11 +148,11 @@ const ProductComparison: React.FC = () => {
                 </div>
                 <div className="p-5 flex-1 flex flex-col">
                   <Link href={`/product/${product.slug || ""}`}>
-                    <h3 className="text-lg font-semibold text-gray-800 mb-2 cursor-pointer hover:text-orange-500 transition-colors">
+                    <h3 className="text-lg font-semibold text-gray-100 mb-2 cursor-pointer hover:text-orange-500 transition-colors">
                       {product.name}
                     </h3>
                   </Link>
-                  <p className="text-gray-600 text-sm mb-4 flex-grow">
+                  <p className="text-gray-100 text-sm mb-4 flex-grow">
                     {product.description || "No description available."}
                   </p>
                   <div className="flex justify-between items-center mt-auto">
@@ -165,14 +165,14 @@ const ProductComparison: React.FC = () => {
                 <div className="p-4 flex gap-4">
                   <button
                     onClick={() => handleAddToCart(product)}
-                    className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 flex items-center space-x-1"
+                    className="px-4 py-2 bg-blue-600 text-white font-bold rounded hover:bg-blue-700 flex items-center space-x-1"
                   >
                     <FaCartPlus />
                     <span>Add to Cart</span>
                   </button>
                   <button
                     onClick={() => handleRemoveProduct(product.id)}
-                    className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 flex items-center space-x-1"
+                    className="px-4 py-2 bg-red-600 text-white font-bold rounded hover:bg-red-700 flex items-center space-x-1"
                   >
                     <FiTrash2 />
                     <span>Remove</span>

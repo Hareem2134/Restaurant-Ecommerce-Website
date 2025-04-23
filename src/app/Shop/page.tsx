@@ -117,10 +117,10 @@ function ShopPageContent() {
         {/* Products Grid & Pagination */}
         <div className="flex-1 order-2 lg:order-none">
           {/* Optional: Show search term */}
-          {searchQuery && <p className="mb-4 text-sm text-gray-600">Showing results for: "{searchQuery}"</p>}
+          {searchQuery && <p className="mb-4 text-sm text-gray-100">Showing results for: "{searchQuery}"</p>}
 
           {isLoading ? (
-            <div className="text-center py-10 text-gray-500">Loading products...</div>
+            <div className="text-center py-10 text-gray-100">Loading products...</div>
           ) : products.length > 0 ? (
             // Products Grid
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
@@ -141,7 +141,7 @@ function ShopPageContent() {
             </div>
           ) : (
              // No Products Found Message
-             <div className="text-center py-10 text-gray-500">
+             <div className="text-center py-10 text-gray-100">
                  No products found{searchQuery ? ` matching "${searchQuery}"` : ''}.
              </div>
           )}

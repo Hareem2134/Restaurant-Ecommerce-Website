@@ -99,7 +99,7 @@ const Navbar: React.FC<NavbarProps> = ({ children }) => {
       <div className="container mx-auto flex justify-between items-center py-2 px-6 pt-14">
         {/* Mobile Menu Button */}
         <button
-          className="lg:hidden text-white text-2xl"
+          className="lg:hidden text-white font-bold text-2xl"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           aria-label="Toggle Mobile Menu"
         >
@@ -116,21 +116,21 @@ const Navbar: React.FC<NavbarProps> = ({ children }) => {
           <div className="flex flex-col lg:flex-row lg:items-center lg:space-x-8 w-full lg:w-auto">
             <Link
               href="/"
-              className="block lg:inline-block text-white py-2 lg:py-0 px-4 lg:px-0 hover:text-[#FF9F0D]"
+              className="block lg:inline-block text-white font-bold py-2 lg:py-0 px-4 lg:px-0 hover:text-[#FF9F0D]"
               onClick={() => setIsMobileMenuOpen(false)}
             >
               Home
             </Link>
             <Link
               href="/MenuPage"
-              className="block lg:inline-block text-white py-2 lg:py-0 px-4 lg:px-0 hover:text-[#FF9F0D]"
+              className="block lg:inline-block text-white font-bold py-2 lg:py-0 px-4 lg:px-0 hover:text-[#FF9F0D]"
               onClick={() => setIsMobileMenuOpen(false)}
             >
               Menu
             </Link>
             <Link
               href="/Blog"
-              className="block lg:inline-block text-white py-2 lg:py-0 px-4 lg:px-0 hover:text-[#FF9F0D]"
+              className="block lg:inline-block text-white font-bold py-2 lg:py-0 px-4 lg:px-0 hover:text-[#FF9F0D]"
               onClick={() => setIsMobileMenuOpen(false)}
             >
               Blog
@@ -139,13 +139,13 @@ const Navbar: React.FC<NavbarProps> = ({ children }) => {
             {/* About Dropdown */}
             <div ref={aboutDropdownRef} className="relative">
               <button
-                className=" lg:inline-block text-white py-2 lg:py-0 px-4 lg:px-0 hover:text-[#FF9F0D]"
+                className=" lg:inline-block text-white font-bold py-2 lg:py-0 px-4 lg:px-0 hover:text-[#FF9F0D]"
                 onClick={() => setIsAboutDropdownOpen(!isAboutDropdownOpen)}
               >
                 About <FaChevronDown className="ml-1 inline text-sm transition-transform hover:rotate-180" />
               </button>
               {isAboutDropdownOpen && (
-                <div className="absolute left-0 top-full bg-black text-white py-4 px-6 rounded-md shadow-md space-y-2 w-40">
+                <div className="absolute left-0 top-full bg-black text-white font-bold py-4 px-6 rounded-md shadow-md space-y-2 w-40">
                   <Link href="/About" className="block hover:text-[#FF9F0D]" onClick={() => setIsAboutDropdownOpen(false)}>
                     About Us
                   </Link>
@@ -161,14 +161,14 @@ const Navbar: React.FC<NavbarProps> = ({ children }) => {
 
             <Link
               href="/Shop"
-              className="block lg:inline-block text-white py-2 lg:py-0 px-4 lg:px-0 hover:text-[#FF9F0D]"
+              className="block lg:inline-block text-white font-bold py-2 lg:py-0 px-4 lg:px-0 hover:text-[#FF9F0D]"
               onClick={() => setIsMobileMenuOpen(false)}
             >
               Shop
             </Link>
             <Link
               href="/Contact"
-              className="block lg:inline-block text-white py-2 lg:py-0 px-4 lg:px-0 hover:text-[#FF9F0D]"
+              className="block lg:inline-block text-white font-bold py-2 lg:py-0 px-4 lg:px-0 hover:text-[#FF9F0D]"
               onClick={() => setIsMobileMenuOpen(false)}
             >
               Contact
@@ -193,7 +193,7 @@ const Navbar: React.FC<NavbarProps> = ({ children }) => {
               />
             </button>
             {isSearchDropdownOpen && (
-              <div className="absolute right-0 mt-2 bg-black text-black rounded-md shadow-lg p-4 w-64 transition-opacity duration-300 ease-in-out opacity-100">
+              <div className="absolute right-0 mt-2 bg-black text-black font-bold rounded-md shadow-lg p-4 w-64 transition-opacity duration-300 ease-in-out opacity-100">
                 <input
                   type="text"
                   placeholder="Search for items..."
@@ -228,7 +228,7 @@ const Navbar: React.FC<NavbarProps> = ({ children }) => {
             </button>
 
             {isUserDropdownOpen && (
-              <div className="absolute bg-black text-white py-2 mt-2 rounded-md shadow-lg right-0 z-50 transition-transform duration-200 ease-in-out">
+              <div className="absolute bg-black text-white font-bold py-2 mt-2 rounded-md shadow-lg right-0 z-50 transition-transform duration-200 ease-in-out">
                 <Link
                   href="/Login"
                   className="block px-6 py-2 hover:bg-[#FF9F0D] hover:text-black transition-all duration-200 ease-in-out"

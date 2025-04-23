@@ -43,12 +43,12 @@ const WishList: React.FC = () => {
   };
 
   return (
-    <div className="container mx-auto p-6 bg-white shadow-md rounded-lg mb-36">
-      <h1 className="text-3xl font-bold text-gray-900 mb-6 text-center">WishList</h1>
+    <div className="container mx-auto p-6 bg-grey-900 shadow-md rounded-lg mb-36">
+      <h1 className="text-3xl font-bold text-gray-100 mb-6 text-center">WishList</h1>
       <div className="overflow-x-auto">
         <table className="w-full border-collapse border border-gray-200">
           <thead>
-            <tr className="bg-gray-100 text-left">
+            <tr className="bg-gray-900 text-center">
               <th className="p-4 border border-gray-200">Image</th>
               <th className="p-4 border border-gray-200">Product Name</th>
               <th className="p-4 border border-gray-200">Quantity</th>
@@ -62,14 +62,14 @@ const WishList: React.FC = () => {
               <tr>
                 <td
                   colSpan={6}
-                  className="text-center text-gray-500 py-6 font-medium"
+                  className="text-center text-gray-100 py-6 font-medium"
                 >
                   Your wishlist is empty.
                 </td>
               </tr>
             ) : (
               items.map((item) => (
-                <tr key={item.id} className="hover:bg-gray-50">
+                <tr key={item.id} className="hover:bg-gray-900">
                   <td className="p-4 border border-gray-200">
                     <img
                       src={item.image}
@@ -78,36 +78,36 @@ const WishList: React.FC = () => {
                     />
                   </td>
                   <td className="p-4 border border-gray-200">
-                    <span className="text-gray-800 font-medium">{item.name}</span>
+                    <span className="text-gray-100 font-medium">{item.name}</span>
                   </td>
                   <td className="p-4 border border-gray-200">
-                    <span className="text-gray-800">{item.quantity}</span>
+                    <span className="text-gray-100">{item.quantity}</span>
                   </td>
                   <td className="p-4 border border-gray-200">
                     {item.originalPrice && (
-                      <span className="line-through text-gray-400 mr-2">
+                      <span className="line-through text-gray-100 mr-2">
                         ${item.originalPrice.toFixed(2)}
                       </span>
                     )}
-                    <span className="text-gray-800 font-medium">
+                    <span className="text-gray-100 font-medium">
                       ${item.price.toFixed(2)}
                     </span>
                   </td>
                   <td className="p-4 border border-gray-200">
-                    <span className="text-green-600">{item.availability}</span>
+                    <span className="text-green-200">{item.availability}</span>
                   </td>
                   <td className="p-4 border border-gray-200">
                     <div className="flex items-center space-x-2">
                       <button
                         onClick={() => handleAddToCart(item)}
-                        className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 flex items-center space-x-1"
+                        className="px-4 py-2 bg-blue-600 text-white font-bold rounded hover:bg-blue-700 flex items-center space-x-1"
                       >
                         <FaCartPlus />
                         <span>Add to Cart</span>
                       </button>
                       <button
                         onClick={() => handleRemoveItem(item.id)}
-                        className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 flex items-center space-x-1"
+                        className="px-4 py-2 bg-red-600 text-white font-bold rounded hover:bg-red-700 flex items-center space-x-1"
                       >
                         <FiTrash2 />
                         <span>Remove</span>

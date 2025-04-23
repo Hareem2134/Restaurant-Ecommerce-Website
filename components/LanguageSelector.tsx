@@ -25,10 +25,10 @@ const LanguageSwitcher = () => {
     <select
       value={currentLang}
       onChange={(e) => handleLanguageChange(e.target.value)}
-      className="bg-black text-white border border-gray-500 rounded-md px-3 py-1 text-sm cursor-pointer focus:outline-none focus:ring-2 focus:ring-orange-500"
+      className="bg-black text-white font-bold border border-gray-500 rounded-md px-3 py-1 text-sm cursor-pointer focus:outline-none focus:ring-2 focus:ring-orange-500"
     >
       {languages.map((lang) => (
-        <option key={lang.code} value={lang.code} className="text-white">
+        <option key={lang.code} value={lang.code} className="text-white font-bold">
           {lang.label}
         </option>
       ))}

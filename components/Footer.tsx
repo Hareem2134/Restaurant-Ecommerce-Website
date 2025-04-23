@@ -33,9 +33,9 @@ const Footer = () => {
           <input
             type="text"
             placeholder="Enter Your Email"
-            className="bg-[#FF9F0D] text-white placeholder-white py-3 px-4 md:py-4 md:px-6 text-sm md:text-base w-full md:w-auto"
+            className="bg-[#FF9F0D] text-white font-bold placeholder-white py-3 px-4 md:py-4 md:px-6 text-sm md:text-base w-full md:w-auto"
           />
-          <button className="bg-white text-[#FF9F0D] py-3 px-4 md:py-4 md:px-6 text-sm md:text-base font-semibold">
+          <button className="bg-white font-bold text-[#FF9F0D] py-3 px-4 md:py-4 md:px-6 text-sm md:text-base">
             Subscribe Now
           </button>
         </div>
@@ -47,7 +47,7 @@ const Footer = () => {
       <div className="mx-auto w-full max-w-screen-xl px-6 md:px-[135px] py-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
           <div className="text-center">
-            <h2 className="mb-6 text-[24px] font-semibold uppercase">About Us</h2>
+            <h2 className="mb-6 text-[24px] font-bold uppercase">About Us</h2>
             <p className="text-[#FFFFFF] text-[16px] font-normal">
               Corporate clients and leisure travelers rely on Groundlink for dependable, safe, and professional chauffeured car service in major cities across the world.
             </p>
@@ -56,16 +56,16 @@ const Footer = () => {
                 <Image src="/ClockClockwise.png" alt="Clock" width={40} height={40} />
               </div>
               <div>
-                <h3 className="text-[16px] text-[#FFFFFF] font-normal">Opening Hours</h3>
-                <p className="text-[10px] text-[#FFFFFF]">Mon - Sat (8:00 - 18:00)</p>
-                <p className="text-[10px] text-[#FFFFFF]">Sunday - Closed</p>
+                <h3 className="text-[16px] text-[#FFFFFF] font-bold">Opening Hours</h3>
+                <p className="text-[10px] text-[#FFFFFF] font-bold">Mon - Sat (8:00 - 18:00)</p>
+                <p className="text-[10px] text-[#FFFFFF] font-bold">Sunday - Closed</p>
               </div>
             </div>
           </div>
 
           <div className="text-center">
-            <h2 className="mb-6 text-[24px] font-semibold uppercase">Useful Links</h2>
-            <ul className="text-gray-500 font-medium">
+            <h2 className="mb-6 text-[24px] font-bold uppercase">Useful Links</h2>
+            <ul className="text-gray-100 font-medium">
               <li className="mb-4"><Link href="#">About</Link></li>
               <li className="mb-4"><Link href="#">News</Link></li>
               <li className="mb-4"><Link href="#">Partners</Link></li>
@@ -76,8 +76,8 @@ const Footer = () => {
           </div>
 
           <div className="text-center">
-            <h2 className="mb-6 text-[24px] font-semibold uppercase">Help?</h2>
-            <ul className="text-gray-500 font-medium">
+            <h2 className="mb-6 text-[24px] font-bold uppercase">Help?</h2>
+            <ul className="text-gray-100 font-medium">
               <li className="mb-4"><Link href="#">FAQ</Link></li>
               <li className="mb-4"><Link href="#">Terms & Conditions</Link></li>
               <li className="mb-4"><Link href="#">Reporting</Link></li>
@@ -88,7 +88,7 @@ const Footer = () => {
           </div>
 
           <div className="text-center">
-            <h2 className="mb-6 text-[24px] font-semibold uppercase">Recent Posts</h2>
+            <h2 className="mb-6 text-[24px] font-bold uppercase">Recent Posts</h2>
             <ul>
               {[footer1, footer2, footer3].map((img, index) => (
                 <li key={index} className="flex items-center gap-4 mb-4">
@@ -105,7 +105,7 @@ const Footer = () => {
       </div>
 
       <div className="bg-[#FF9F0D] py-4 px-6 md:px-[135px] flex justify-between items-center relative">
-        <p className="text-white text-sm">Copyright © 2023. All Rights Reserved.</p>
+        <p className="text-white text-lg font-bold">Copyright © 2023. All Rights Reserved.</p>
         <div className="flex gap-4 ml-[-50px] md:ml-0">
           {socialMediaIcons.map((icon, idx) => (
             <div
